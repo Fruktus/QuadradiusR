@@ -1,0 +1,2 @@
+# Fix mislabelling GDScript as GAP
+*.gd linguist-language=GDScript

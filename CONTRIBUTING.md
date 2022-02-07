@@ -6,8 +6,18 @@ Short summary of practices when developing/contributing to the project.
 We use standard Gitflow workflow - when beginning work on a new feature,
 create a branch for it and when the feature is ready to be merged, create a pull request.
 
+### Branch naming
+The branch should be named using following pattern: ```<type>/<issue number>-<issue title separated with hyphens>```
+So for example, if the issue is a feature, its number is 6 and title is "Add start button" then the branch name would be ```feature/6-add-start-button```.
+The type can be anything you find applicable at the moment, since we do not have solid foundations yet. Most common will be feature or bugfix.
 
-## Conventions
+### Pull requests
+When making a pull request, please add the [GitHub closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) with the issue number, so that it will be linked properly.
+
+We do not enforce the need for Code Review for visual elements, though larger code changes should be verified if possible.
+
+
+## Styleguide Conventions
 We keep the files separated by the folders. All the files should be names in all lowercase, snake_case.
 
 - original_assets - for all the audio and image files from original game only, they should be further separated into lobby and game related ones

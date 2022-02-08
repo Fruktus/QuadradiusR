@@ -33,3 +33,17 @@ When working with prefabs, keep in mind following rule - use reference when inte
 This will allow us easier integration with other elements.
 
 Scripts and prefabs should be further structured into categories, like buttons etc.
+
+### Godot Scripts
+Lines from top:
+- The class declaration (if applicable)
+- The extended node
+- One blank line
+- Constants
+- Blank line
+- Variables
+- Blank line
+- Signals
+- Three blank lines
+
+There should be two blank lines between all the functions.

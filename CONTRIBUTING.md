@@ -31,3 +31,5 @@ Do keep the node type in its name, for example when you create VBoxContainer mea
 
 When working with prefabs, keep in mind following rule - use reference when interacting with child nodes, and signals to interact with parent nodes.
 This will allow us easier integration with other elements.
+
+Scripts and prefabs should be further structured into categories, like buttons etc.

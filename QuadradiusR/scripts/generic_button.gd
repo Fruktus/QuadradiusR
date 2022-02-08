@@ -6,17 +6,17 @@ signal clicked
 
 
 func _on_hover():
-	$AnimationPlayer.play("Hover")
+	anim.play("Hover")
 
 
 func _on_hover_exit():
-	$AnimationPlayer.play("Idle")
+	anim.play("Idle")
 
 
 func _on_button_down():
-	$AnimationPlayer.play("Click")
+	anim.play("Click")
 	emit_signal("clicked")
 
 
 func _on_button_up():
-	$AnimationPlayer.play("Hover")
+	anim.play("Hover")

@@ -40,9 +40,7 @@ Lines from top:
 - The extended node
 - One blank line
 - Constants
-- Blank line
 - Variables
-- Blank line
 - Signals
 - Three blank lines
 

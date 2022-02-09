@@ -1,4 +1,6 @@
-[gd_resource type="DynamicFontData" format=2]
+[gd_resource type="DynamicFont" load_steps=2 format=2]
+
+[ext_resource path="res://original_assets/lobby/fonts/75_OCR A Extended.ttf" type="DynamicFontData" id=1]
 
 [resource]
-font_path = "res://original_assets/lobby/fonts/75_OCR A Extended.ttf"
+font_data = ExtResource( 1 )

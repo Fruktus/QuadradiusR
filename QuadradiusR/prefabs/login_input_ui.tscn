@@ -88,4 +88,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[connection signal="clicked" from="StartButton" to="." method="_on_start_click"]
 [connection signal="focus_entered" from="GuestInput" to="." method="_on_guest_click"]
+[connection signal="focus_entered" from="UsernameInput" to="." method="_on_member_click"]
+[connection signal="focus_entered" from="PasswordInput" to="." method="_on_member_click"]

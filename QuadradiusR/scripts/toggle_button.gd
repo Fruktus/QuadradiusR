@@ -5,6 +5,9 @@ signal toggled(button_pressed)
 
 
 
+func pressed() -> bool:
+	return $Button.pressed
+
 
 func _on_toggled(button_pressed):
 	if button_pressed:

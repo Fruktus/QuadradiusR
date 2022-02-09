@@ -26,11 +26,7 @@ LineEdit/styles/normal = SubResource( 1 )
 LineEdit/styles/read_only = null
 
 [node name="LoginInputUI" type="Node2D"]
-position = Vector2( 454, 414 )
 script = ExtResource( 5 )
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="1" type="Sprite" parent="."]
 position = Vector2( 48, 156 )

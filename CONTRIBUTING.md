@@ -35,13 +35,5 @@ This will allow us easier integration with other elements.
 Scripts and prefabs should be further structured into categories, like buttons etc.
 
 ### Godot Scripts
-Lines from top:
-- The class declaration (if applicable)
-- The extended node
-- One blank line
-- Constants
-- Variables
-- Signals
-- Three blank lines
+We follow the style specified [here](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)
 
-There should be two blank lines between all the functions.

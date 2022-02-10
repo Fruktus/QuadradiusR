@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://original_assets/lobby/shapes/439.png" type="Texture" id=1]
 [ext_resource path="res://original_assets/lobby/shapes/472.png" type="Texture" id=2]
@@ -37,6 +37,100 @@
 [ext_resource path="res://original_assets/lobby/shapes/461.png" type="Texture" id=35]
 [ext_resource path="res://original_assets/lobby/shapes/459.png" type="Texture" id=36]
 [ext_resource path="res://original_assets/lobby/shapes/464.png" type="Texture" id=37]
+[ext_resource path="res://original_assets/lobby/shapes/477.png" type="Texture" id=38]
+[ext_resource path="res://original_assets/lobby/shapes/476.png" type="Texture" id=39]
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Light2D:mode")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Light2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -1110, 0 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "xd"
+length = 3.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Light2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 1.9, 3.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -880, 0 ), Vector2( 1038, 3 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("AnimatedSprite:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = false
+tracks/2/keys = {
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"update": 1,
+"values": [  ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("AnimatedSprite:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.15, 1.2, 1.25, 1.3, 1.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 165, 225 ), Vector2( 159, 226 ), Vector2( 121, 243 ), Vector2( 80, 249 ), Vector2( 39, 249 ), Vector2( -12, 249 ), Vector2( -59, 233 ), Vector2( -83, 198 ), Vector2( -97, 155 ), Vector2( -99, 101 ), Vector2( -98, 47 ), Vector2( -98, 2 ), Vector2( -99, -27 ), Vector2( -98, -43 ), Vector2( -98, -46 ), Vector2( -99, -45 ), Vector2( -97, -46 ), Vector2( -65, -46 ), Vector2( -44, -45 ), Vector2( -41, -45 ), Vector2( -11, -17 ), Vector2( -40, -46 ), Vector2( -10, -10 ), Vector2( -1, -2 ), Vector2( 0, 0 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("AnimatedSprite:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 1.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ Vector2( 1, 1 ), Vector2( 1.05, 1.05 ) ]
+}
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -48,6 +142,36 @@ animations = [ {
 
 [node name="IntroMain" type="Node2D"]
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 2 )
+anims/xd = SubResource( 3 )
+
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 1.05, 1.05 )
 frames = SubResource( 1 )
-frame = 19
+frame = 36
+
+[node name="Light2D" type="Light2D" parent="."]
+light_mask = 2
+position = Vector2( -1110, 0 )
+texture = ExtResource( 38 )
+range_item_cull_mask = 2
+
+[node name="Quadradius" type="Sprite" parent="."]
+light_mask = 2
+texture = ExtResource( 39 )
+
+[node name="474" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.309804, 0.87451, 0.333333, 0.462745 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Frame" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}

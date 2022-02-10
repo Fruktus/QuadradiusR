@@ -1,4 +1,9 @@
+# Godot related ignores
 deploy
-.vscode
 .import/
+*.translation
+export_presets.cfg
+
+# IDE related ignores
+.vscode
 personal/

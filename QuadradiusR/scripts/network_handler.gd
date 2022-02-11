@@ -6,7 +6,7 @@ signal lobby_message_posted(data)  # TODO when someone posts message
 signal lobby_challenge_received(data)  # TODO when player was challenged
 signal lobby_communique_updated(data)  # TODO possibly ignore that and just store this data in this node, make lobby retrieve it every time
 
-var message_template = load("res://scripts/message_template.gd")
+const message_template = preload("res://scripts/message_template.gd")
 
 
 

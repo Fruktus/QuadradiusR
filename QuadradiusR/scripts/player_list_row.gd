@@ -4,7 +4,6 @@ signal player_hover_start(username)
 signal player_hover_end(username)
 signal player_clicked(username)
 
-export var username = "asd GUEST"
 onready var label = $HBoxContainer/UsernameLabel
 onready var hover_sfx = $HoverSFX
 onready var challenge_issued_sfx = $ChallengeIssuedSFX
@@ -17,6 +16,7 @@ const ACTIVE_COLOR = Color("#381b16")
 const CHALLENGE_ISSUED = preload("res://original_assets/lobby/shapes/1.png")
 const CHALLENGE_RECEIVED = preload("res://original_assets/lobby/shapes/3.png")
 
+export var username = "asd GUEST"
 var is_self_player = false  # denotes if this is the entry corresponding to the curent player
 
 

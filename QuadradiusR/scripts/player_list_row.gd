@@ -25,6 +25,11 @@ func _ready():
 	label.text = username
 
 
+func init(username: String):
+	label.text = username
+	return self
+
+
 func receive_challenge():
 	challenge_received_sfx.play()
 	dot.texture = CHALLENGE_RECEIVED

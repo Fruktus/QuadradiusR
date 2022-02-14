@@ -1,0 +1,293 @@
+[gd_scene load_steps=47 format=2]
+
+[ext_resource path="res://original_assets/lobby/shapes/439.png" type="Texture" id=1]
+[ext_resource path="res://original_assets/lobby/shapes/472.png" type="Texture" id=2]
+[ext_resource path="res://original_assets/lobby/shapes/474.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/lobby/shapes/475.png" type="Texture" id=4]
+[ext_resource path="res://original_assets/lobby/shapes/469.png" type="Texture" id=5]
+[ext_resource path="res://original_assets/lobby/shapes/471.png" type="Texture" id=6]
+[ext_resource path="res://original_assets/lobby/shapes/465.png" type="Texture" id=7]
+[ext_resource path="res://original_assets/lobby/shapes/466.png" type="Texture" id=8]
+[ext_resource path="res://original_assets/lobby/shapes/473.png" type="Texture" id=9]
+[ext_resource path="res://original_assets/lobby/shapes/467.png" type="Texture" id=10]
+[ext_resource path="res://original_assets/lobby/shapes/470.png" type="Texture" id=11]
+[ext_resource path="res://original_assets/lobby/shapes/468.png" type="Texture" id=12]
+[ext_resource path="res://original_assets/lobby/shapes/449.png" type="Texture" id=13]
+[ext_resource path="res://original_assets/lobby/shapes/453.png" type="Texture" id=14]
+[ext_resource path="res://original_assets/lobby/shapes/441.png" type="Texture" id=15]
+[ext_resource path="res://original_assets/lobby/shapes/442.png" type="Texture" id=16]
+[ext_resource path="res://original_assets/lobby/shapes/440.png" type="Texture" id=17]
+[ext_resource path="res://original_assets/lobby/shapes/443.png" type="Texture" id=18]
+[ext_resource path="res://original_assets/lobby/shapes/447.png" type="Texture" id=19]
+[ext_resource path="res://original_assets/lobby/shapes/451.png" type="Texture" id=20]
+[ext_resource path="res://original_assets/lobby/shapes/452.png" type="Texture" id=21]
+[ext_resource path="res://original_assets/lobby/shapes/455.png" type="Texture" id=22]
+[ext_resource path="res://original_assets/lobby/shapes/446.png" type="Texture" id=23]
+[ext_resource path="res://original_assets/lobby/shapes/456.png" type="Texture" id=24]
+[ext_resource path="res://original_assets/lobby/shapes/444.png" type="Texture" id=25]
+[ext_resource path="res://original_assets/lobby/shapes/450.png" type="Texture" id=26]
+[ext_resource path="res://original_assets/lobby/shapes/448.png" type="Texture" id=27]
+[ext_resource path="res://original_assets/lobby/shapes/454.png" type="Texture" id=28]
+[ext_resource path="res://original_assets/lobby/shapes/445.png" type="Texture" id=29]
+[ext_resource path="res://original_assets/lobby/shapes/457.png" type="Texture" id=30]
+[ext_resource path="res://original_assets/lobby/shapes/463.png" type="Texture" id=31]
+[ext_resource path="res://original_assets/lobby/shapes/462.png" type="Texture" id=32]
+[ext_resource path="res://original_assets/lobby/shapes/458.png" type="Texture" id=33]
+[ext_resource path="res://original_assets/lobby/shapes/460.png" type="Texture" id=34]
+[ext_resource path="res://original_assets/lobby/shapes/461.png" type="Texture" id=35]
+[ext_resource path="res://original_assets/lobby/shapes/459.png" type="Texture" id=36]
+[ext_resource path="res://original_assets/lobby/shapes/464.png" type="Texture" id=37]
+[ext_resource path="res://original_assets/lobby/shapes/477.png" type="Texture" id=38]
+[ext_resource path="res://original_assets/lobby/shapes/476.png" type="Texture" id=39]
+[ext_resource path="res://scripts/generic_transition_animation.gd" type="Script" id=40]
+[ext_resource path="res://resources/gradient.png" type="Texture" id=41]
+[ext_resource path="res://original_assets/lobby/sounds/436_start001.wav" type="AudioStream" id=42]
+[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_479/1.png" type="Texture" id=43]
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+
+[sub_resource type="Animation" id=3]
+resource_name = "default"
+length = 4.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedLogo:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedLogo:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/keys = {
+"times": PoolRealArray( 1.9 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("AnimatedLogo:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.15, 1.2, 1.25, 1.3, 1.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 165, 225 ), Vector2( 159, 226 ), Vector2( 121, 243 ), Vector2( 80, 249 ), Vector2( 39, 249 ), Vector2( -12, 249 ), Vector2( -59, 233 ), Vector2( -83, 198 ), Vector2( -97, 155 ), Vector2( -99, 101 ), Vector2( -98, 47 ), Vector2( -98, 2 ), Vector2( -99, -27 ), Vector2( -98, -43 ), Vector2( -98, -46 ), Vector2( -99, -45 ), Vector2( -97, -46 ), Vector2( -65, -46 ), Vector2( -44, -45 ), Vector2( -41, -45 ), Vector2( -11, -17 ), Vector2( -40, -46 ), Vector2( -10, -10 ), Vector2( -1, -2 ), Vector2( 0, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("AnimatedLogo:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ Vector2( 1, 1 ), Vector2( 1.05, 1.05 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("FrameLightingNode/QuadradiusFrame:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 2.2, 4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0.12549 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("FrameLightingNode/LightPanel/RightBlack:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 2.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("FrameLightingNode/LightPanel/LeftBlack:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 2.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("FrameLightingNode/LightPanel:rect_position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( -0.05, 1.9, 3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1973, -570 ), Vector2( -1973, -570 ), Vector2( -85, -570 ) ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("FrameLightingNode/QuadradiusFrame:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 1.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/9/type = "method"
+tracks/9/path = NodePath("IntroSound")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0, 4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"values": [ {
+"args": [ 0.75 ],
+"method": "play"
+}, {
+"args": [  ],
+"method": "stop"
+} ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("AnimatedLogo:modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( -0.05, 2.5, 4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("GrayLogo:modulate")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0, 2.5, 4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 18 ), ExtResource( 25 ), ExtResource( 29 ), ExtResource( 23 ), ExtResource( 19 ), ExtResource( 27 ), ExtResource( 13 ), ExtResource( 26 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 14 ), ExtResource( 28 ), ExtResource( 22 ), ExtResource( 24 ), ExtResource( 30 ), ExtResource( 33 ), ExtResource( 36 ), ExtResource( 34 ), ExtResource( 35 ), ExtResource( 32 ), ExtResource( 31 ), ExtResource( 37 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 5 ), ExtResource( 11 ), ExtResource( 6 ), ExtResource( 2 ), ExtResource( 9 ), ExtResource( 3 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 10.0
+} ]
+
+[node name="IntroMain" type="Node2D"]
+script = ExtResource( 40 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+reset_on_save = false
+anims/RESET = SubResource( 2 )
+anims/default = SubResource( 3 )
+
+[node name="LogoTemplate" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.309804, 0.87451, 0.333333, 0.462745 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="FrameLightingNode" type="Node2D" parent="."]
+
+[node name="QuadradiusFrame" type="Sprite" parent="FrameLightingNode"]
+light_mask = 2
+position = Vector2( -1, 61 )
+texture = ExtResource( 39 )
+
+[node name="LightPanel" type="Control" parent="FrameLightingNode"]
+light_mask = 4
+margin_left = -85.0
+margin_top = -570.0
+margin_right = 2736.0
+margin_bottom = 703.0
+rect_pivot_offset = Vector2( 900, 100 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftBlack" type="TextureRect" parent="FrameLightingNode/LightPanel"]
+visible = false
+margin_left = -58.9999
+margin_top = -154.0
+margin_right = 1541.0
+margin_bottom = 1446.0
+texture = ExtResource( 41 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Light" type="Light2D" parent="FrameLightingNode/LightPanel"]
+light_mask = 2
+position = Vector2( 1040, 637 )
+scale = Vector2( 0.728512, 1 )
+texture = ExtResource( 38 )
+color = Color( 0.67451, 0.188235, 0.188235, 1 )
+energy = 16.0
+range_item_cull_mask = 2
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_item_cull_mask = 2
+
+[node name="RightBlack" type="TextureRect" parent="FrameLightingNode/LightPanel"]
+visible = false
+margin_left = -589.0
+margin_top = -128.0
+margin_right = 3247.0
+margin_bottom = 1472.0
+texture = ExtResource( 41 )
+expand = true
+flip_h = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimatedLogo" type="AnimatedSprite" parent="."]
+modulate = Color( 1, 1, 1, 0 )
+scale = Vector2( 1.05, 1.05 )
+frames = SubResource( 1 )
+frame = 36
+
+[node name="GrayLogo" type="Sprite" parent="."]
+position = Vector2( -1, 61 )
+scale = Vector2( 0.643887, 0.643887 )
+texture = ExtResource( 43 )
+
+[node name="IntroSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 42 )

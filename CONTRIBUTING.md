@@ -34,6 +34,17 @@ This will allow us easier integration with other elements.
 
 Scripts and prefabs should be further structured into categories, like buttons etc.
 
+Scenes instances should be created in *object oriented manner*, script related to particular scene should contain `func init(...)` method, straight after `func _ready()` (if used). This function should set all attributes and end with `return self`. Creating instances will work like this: `player_template.instance().init(username, is_current)`.
+
+Declared variables order (follow recursively if multiple modifiers are used):
+* `signal`
+* `enum`
+* `onready`
+* `const`
+* `export var`
+* `var`
+
+
 ### Godot Scripts
 We follow the style specified [here](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)
 

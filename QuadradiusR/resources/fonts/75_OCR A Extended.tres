@@ -3,4 +3,5 @@
 [ext_resource path="res://original_assets/lobby/fonts/75_OCR A Extended.ttf" type="DynamicFontData" id=1]
 
 [resource]
+size = 60
 font_data = ExtResource( 1 )

@@ -25,8 +25,9 @@ func _ready():
 	label.text = username
 
 
-func init(username: String):
-	label.text = username
+func init(username: String, is_self_player: bool=false):
+	self.username = username
+	self.is_self_player = is_self_player
 	return self
 
 

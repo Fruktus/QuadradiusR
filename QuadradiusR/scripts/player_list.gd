@@ -24,6 +24,7 @@ func add_player(username: String, is_current=false):
 
 	new_player.connect("player_hover_start", self, "_on_hover_start")
 	new_player.connect("player_hover_end", self, "_on_hover_end")
+	new_player.connect("player_clicked", self, "_on_player_clicked")
 	
 	if is_current:
 		player_joined_sfx.play()
@@ -45,4 +46,8 @@ func _on_hover_start(username: String):
 
 
 func _on_hover_end(username: String):
-	emit_signal("player_hover_end")
+	emit_signal("player_hover_end", username)
+
+
+func _on_player_clicked(username: String):
+	emit_signal("challenge_issued", username)

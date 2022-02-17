@@ -5,7 +5,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Fruktus/QuadradiusR)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Fruktus/QuadradiusR)
 ![GitHub all releases](https://img.shields.io/github/downloads/Fruktus/QuadradiusR/total)
-![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/quadradius?style=social)
+[![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/quadradius?style=social)](https://www.reddit.com/r/quadradius/)
 
 A reimplementation of Classic Quadradius flash game from 2007 made by Jimmi Heiserman and Brad Kayal.
 

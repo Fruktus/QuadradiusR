@@ -1,0 +1,46 @@
+name: godot-ci
+
+on: [ push, pull_request ]
+
+jobs:
+  export-linux:
+    name: Linux Export
+    runs-on: ubuntu-latest
+    container: barichello/godot-ci:3.4.2
+    steps:
+      - name: Install make
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+              make
+      - name: Setup templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+      - name: Build
+        run: cd QuadradiusR && make linux
+
+  export-windows:
+    name: Windows Export
+    runs-on: ubuntu-latest
+    container: barichello/godot-ci:3.4.2
+    steps:
+      - name: Install make
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+              make
+      - name: Setup templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+      - name: Build
+        run: cd QuadradiusR && make windows

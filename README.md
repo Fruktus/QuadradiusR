@@ -1,5 +1,6 @@
 # Quadradius R
 ![platform](https://img.shields.io/badge/godot-3.4.2-blue)
+[![godot-ci](https://github.com/Fruktus/QuadradiusR/actions/workflows/godot-ci.yml/badge.svg)](https://github.com/Fruktus/QuadradiusR/actions/workflows/godot-ci.yml)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Fruktus/QuadradiusR)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Fruktus/QuadradiusR)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Fruktus/QuadradiusR)

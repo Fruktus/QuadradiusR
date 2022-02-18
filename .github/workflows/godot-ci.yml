@@ -3,44 +3,94 @@ name: godot-ci
 on: [ push, pull_request ]
 
 jobs:
-  export-linux:
-    name: Linux Export
+  godot-export:
     runs-on: ubuntu-latest
-    container: barichello/godot-ci:3.4.2
+    name: Godot Export
     steps:
-      - name: Install make
+      - name: Initialize variables
+        id: variables
         run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-              make
-      - name: Setup templates
-        run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-      - name: Build
-        run: cd QuadradiusR && make linux
+          echo "ref: ${GITHUB_REF}"
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "Release"
+            echo ::set-output name=RELEASE::true
+            echo ::set-output name=DEBUG::false
+            echo ::set-output name=TAG_VERSION::${GITHUB_REF#refs/tags/v}
+            echo ::set-output name=ARTIFACT_SUFFIX::-${GITHUB_REF#refs/tags/v}
+          else
+            echo "Debug"
+            echo ::set-output name=RELEASE::false
+            echo ::set-output name=DEBUG::true
+            echo ::set-output name=ARTIFACT_SUFFIX::-${GITHUB_SHA}
+          fi
 
-  export-windows:
-    name: Windows Export
-    runs-on: ubuntu-latest
-    container: barichello/godot-ci:3.4.2
-    steps:
-      - name: Install make
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-              make
-      - name: Setup templates
-        run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           lfs: true
-      - name: Build
-        run: cd QuadradiusR && make windows
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Generate debug keystore
+        run: |
+          keytool -genkey \
+            -v \
+            -keystore ~/.android/debug.keystore \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "C=US, O=Android, CN=Android Debug"
+
+      - name: Setup release keystore
+        if: ${{ steps.variables.outputs.RELEASE == 'true' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
+          KEYSTORE_USER: ${{ secrets.SIGNING_KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          mkdir -p .android
+          echo $KEYSTORE_BASE64 | base64 -di > "${HOME}/.android/release.keystore"
+
+          sed -i \
+            -e "s|keystore/release=\"\"|keystore/release=\"${HOME}/.android/release.keystore\"|" \
+            -e "s|keystore/release_user=\"\"|keystore/release_user=\"${KEYSTORE_USER}\"|" \
+            -e "s|keystore/release_password=\"\"|keystore/release_password=\"${KEYSTORE_PASSWORD}\"|" \
+            QuadradiusR/export_presets.cfg
+
+          cat QuadradiusR/export_presets.cfg
+
+      - name: Setup custom editor settings
+        run: |
+          mkdir -p ~/.config/godot/
+          ES=~/.config/godot/editor_settings-3.tres
+          echo "[gd_resource type=\"EditorSettings\" format=2]" > "${ES}"
+          echo "[resource]" >> "${ES}"
+          echo "export/android/android_sdk_path = \"${ANDROID_SDK_ROOT}\"" >> "${ES}"
+          echo "export/android/debug_keystore = \"${HOME}/.android/debug.keystore\"" >> "${ES}"
+          echo "export/android/debug_keystore_user = \"androiddebugkey\"" >> "${ES}"
+          echo "export/android/debug_keystore_pass = \"android\"" >> "${ES}"
+
+      - name: Export
+        uses: firebelley/godot-export@v3.0.0
+        with:
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.4.2/Godot_v3.4.2-stable_linux_headless.64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.4.2/Godot_v3.4.2-stable_export_templates.tpz
+          relative_project_path: ./QuadradiusR/
+          export_debug: ${{ steps.variables.outputs.DEBUG }}
+          create_release: ${{ steps.variables.outputs.RELEASE }}
+          base_version: ${{ steps.variables.outputs.TAG_VERSION }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: QuadradiusR${{ steps.variables.outputs.ARTIFACT_SUFFIX }}
+          path: |
+            /home/runner/.local/share/godot/builds

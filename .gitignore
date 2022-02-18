@@ -6,3 +6,4 @@ deploy
 # IDE related ignores
 .vscode
 personal/
+.idea/

@@ -23,6 +23,9 @@ rect_pivot_offset = Vector2( 200, 200 )
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
 script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="SFXGroup" type="Node" parent="."]
 
@@ -90,6 +93,6 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MouseDetector"]
 shape = SubResource( 1 )
 
-[connection signal="input_event" from="MouseDetector" to="." method="_on_click"]
+[connection signal="input_event" from="MouseDetector" to="." method="_on_mouse_event"]
 [connection signal="mouse_entered" from="MouseDetector" to="." method="_on_hover_start"]
 [connection signal="mouse_exited" from="MouseDetector" to="." method="_on_hover_end"]

@@ -17,7 +17,7 @@ func _process(delta):
 	self.rect_global_position = get_global_mouse_position() - rect_size/2
 
 
-func _on_click(viewport, event: InputEvent, shape_idx):
+func _on_mouse_event(viewport: Node, event: InputEvent, shape_idx: int):
 	if event is InputEventMouseButton:
 		if event.get_button_index() == BUTTON_LEFT and event.is_pressed():
 			pickup_sfx.play()

@@ -1,0 +1,98 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_245_PlayerPieceSymbol/1.png" type="Texture" id=1]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/1.png" type="Texture" id=2]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/2.png" type="Texture" id=3]
+[ext_resource path="res://scripts/torus.gd" type="Script" id=4]
+[ext_resource path="res://original_assets/game/sounds/1066_move_piece_drop.wav" type="AudioStream" id=5]
+[ext_resource path="res://original_assets/game/sounds/1065_pick_up_piece.wav" type="AudioStream" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 200.5
+
+[node name="Torus" type="PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1519.0
+margin_bottom = -679.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_pivot_offset = Vector2( 200, 200 )
+mouse_filter = 2
+custom_styles/panel = SubResource( 2 )
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SFXGroup" type="Node" parent="."]
+
+[node name="PickupSFX2D" type="AudioStreamPlayer2D" parent="SFXGroup"]
+position = Vector2( 200, 200 )
+stream = ExtResource( 6 )
+
+[node name="PutdownSFX2D" type="AudioStreamPlayer2D" parent="SFXGroup"]
+position = Vector2( 200, 200 )
+stream = ExtResource( 5 )
+
+[node name="TorusBase" type="TextureRect" parent="."]
+margin_right = 401.0
+margin_bottom = 401.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VFXGroup" type="Control" parent="."]
+margin_right = 401.0
+margin_bottom = 401.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LightGroup" type="Control" parent="."]
+margin_right = 401.0
+margin_bottom = 401.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LightOff" type="TextureRect" parent="LightGroup"]
+margin_left = 47.0
+margin_top = 43.0
+margin_right = 334.0
+margin_bottom = 337.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LightOn" type="TextureRect" parent="LightGroup"]
+visible = false
+margin_left = 47.0
+margin_top = 43.0
+margin_right = 334.0
+margin_bottom = 337.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MouseDetector" type="Area2D" parent="."]
+position = Vector2( 200, 200 )
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MouseDetector"]
+shape = SubResource( 1 )
+
+[connection signal="input_event" from="MouseDetector" to="." method="_on_mouse_event"]
+[connection signal="mouse_entered" from="MouseDetector" to="." method="_on_hover_start"]
+[connection signal="mouse_exited" from="MouseDetector" to="." method="_on_hover_end"]

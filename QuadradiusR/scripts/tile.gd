@@ -16,7 +16,7 @@ func init(position: Vector2):
 
 func set_slot(torus: Control):
 	if slot.get_child_count() != 0:
-		slot.remove_child(0)
+		slot.remove_child(slot.get_child(0))
 	
 	slot.add_child(torus)
 
@@ -26,4 +26,4 @@ func _on_mouse_event(viewport: Node, event: InputEvent, shape_idx: int):
 		print(event)
 		if event.get_button_index() == BUTTON_LEFT and not event.is_pressed():
 			print('active', position)
-			emit_signal("is_released", self)
+			get_tree().call_group("board", "_on_tile_release", self)

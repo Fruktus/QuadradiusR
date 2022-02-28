@@ -22,7 +22,7 @@ func _process(delta: float):
 	self.rect_global_position = get_global_mouse_position() - rect_size/2 * board.rect_scale
 
 
-func init(board):
+func init(board: Node):
 	self.board = board
 	return self
 

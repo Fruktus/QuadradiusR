@@ -9,7 +9,7 @@ var active_torus: Node
 var torus_parent: Node
 
 
-func _ready():
+func _ready():  # TMP, used to test initialisation
 	init()
 
 
@@ -31,7 +31,7 @@ func _init_tiles():
 		board.add_child(new_tile)
 
 
-func _init_toruses(player_pieces):
+func _init_toruses(player_pieces: int):
 	for i in range(player_pieces):
 		var player1_torus = torus_template.instance().init(self)
 		var player2_torus = torus_template.instance().init(self)
@@ -43,7 +43,7 @@ func _init_toruses(player_pieces):
 # After picking up torus, move it to top of the tree, so it won't get covered
 # by other sprites. After putting down, place back on original position, unless
 # it was a new tile, in this case move to it
-func _torus_pickup(torus):
+func _torus_pickup(torus: Node):
 	self.active_torus = torus
 	self.torus_parent = torus.get_parent()
 	print('from', torus_parent.get_parent().position)  # DEBUG
@@ -52,12 +52,12 @@ func _torus_pickup(torus):
 
 
 func _torus_putdown():
-	print('putting down')
+	print('putting down')  # DEBUG
 	remove_child(self.active_torus)
 	torus_parent.add_child(active_torus)
 
 
-func _on_tile_release(active_tile):
-	print('putting down new tile')
+func _on_tile_release(active_tile: Node):
+	print('putting down new tile')  # DEBUG
 	self.active_torus.get_parent().remove_child(self.active_torus)
 	active_tile.set_slot(self.active_torus)

@@ -8,6 +8,7 @@ onready var collision_detector = $MouseDetector/CollisionShape2D
 const starting_pos = Vector2(50, 50)
 
 var board: Control
+var movement_powerup_manager = preload("res://scripts/movement_powerup_manager.gd").new()
 var is_held = false
 var can_interact = true
 # TODO some way to tell whose torus it is
@@ -48,9 +49,9 @@ func _begin_drag():
 func _end_drag():
 	set_process(false)
 	get_tree().call_group("torus", "set_interaction", true)
-	get_tree().call_group("board", "_torus_putdown")
+	get_tree().call_group("board", "_torus_putdown", self)
 	is_held = false
-	# TODO play putdown sfx, but always or only on tile change?
+	putdown_sfx.play()
 	self.rect_scale = Vector2(1, 1)
 	rect_position = self.starting_pos
 
@@ -67,3 +68,16 @@ func _on_hover_start():
 
 func _on_hover_end():
 	self.light_on.visible = false
+
+
+func _get_parent_tile():
+	return self.get_parent().get_parent()
+
+
+func should_move_torus(source_tile: Node, target_tile: Node) -> bool:
+	# check if can make move
+	# check if move will cause collision with piece
+	# check if collision with piece is permitted
+	# return result
+	return movement_powerup_manager.can_make_move(source_tile, target_tile)
+

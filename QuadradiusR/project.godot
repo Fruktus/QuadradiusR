@@ -13,9 +13,21 @@ _global_script_classes=[ {
 "class": "Message",
 "language": "GDScript",
 "path": "res://scripts/message_template.gd"
+}, {
+"base": "Reference",
+"class": "MovementPowerupManager",
+"language": "GDScript",
+"path": "res://scripts/movement_powerup_manager.gd"
+}, {
+"base": "Reference",
+"class": "PowerupRule",
+"language": "GDScript",
+"path": "res://scripts/powerups/abstract.gd"
 } ]
 _global_script_class_icons={
-"Message": ""
+"Message": "",
+"MovementPowerupManager": "",
+"PowerupRule": ""
 }
 
 [application]

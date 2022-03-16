@@ -6,7 +6,7 @@ const torus_template = preload("res://prefabs/torus.tscn")  # Do we want this to
 
 var board_size: int
 var active_torus: Node
-var torus_parent: Node
+var torus_source_slot: Node
 
 
 func _ready():  # TMP, used to test initialisation
@@ -22,12 +22,12 @@ func init(board_size: int = 10, player_pieces: int = 20):
 
 
 func _get_child_at_pos(x: int, y: int):
-	return get_child(y * board_size + x)
+	return board.get_child(y * board_size + x)
 
 
 func _init_tiles():
 	for i in range(board_size*board_size):
-		var new_tile = tile_template.instance().init(Vector2(i % board_size, i / board_size))
+		var new_tile = tile_template.instance().init(Vector3(i % board_size, i / board_size, 0))
 		board.add_child(new_tile)
 
 
@@ -45,19 +45,24 @@ func _init_toruses(player_pieces: int):
 # it was a new tile, in this case move to it
 func _torus_pickup(torus: Node):
 	self.active_torus = torus
-	self.torus_parent = torus.get_parent()
-	print('from', torus_parent.get_parent().position)  # DEBUG
-	torus.get_parent().remove_child(torus)
+	self.torus_source_slot = torus.get_parent()
+	torus_source_slot.remove_child(torus)
 	add_child(torus)
 
 
-func _torus_putdown():
-	print('putting down')  # DEBUG
+func _torus_putdown(torus: Node):
 	remove_child(self.active_torus)
-	torus_parent.add_child(active_torus)
 
-
-func _on_tile_release(active_tile: Node):
-	print('putting down new tile')  # DEBUG
-	self.active_torus.get_parent().remove_child(self.active_torus)
-	active_tile.set_slot(self.active_torus)
+	var dest_tile_pos = get_global_mouse_position() / (get_child(0).get_child(0).rect_size * rect_scale)
+	var x = int(dest_tile_pos.x)
+	var y = int(dest_tile_pos.y)
+	
+	if 0 > x or x >= board_size or 0 > y or y >= board_size:
+		self.torus_source_slot.add_child(self.active_torus)
+		return
+	
+	if torus.should_move_torus(torus_source_slot.get_parent(), _get_child_at_pos(x, y)):
+		self._get_child_at_pos(x, y).set_slot(self.active_torus)
+		return
+	
+	self.torus_source_slot.add_child(self.active_torus)

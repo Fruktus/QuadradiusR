@@ -33,8 +33,8 @@ func _init_tiles():
 
 func _init_toruses(player_pieces: int):
 	for i in range(player_pieces):
-		var player1_torus = torus_template.instance().init(self)
-		var player2_torus = torus_template.instance().init(self)
+		var player1_torus = torus_template.instance().init(self, Torus.COLORS.RED)
+		var player2_torus = torus_template.instance().init(self, Torus.COLORS.BLUE)
 		
 		board.get_child(i).set_slot(player1_torus)
 		board.get_child(board_size * board_size - 1 - i).set_slot(player2_torus)

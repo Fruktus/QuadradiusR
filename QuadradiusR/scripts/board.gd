@@ -33,8 +33,8 @@ func _init_tiles():
 
 func _init_toruses(player_pieces: int):
 	for i in range(player_pieces):
-		var player1_torus = torus_template.instance().init(self, Torus.COLORS.RED)
-		var player2_torus = torus_template.instance().init(self, Torus.COLORS.BLUE)
+		var player1_torus = torus_template.instance().init(self, 0, Torus.COLORS.RED)
+		var player2_torus = torus_template.instance().init(self, 1, Torus.COLORS.BLUE)
 		
 		board.get_child(i).set_slot(player1_torus)
 		board.get_child(board_size * board_size - 1 - i).set_slot(player2_torus)
@@ -61,7 +61,10 @@ func _torus_putdown(torus: Node):
 		self.torus_source_slot.add_child(self.active_torus)
 		return
 	
-	if torus.should_move_torus(torus_source_slot.get_parent(), _get_child_at_pos(x, y)):
+	var target_tile: Tile = _get_child_at_pos(x, y)
+	if torus.should_move_torus(torus_source_slot.get_parent(), target_tile):
+		if target_tile.has_piece():
+			$AudioStreamPlayer.play(0)  # TODO how to handle animation? tile.destroy_piece()?
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)
 		return
 	

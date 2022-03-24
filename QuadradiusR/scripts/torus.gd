@@ -18,9 +18,10 @@ const color_textures = {COLORS.RED: "DefineSprite_412_Decoration0",
 						COLORS.CYAN: "DefineSprite_856_Decoration4",
 						COLORS.MAGENTA: "DefineSprite_859_Decoration5"}
 
+var movement_powerup_manager = preload("res://scripts/movement_powerup_manager.gd").new()
 var board: Control
 var color = COLORS.RED
-var movement_powerup_manager = preload("res://scripts/movement_powerup_manager.gd").new()
+var player = 0
 var is_held = false
 var can_interact = true
 # TODO some way to tell whose torus it is
@@ -37,7 +38,8 @@ func _process(delta: float):
 	self.rect_global_position = get_global_mouse_position() - rect_size/2 * board.rect_scale
 
 
-func init(board: Node, color=COLORS.RED):
+func init(board: Control, player=0, color=COLORS.RED):
+	self.player = player
 	self.board = board
 	self.color = color
 	return self
@@ -89,10 +91,24 @@ func _get_parent_tile():
 	return self.get_parent().get_parent()
 
 
-func should_move_torus(source_tile: Node, target_tile: Node) -> bool:
+func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 	# check if can make move
+	if not movement_powerup_manager.can_make_move(source_tile, target_tile):
+		return false  # no need to check further
 	# check if move will cause collision with piece
-	# check if collision with piece is permitted
-	# return result
-	return movement_powerup_manager.can_make_move(source_tile, target_tile)
+	if target_tile.has_piece():
+		var target_piece = target_tile.get_piece()
+		if target_piece.player == self.player:
+			return false
+		# TODO check if can step on opponent
+			# 	if there is other piece, check if can collide with it
+	# 		if can collide, dont check the conditions again later, but
+	#		do check in board or somewhere if collision occurs and if so delete piece,
+	#		run animation, sound etc
+		pass
 
+	# 	if no other piece, return true
+	return true
+# TODO maybe add method destroy() which would handle aftermath
+# OR destroy_piece(torus) which would make one piece destroy the other, so it could handle
+# all the consequences

@@ -35,3 +35,13 @@ jobs:
         with:
           name: dist
           path: Server/dist
+
+  docker:
+    name: Build docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build
+        working-directory: Server
+        run: docker build .

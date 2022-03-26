@@ -1,5 +1,7 @@
-from quadradiusr_server import config
-from quadradiusr_server.server import QuadradiusRServer
+import sys
 
-server = QuadradiusRServer(config.from_toml('config.toml'))
-server.run()
+from quadradiusr_server.cli import ServerCli
+
+if __name__ == '__main__':
+    exit_code = ServerCli(sys.argv[1:]).run()
+    sys.exit(exit_code)

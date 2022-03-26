@@ -1,0 +1,8 @@
+[server]
+host = '1.2.3.4'
+port = 1234
+
+[server.database]
+url = 'postgresql://user:pass@localhost/mydatabase'
+log_statements = true
+log_connections = true

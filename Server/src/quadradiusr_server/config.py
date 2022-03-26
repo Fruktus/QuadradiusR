@@ -12,6 +12,16 @@ class AuthConfig:
 
 
 @dataclass
+class DatabaseConfig:
+    url: str = 'sqlite+aiosqlite://'
+    create_metadata: bool = False
+    log_statements: bool = False
+    log_connections: bool = False
+    hide_parameters: bool = True
+    pool_recycle_timeout: int = -1
+
+
+@dataclass
 class ServerConfig:
     host: str
     port: int
@@ -23,6 +33,7 @@ class ServerConfig:
     backlog: int = 128
 
     auth: AuthConfig = AuthConfig()
+    database: DatabaseConfig = DatabaseConfig()
 
 
 class ConfigError(Exception):
@@ -38,6 +49,8 @@ def from_toml(path) -> ServerConfig:
         data = toml.load(path)
         return dacite.from_dict(
             data_class=Config,
-            data=dict(data)).server
+            data=dict(data),
+            config=dacite.config.Config(strict=True),
+        ).server
     except Exception as e:
         raise ConfigError(f'Error while loading configuration {path}') from e

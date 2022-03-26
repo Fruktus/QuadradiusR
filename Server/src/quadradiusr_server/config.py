@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 import dacite as dacite
 import toml as toml
@@ -8,6 +9,11 @@ import toml as toml
 class ServerConfig:
     host: str
     port: int
+
+    reuse_port: Optional[bool] = None
+    reuse_address: Optional[bool] = None
+    shutdown_timeout: float = 60.0
+    backlog: int = 128
 
 
 class ConfigError(Exception):

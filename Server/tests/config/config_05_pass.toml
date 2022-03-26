@@ -1,0 +1,7 @@
+[server]
+host = '1.2.3.4'
+port = 1234
+
+[server.auth]
+token_exp = 120
+token_leeway = 12

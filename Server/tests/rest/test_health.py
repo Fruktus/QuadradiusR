@@ -2,7 +2,7 @@ from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
 
-from .harness import RestTestHarness
+from harness import RestTestHarness
 
 
 class TestHealth(IsolatedAsyncioTestCase, RestTestHarness):

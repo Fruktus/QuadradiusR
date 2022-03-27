@@ -1,6 +1,7 @@
 from aiohttp import web
 
 from quadradiusr_server.constants import QrwsCloseCode
+from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.gateway import GatewayConnection
 from quadradiusr_server.qrws_connection import QrwsConnection, QrwsCloseException
 from quadradiusr_server.qrws_messages import IdentifyMessage, ServerReadyMessage
@@ -9,6 +10,7 @@ from quadradiusr_server.server import routes, QuadradiusRServer
 
 @routes.view('/gateway')
 class GatewayView(web.View):
+    @transactional
     async def get(self):
         server: QuadradiusRServer = self.request.app['server']
 
@@ -31,12 +33,13 @@ class GatewayView(web.View):
                     close_code=QrwsCloseCode.UNAUTHORIZED)
                 return ws
 
-            user = server.auth.authenticate(identify_msg.token)
-            if user is None:
+            user_id = server.auth.authenticate(identify_msg.token)
+            if user_id is None:
                 await qrws.send_error(
                     'Auth failed',
                     close_code=QrwsCloseCode.UNAUTHORIZED)
                 return ws
+            user = await server.auth.get_user(user_id)
 
             await qrws.send_message(ServerReadyMessage())
 

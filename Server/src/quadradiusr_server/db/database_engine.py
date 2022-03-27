@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncConnection
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncSession
 
 from quadradiusr_server.config import DatabaseConfig
 
@@ -26,5 +26,5 @@ class DatabaseEngine:
     async def dispose(self):
         await self.engine.dispose()
 
-    def connect(self) -> AsyncConnection:
-        return self.engine.connect()
+    def session(self) -> AsyncSession:
+        return AsyncSession(self.engine)

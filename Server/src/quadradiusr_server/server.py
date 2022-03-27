@@ -5,9 +5,9 @@ from typing import Optional, Mapping, List
 from aiohttp import web
 from aiohttp.web_runner import AppRunner, TCPSite
 
-import quadradiusr_server.views
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.config import ServerConfig
+from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.gateway import GatewayConnection
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.utils import import_submodules
@@ -24,10 +24,12 @@ class QuadradiusRServer:
         self.gateway_connections: Mapping[str, List[GatewayConnection]] = \
             defaultdict(lambda: [])
         self.database = DatabaseEngine(config.database)
-        self.auth = Auth(config.auth)
+        self.repository = Repository(self.database)
+        self.auth = Auth(config.auth, self.repository)
         self.config: ServerConfig = config
         self.app = web.Application()
         self.app['server'] = self
+        self.app['database'] = self.database
         self.app.add_routes(routes)
 
         self.runner: Optional[AppRunner] = None
@@ -110,4 +112,5 @@ class QuadradiusRServer:
 
 
 # importing submodules automatically registers endpoints
-import_submodules(quadradiusr_server.views)
+import quadradiusr_server.rest
+import_submodules(quadradiusr_server.rest)

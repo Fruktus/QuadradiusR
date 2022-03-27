@@ -1,5 +1,8 @@
 import importlib
+import inspect
 import pkgutil
+from inspect import Parameter
+from typing import Mapping
 
 
 def import_submodules(package, recursive=True):
@@ -12,3 +15,26 @@ def import_submodules(package, recursive=True):
         if recursive and is_pkg:
             results.update(import_submodules(full_name))
     return results
+
+
+def can_pass_argument(f, name: str):
+    f_signature = inspect.signature(f)
+    for param in f_signature.parameters.values():
+        if param.kind == Parameter.VAR_KEYWORD:
+            # **kwargs
+            return True
+        is_keyword = (
+                param.kind == Parameter.KEYWORD_ONLY or
+                param.kind == Parameter.POSITIONAL_OR_KEYWORD)
+        if is_keyword and param.name == name:
+            return True
+    return False
+
+
+def filter_kwargs(f, kwargs):
+    kwargs = dict(kwargs)
+    kws = list(kwargs.keys())
+    for name in kws:
+        if not can_pass_argument(f, name):
+            del kwargs[name]
+    return kwargs

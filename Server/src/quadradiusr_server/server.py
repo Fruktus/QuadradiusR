@@ -1,3 +1,4 @@
+import asyncio
 from collections import defaultdict
 from typing import Optional, Mapping, List
 
@@ -91,6 +92,11 @@ class QuadradiusRServer:
     async def shutdown(self):
         if self.runner:
             await self.runner.cleanup()
+
+    def run(self):
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(self.start())
+        loop.close()
 
     def register_gateway(self, gateway: GatewayConnection):
         user = gateway.user

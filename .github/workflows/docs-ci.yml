@@ -1,0 +1,32 @@
+name: docs-ci
+
+on:
+  push:
+    paths:
+      - '.github/**'
+      - 'Documentation/**'
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'Documentation/**'
+
+jobs:
+  docs:
+    name: Build docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        working-directory: Documentation
+        run: pip install -r requirements.txt
+
+      - name: Build
+        working-directory: Documentation
+        run: make html latex epub
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: Documentation/build

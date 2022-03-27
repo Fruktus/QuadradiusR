@@ -9,6 +9,7 @@ import quadradiusr_server.views
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.gateway import GatewayConnection
+from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.utils import import_submodules
 
 routes = web.RouteTableDef()
@@ -22,6 +23,7 @@ class QuadradiusRServer:
     def __init__(self, config: ServerConfig) -> None:
         self.gateway_connections: Mapping[str, List[GatewayConnection]] = \
             defaultdict(lambda: [])
+        self.database = DatabaseEngine(config.database)
         self.auth = Auth(config.auth)
         self.config: ServerConfig = config
         self.app = web.Application()
@@ -72,6 +74,8 @@ class QuadradiusRServer:
             return self.get_url(protocol)
 
     async def start(self):
+        await self.database.initialize()
+
         self.runner = AppRunner(self.app)
         await self.runner.setup()
 
@@ -92,6 +96,8 @@ class QuadradiusRServer:
     async def shutdown(self):
         if self.runner:
             await self.runner.cleanup()
+        if self.database:
+            await self.database.dispose()
 
     def run(self):
         loop = asyncio.new_event_loop()

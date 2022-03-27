@@ -16,8 +16,8 @@ class RestTestHarness(metaclass=ABCMeta):
         self.server = QuadradiusRServer(self.config)
         await self.server.start()
 
-    def server_url(self, path: str):
-        return self.server.url + '/' + path.lstrip('/')
+    def server_url(self, path: str, *, protocol: str = 'http'):
+        return self.server.get_url(protocol) + '/' + path.lstrip('/')
 
     async def shutdown_server(self):
         await self.server.shutdown()

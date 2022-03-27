@@ -6,14 +6,23 @@ import toml as toml
 
 
 @dataclass
+class AuthConfig:
+    token_exp: int = 60
+    token_leeway: int = 10
+
+
+@dataclass
 class ServerConfig:
     host: str
     port: int
 
+    href: Optional[str] = None
     reuse_port: Optional[bool] = None
     reuse_address: Optional[bool] = None
     shutdown_timeout: float = 60.0
     backlog: int = 128
+
+    auth: AuthConfig = AuthConfig()
 
 
 class ConfigError(Exception):

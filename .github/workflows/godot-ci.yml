@@ -1,6 +1,14 @@
 name: godot-ci
 
-on: [ push, pull_request ]
+on:
+  push:
+    paths:
+      - '.github/**'
+      - 'QuadradiusR/**'
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'QuadradiusR/**'
 
 jobs:
   godot-export:

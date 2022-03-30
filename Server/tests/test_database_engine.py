@@ -18,10 +18,13 @@ class TestDatabaseEngine(IsolatedAsyncioTestCase):
         await database.initialize()
         async with database.session() as session:
             session: AsyncSession
-            await session.execute(insert(User), [
-                {
-                    'id_': 'xyz'
-                }
-            ])
+            await session.execute(insert(User), [{
+                'id_': 'xyz',
+                'username_': 'username',
+                'password_': 'password',
+            }])
             result = await session.execute(select(User))
-            self.assertEqual('xyz', result.scalar().id_)
+            user = result.scalar()
+            self.assertEqual('xyz', user.id_)
+            self.assertEqual('username', user.username_)
+            self.assertEqual('password', user.password_)

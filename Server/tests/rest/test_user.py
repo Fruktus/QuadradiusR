@@ -7,7 +7,7 @@ from harness import RestTestHarness, TestUserHarness
 from quadradiusr_server.db.transactions import transaction_context
 
 
-class TestHealth(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
+class TestUser(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server()
@@ -47,7 +47,7 @@ class TestHealth(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
             }) as response:
                 self.assertEqual(201, response.status)
                 loc = response.headers['location']
-                self.assertRegexpMatches(loc, '/user/[^/]+')
+                self.assertRegex(loc, '/user/[^/]+')
 
             user_id = re.match('/user/(.*)', loc).group(1)
 

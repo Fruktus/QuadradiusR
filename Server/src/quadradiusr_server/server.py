@@ -29,7 +29,9 @@ class QuadradiusRServer:
         self.config: ServerConfig = config
         self.app = web.Application()
         self.app['server'] = self
+        self.app['auth'] = self.auth
         self.app['database'] = self.database
+        self.app['repository'] = self.repository
         self.app.add_routes(routes)
 
         self.runner: Optional[AppRunner] = None

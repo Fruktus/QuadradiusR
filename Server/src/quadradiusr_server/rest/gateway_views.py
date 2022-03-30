@@ -1,6 +1,8 @@
 from aiohttp import web
 
+from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsCloseCode
+from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.gateway import GatewayConnection
 from quadradiusr_server.qrws_connection import QrwsConnection, QrwsCloseException
@@ -13,6 +15,8 @@ class GatewayView(web.View):
     @transactional
     async def get(self):
         server: QuadradiusRServer = self.request.app['server']
+        auth: Auth = self.request.app['auth']
+        repository: Repository = self.request.app['repository']
 
         if 'connection' not in self.request.headers or \
                 'upgrade' not in self.request.headers['connection']:
@@ -33,13 +37,13 @@ class GatewayView(web.View):
                     close_code=QrwsCloseCode.UNAUTHORIZED)
                 return ws
 
-            user_id = server.auth.authenticate(identify_msg.token)
+            user_id = auth.authenticate(identify_msg.token)
             if user_id is None:
                 await qrws.send_error(
                     'Auth failed',
                     close_code=QrwsCloseCode.UNAUTHORIZED)
                 return ws
-            user = await server.auth.get_user(user_id)
+            user = await repository.user_repository.get_by_id(user_id)
 
             await qrws.send_message(ServerReadyMessage())
 

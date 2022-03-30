@@ -24,10 +24,8 @@ class UserRepository:
             *, db_session: AsyncSession) -> Optional[User]:
         result = await db_session.execute(
             select(User).where(User.username_ == username))
-        if not result:
-            return None
-        user = result.one()
-        return user.User
+        user = result.one_or_none()
+        return user.User if user else None
 
     @transactional
     async def get_by_id(

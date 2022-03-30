@@ -60,9 +60,6 @@ class Auth:
         except jwt.InvalidTokenError:
             return None
 
-    async def get_user(self, user_id: str) -> Optional[User]:
-        return await self.repository.user_repository.get_by_id(user_id)
-
 
 def __scrypt(password, salt):
     return hashlib.scrypt(password, salt=salt, n=16 * 1024, r=8, p=1)

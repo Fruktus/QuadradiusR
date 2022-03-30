@@ -1,3 +1,4 @@
+import re
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
@@ -37,3 +38,39 @@ class TestHealth(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
                 body = await response.json()
                 self.assertEqual('696969', body['id'])
                 self.assertEqual('cushy_moconut', body['username'])
+
+    async def test_create_user(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.server_url('/user'), json={
+                'username': 'test_user',
+                'password': 'test_password',
+            }) as response:
+                self.assertEqual(201, response.status)
+                loc = response.headers['location']
+                self.assertRegexpMatches(loc, '/user/[^/]+')
+
+            user_id = re.match('/user/(.*)', loc).group(1)
+
+            async with transaction_context(self.server.database):
+                user = await self.server.repository.user_repository.get_by_id(user_id)
+                token = self.server.auth.issue_token(user)
+
+            async with session.get(self.server_url(loc), headers={
+                'authorization': token,
+            }) as response:
+                self.assertEqual(200, response.status)
+                body = await response.json()
+                self.assertEqual(user_id, body['id'])
+                self.assertEqual('test_user', body['username'])
+
+    async def test_create_user_already_exists(self):
+        async with transaction_context(self.server.database):
+            await self.server.repository.user_repository.add(self.get_test_user())
+            username = self.get_test_user().username_
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.server_url('/user'), json={
+                'username': username,
+                'password': 'test_password',
+            }) as response:
+                self.assertEqual(400, response.status)

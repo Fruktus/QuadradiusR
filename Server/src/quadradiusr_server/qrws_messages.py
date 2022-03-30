@@ -1,4 +1,3 @@
-import abc
 from abc import ABC
 
 from quadradiusr_server.constants import QrwsOpcode

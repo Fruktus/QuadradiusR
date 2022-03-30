@@ -5,7 +5,7 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class DbUser(Base):
+class User(Base):
     __tablename__ = 'user'
     id_ = Column(String, primary_key=True)
     username_ = Column(String, unique=True)
@@ -13,7 +13,7 @@ class DbUser(Base):
 
     def __repr__(self):
         return \
-            f'User(' \
+            f'{type(self).__name__}(' \
             f'id_={self.id_!r}, ' \
             f'username_={self.username_!r}' \
             f')'

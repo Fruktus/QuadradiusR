@@ -7,9 +7,9 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'user'
-    id_ = Column(String, primary_key=True)
-    username_ = Column(String, unique=True)
-    password_ = Column(String)
+    id_ = Column(String, nullable=False, primary_key=True)
+    username_ = Column(String, nullable=False, unique=True)
+    password_ = Column(String, nullable=False)
 
     def __repr__(self):
         return \

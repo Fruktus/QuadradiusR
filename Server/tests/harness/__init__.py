@@ -1,6 +1,7 @@
 import dataclasses
 from abc import ABCMeta
 
+from quadradiusr_server.auth import hash_password
 from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.db.base import User
 from quadradiusr_server.server import QuadradiusRServer
@@ -9,11 +10,16 @@ from quadradiusr_server.server import QuadradiusRServer
 class TestUserHarness(metaclass=ABCMeta):
     __user: User = None
 
+    def get_test_user_password(self) -> str:
+        return 'okon'
+
     def get_test_user(self) -> User:
         if not self.__user:
+            password = self.get_test_user_password().encode('utf-8')
             self.__user = User(
                 id_='696969',
                 username_='cushy_moconut',
+                password_=hash_password(password),
             )
 
         return self.__user

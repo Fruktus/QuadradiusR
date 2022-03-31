@@ -9,7 +9,7 @@ from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
 
 
-class TestGateway(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
+class TestGateway(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server(ServerConfig(
@@ -72,6 +72,7 @@ class TestGateway(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
             self.assertTrue(ws.closed)
 
     async def test_gateway_auth_pass(self):
+        await self.create_test_user(0)
         async with timeout(2), \
                 aiohttp.ClientSession() as session, \
                 session.ws_connect(self.server_url(
@@ -79,7 +80,7 @@ class TestGateway(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
             await ws.send_json({
                 'op': QrwsOpcode.IDENTIFY,
                 'd': {
-                    'token': self.server.auth.issue_token(self.get_test_user()),
+                    'token': await self.authorize_test_user(0),
                 },
             })
             data = await ws.receive_json()

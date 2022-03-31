@@ -4,10 +4,11 @@ from unittest import IsolatedAsyncioTestCase
 import aiohttp
 
 from harness import RestTestHarness, TestUserHarness
+from quadradiusr_server.db.base import User
 from quadradiusr_server.db.transactions import transaction_context
 
 
-class TestUser(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
+class TestUser(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server()
@@ -22,7 +23,11 @@ class TestUser(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
 
     async def test_user_authorized(self):
         async with transaction_context(self.server.database):
-            user = self.get_test_user()
+            user = User(
+                id_='696969',
+                username_='cushy_moconut',
+                password_='xyz',
+            )
 
             await self.server.repository.user_repository.add(user)
             token = self.server.auth.issue_token(user)
@@ -64,9 +69,8 @@ class TestUser(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
                 self.assertEqual('test_user', body['username'])
 
     async def test_create_user_already_exists(self):
-        async with transaction_context(self.server.database):
-            await self.server.repository.user_repository.add(self.get_test_user())
-            username = self.get_test_user().username_
+        await self.create_test_user(0)
+        username = self.get_test_user_username(0)
 
         async with aiohttp.ClientSession() as session:
             async with session.post(self.server_url('/user'), json={

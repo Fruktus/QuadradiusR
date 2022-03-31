@@ -17,7 +17,7 @@ class AuthorizeView(web.View):
             body = await self.request.json()
             username = str(body['username'])
             password = str(body['password'])
-        except JSONDecodeError | KeyError:
+        except (JSONDecodeError, KeyError):
             return web.Response(status=400)
 
         user = await auth.login(

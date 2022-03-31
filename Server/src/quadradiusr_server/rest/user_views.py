@@ -20,7 +20,7 @@ class UsersView(web.View):
             body = await self.request.json()
             username = str(body['username'])
             password = str(body['password'])
-        except JSONDecodeError | KeyError:
+        except (JSONDecodeError, KeyError):
             return web.Response(status=400)
 
         existing_user = await repository.user_repository.get_by_username(username)

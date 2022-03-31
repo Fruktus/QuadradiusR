@@ -3,10 +3,9 @@ from unittest import IsolatedAsyncioTestCase
 import aiohttp
 
 from harness import RestTestHarness, TestUserHarness
-from quadradiusr_server.db.transactions import transaction_context
 
 
-class TestAuth(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
+class TestAuth(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server()
@@ -15,10 +14,9 @@ class TestAuth(IsolatedAsyncioTestCase, RestTestHarness, TestUserHarness):
         await self.shutdown_server()
 
     async def test_authorize(self):
-        async with transaction_context(self.server.database):
-            await self.server.repository.user_repository.add(self.get_test_user())
-            username = self.get_test_user().username_
-            password = self.get_test_user_password()
+        await self.create_test_user(0)
+        username = self.get_test_user_username(0)
+        password = self.get_test_user_password(0)
 
         async with aiohttp.ClientSession() as session:
             async with session.post(self.server_url('/authorize'), json={

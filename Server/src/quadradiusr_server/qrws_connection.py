@@ -2,10 +2,13 @@ from dataclasses import dataclass
 from typing import Optional
 
 from aiohttp import WSMsgType
+from aiohttp.web_exceptions import HTTPUnauthorized
 from aiohttp.web_ws import WebSocketResponse
 
+from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
-from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage
+from quadradiusr_server.db.repository import Repository
+from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage, ServerReadyMessage, IdentifyMessage
 
 
 @dataclass
@@ -25,6 +28,25 @@ class QrwsConnection:
     @property
     def closed(self):
         return self.ws.closed
+
+    async def handshake(self, auth: Auth, repository: Repository):
+        identify_msg = await self.receive_message()
+        if not isinstance(identify_msg, IdentifyMessage):
+            await self.send_error(
+                'Please identify yourself',
+                close_code=QrwsCloseCode.UNAUTHORIZED)
+            raise HTTPUnauthorized()
+
+        user_id = auth.authenticate(identify_msg.token)
+        if user_id is None:
+            await self.send_error(
+                'Auth failed',
+                close_code=QrwsCloseCode.UNAUTHORIZED)
+            raise HTTPUnauthorized()
+        user = await repository.user_repository.get_by_id(user_id)
+
+        await self.send_message(ServerReadyMessage())
+        return user
 
     async def receive_message(self) -> Message:
         while True:

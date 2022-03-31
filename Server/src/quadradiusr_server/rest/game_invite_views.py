@@ -10,6 +10,7 @@ from quadradiusr_server.auth import User
 from quadradiusr_server.db.base import GameInvite
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
+from quadradiusr_server.notification import Notification, NotificationService
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.server import routes
 
@@ -20,6 +21,7 @@ class GameInvitesView(web.View):
     @authorized_endpoint
     async def post(self, *, auth_user: User):
         repository: Repository = self.request.app['repository']
+        ns: NotificationService = self.request.app['notification']
 
         try:
             body = await self.request.json()
@@ -47,6 +49,14 @@ class GameInvitesView(web.View):
             expiration_=expiration,
         )
         await repository.game_invite_repository.add(game_invite)
+
+        ns.notify(Notification(
+            topic='game.invite.received',
+            subject_id=subject_id,
+            data={
+                'game_invite_id': game_invite.id_,
+            },
+        ))
 
         return web.Response(status=201, headers={
             'location': f'/game_invite/{game_invite.id_}',

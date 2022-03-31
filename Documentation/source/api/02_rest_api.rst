@@ -32,6 +32,8 @@ Obtain a token.
     }
 
 
+.. _rest_gateway:
+
 ``GET /gateway``
 ----------------
 

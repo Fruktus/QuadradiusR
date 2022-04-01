@@ -2,7 +2,6 @@ import importlib
 import inspect
 import pkgutil
 from inspect import Parameter
-from typing import Mapping
 
 
 def import_submodules(package, recursive=True):

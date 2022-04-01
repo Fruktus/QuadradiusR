@@ -8,6 +8,9 @@ class QrwsOpcode(IntEnum):
     ERROR = 1
     IDENTIFY = 2
     SERVER_READY = 3
+    NOTIFICATION = 4
+    SUBSCRIBE = 5
+    SUBSCRIBED = 6
 
 
 class QrwsCloseCode(IntEnum):

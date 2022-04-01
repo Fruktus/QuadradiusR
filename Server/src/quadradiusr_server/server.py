@@ -7,9 +7,9 @@ from aiohttp.web_runner import AppRunner, TCPSite
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.config import ServerConfig
-from quadradiusr_server.db.repository import Repository
-from quadradiusr_server.gateway import GatewayConnection
 from quadradiusr_server.db.database_engine import DatabaseEngine
+from quadradiusr_server.db.repository import Repository
+from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.utils import import_submodules
 
 routes = web.RouteTableDef()
@@ -21,8 +21,9 @@ class ServerNotStartedException(Exception):
 
 class QuadradiusRServer:
     def __init__(self, config: ServerConfig) -> None:
-        self.gateway_connections: Mapping[str, List[GatewayConnection]] = \
+        self.gateway_connections: Mapping[str, List[object]] = \
             defaultdict(lambda: [])
+        self.notification_service = NotificationService()
         self.database = DatabaseEngine(config.database)
         self.repository = Repository(self.database)
         self.auth = Auth(config.auth, self.repository)
@@ -32,6 +33,7 @@ class QuadradiusRServer:
         self.app['auth'] = self.auth
         self.app['database'] = self.database
         self.app['repository'] = self.repository
+        self.app['notification'] = self.notification_service
         self.app.add_routes(routes)
 
         self.runner: Optional[AppRunner] = None
@@ -108,9 +110,13 @@ class QuadradiusRServer:
         loop.run_until_complete(self.start())
         loop.close()
 
-    def register_gateway(self, gateway: GatewayConnection):
+    def register_gateway(self, gateway):
         user = gateway.user
         self.gateway_connections[user.id_].append(gateway)
+
+    def unregister_gateway(self, gateway):
+        user = gateway.user
+        self.gateway_connections[user.id_].remove(gateway)
 
 
 # importing submodules automatically registers endpoints

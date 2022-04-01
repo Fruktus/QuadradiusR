@@ -3,6 +3,8 @@ import inspect
 import pkgutil
 from inspect import Parameter
 
+from aiohttp.abc import Request
+
 
 def import_submodules(package, recursive=True):
     if isinstance(package, str):
@@ -37,3 +39,10 @@ def filter_kwargs(f, kwargs):
         if not can_pass_argument(f, name):
             del kwargs[name]
     return kwargs
+
+
+def is_request_websocket_upgradable(request: Request):
+    return 'connection' in request.headers and \
+           'upgrade' in request.headers['connection'] and \
+           'upgrade' in request.headers and \
+           'websocket' in request.headers['upgrade']

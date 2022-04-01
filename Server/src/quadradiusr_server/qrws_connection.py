@@ -1,3 +1,4 @@
+from abc import ABC
 from dataclasses import dataclass
 from typing import Optional
 
@@ -7,8 +8,11 @@ from aiohttp.web_ws import WebSocketResponse
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
+from quadradiusr_server.db.base import User
 from quadradiusr_server.db.repository import Repository
-from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage, ServerReadyMessage, IdentifyMessage
+from quadradiusr_server.notification import NotificationService, Handler, Notification
+from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage, ServerReadyMessage, IdentifyMessage, \
+    SubscribeMessage, NotificationMessage, SubscribedMessage
 
 
 @dataclass
@@ -83,3 +87,59 @@ class QrwsConnection:
             fatal=close_code is not None))
         if close_code is not None:
             await self.ws.close(code=close_code, message=message.encode())
+
+
+class BasicConnection(ABC):
+    def __init__(
+            self, qrws: QrwsConnection, user: User,
+            notification_service: NotificationService) -> None:
+        super().__init__()
+        self._qrws = qrws
+        self._user = user
+        self._notification_service = notification_service
+
+    @property
+    def qrws(self) -> QrwsConnection:
+        return self._qrws
+
+    @property
+    def user(self) -> User:
+        return self._user
+
+    @property
+    def notification_service(self) -> NotificationService:
+        return self._notification_service
+
+    async def handle_connection(self):
+        qrws = self.qrws
+        while not qrws.closed:
+            message = await qrws.receive_message()
+            handled = await self.handle_message(message)
+            if not handled:
+                await qrws.send_message(ErrorMessage(
+                    message='Unexpected opcode', fatal=False))
+
+    async def handle_message(self, message: Message) -> bool:
+        qrws = self.qrws
+        user = self.user
+        ns = self.notification_service
+
+        if isinstance(message, SubscribeMessage):
+            topic = message.topic
+
+            class SubscribeHandler(Handler):
+                def get_topic(self):
+                    return topic
+
+                async def handle(self, notification: Notification):
+                    await qrws.send_message(NotificationMessage(
+                        topic=topic,
+                        data=notification.data,
+                    ))
+
+            ns.register_handler(
+                user.id_, SubscribeHandler())
+            await qrws.send_message(SubscribedMessage())
+            return True
+        else:
+            return False

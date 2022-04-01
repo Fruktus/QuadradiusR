@@ -22,6 +22,11 @@ class DatabaseConfig:
 
 
 @dataclass
+class CronConfig:
+    purge_game_invites_delay: float = 10
+
+
+@dataclass
 class ServerConfig:
     host: str
     port: int
@@ -34,6 +39,7 @@ class ServerConfig:
 
     auth: AuthConfig = AuthConfig()
     database: DatabaseConfig = DatabaseConfig()
+    cron: CronConfig = CronConfig()
 
 
 class ConfigError(Exception):

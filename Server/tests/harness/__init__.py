@@ -1,12 +1,12 @@
+import asyncio
 import dataclasses
-import re
 from abc import ABCMeta
 
 import aiohttp
 
-from quadradiusr_server.auth import hash_password
 from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.db.base import User
+from quadradiusr_server.notification import Handler, Notification
 from quadradiusr_server.server import QuadradiusRServer
 
 
@@ -61,3 +61,19 @@ class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
                 'authorization': await self.authorize_test_user(n),
             }) as response:
                 return await response.json()
+
+
+class NotificationHandlerForTests(Handler):
+    def __init__(self, topic: str = '*') -> None:
+        self.topic = topic
+        self.notifications = []
+
+    def get_topic(self):
+        return self.topic
+
+    async def handle(self, notification: Notification):
+        self.notifications.append(notification)
+
+    @staticmethod
+    async def receive_now():
+        await asyncio.sleep(0)

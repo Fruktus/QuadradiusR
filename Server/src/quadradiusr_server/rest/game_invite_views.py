@@ -82,8 +82,20 @@ class GameInviteView(web.View):
     @authorized_endpoint
     async def delete(self, *, auth_user: User):
         repository: Repository = self.request.app['repository']
+        ns: NotificationService = self.request.app['notification']
+
         game_invite = await self._get_game_invite(auth_user, repository)
         await repository.game_invite_repository.remove(game_invite)
+
+        ns.notify(Notification(
+            topic='game.invite.removed',
+            subject_id=game_invite.get_other_player(auth_user).id_,
+            data={
+                'game_invite_id': game_invite.id_,
+                'reason': 'canceled',
+            },
+        ))
+
         return web.Response(status=204)
 
     async def _get_game_invite(

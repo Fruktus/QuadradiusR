@@ -32,6 +32,15 @@ class GameInvite(Base):
         'User',
         foreign_keys=[subject_id_])
 
+    def get_other_player(self, this_player: User) -> User:
+        if self.from_id_ == this_player.id_:
+            return self.subject_
+        elif self.subject_id_ == this_player.id_:
+            return self.from_
+        else:
+            raise ValueError(
+                f'User {this_player} does not participate in this invite')
+
     def __repr__(self):
         return \
             f'{type(self).__name__}(' \

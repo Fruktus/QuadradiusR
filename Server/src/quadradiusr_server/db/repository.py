@@ -6,9 +6,14 @@ from quadradiusr_server.db.user_repository import UserRepository
 
 class Repository:
     def __init__(self, database: DatabaseEngine) -> None:
+        self._database = database
         self._user_repository = UserRepository(database)
         self._game_invite_repository = GameInviteRepository(database)
         self._game_repository = GameRepository(database)
+
+    @property
+    def database(self) -> DatabaseEngine:
+        return self._database
 
     @property
     def user_repository(self) -> UserRepository:

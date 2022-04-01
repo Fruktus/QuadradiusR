@@ -7,6 +7,7 @@ from aiohttp.web_runner import AppRunner, TCPSite
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.config import ServerConfig
+from quadradiusr_server.cron import Cron
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.game import GameInProgress
@@ -22,13 +23,14 @@ class ServerNotStartedException(Exception):
 
 class QuadradiusRServer:
     def __init__(self, config: ServerConfig) -> None:
+        self.config: ServerConfig = config
         self.gateway_connections: Mapping[str, List[object]] = \
             defaultdict(lambda: [])
         self.notification_service = NotificationService()
         self.database = DatabaseEngine(config.database)
         self.repository = Repository(self.database)
         self.auth = Auth(config.auth, self.repository)
-        self.config: ServerConfig = config
+        self.cron = Cron(config.cron, self.repository, self.notification_service)
         self.app = web.Application()
         self.app['server'] = self
         self.app['auth'] = self.auth
@@ -99,6 +101,7 @@ class QuadradiusRServer:
         )
 
         await self.site.start()
+        await self.cron.register()
 
     async def shutdown(self):
         if self.runner:

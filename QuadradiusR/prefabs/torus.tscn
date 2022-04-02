@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_245_PlayerPieceSymbol/1.png" type="Texture" id=1]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/1.png" type="Texture" id=2]
@@ -6,8 +6,101 @@
 [ext_resource path="res://scripts/torus.gd" type="Script" id=4]
 [ext_resource path="res://original_assets/game/sounds/1062_cancel_piece_drop.wav" type="AudioStream" id=5]
 [ext_resource path="res://original_assets/game/sounds/1065_pick_up_piece.wav" type="AudioStream" id=6]
+[ext_resource path="res://original_assets/game/sounds/1064_jump_on01.wav" type="AudioStream" id=7]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/13.png" type="Texture" id=8]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/12.png" type="Texture" id=9]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/15.png" type="Texture" id=10]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/14.png" type="Texture" id=11]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/2.png" type="Texture" id=12]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/9.png" type="Texture" id=13]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/10.png" type="Texture" id=14]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/4.png" type="Texture" id=15]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/6.png" type="Texture" id=16]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/3.png" type="Texture" id=17]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/1.png" type="Texture" id=18]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/5.png" type="Texture" id=19]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/7.png" type="Texture" id=20]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/8.png" type="Texture" id=21]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/11.png" type="Texture" id=22]
 
 [sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="Animation" id=3]
+resource_name = "DestroyOpponent"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("VFXGroup/AnimatedSprite:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("VFXGroup/AnimatedSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0, 14 ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath("SFXGroup/DestroySFX2D")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 0.0 ],
+"method": "play"
+} ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "RESET"
+tracks/0/type = "value"
+tracks/0/path = NodePath("VFXGroup/AnimatedSprite:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("VFXGroup/AnimatedSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="SpriteFrames" id=5]
+animations = [ {
+"frames": [ ExtResource( 18 ), ExtResource( 12 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 19 ), ExtResource( 16 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 22 ), ExtResource( 9 ), ExtResource( 8 ), ExtResource( 11 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 200.5
@@ -23,15 +116,20 @@ margin_right = -1519.0
 margin_bottom = -679.0
 grow_horizontal = 2
 grow_vertical = 2
+rect_min_size = Vector2( 401, 401 )
 rect_pivot_offset = Vector2( 200, 200 )
 mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_styles/panel = SubResource( 2 )
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/DestroyOpponent = SubResource( 3 )
+anims/RESET = SubResource( 4 )
 
 [node name="SFXGroup" type="Node" parent="."]
 
@@ -43,14 +141,13 @@ stream = ExtResource( 6 )
 position = Vector2( 200, 200 )
 stream = ExtResource( 5 )
 
-[node name="TorusBase" type="TextureRect" parent="."]
-margin_right = 401.0
-margin_bottom = 401.0
-mouse_filter = 2
+[node name="DestroySFX2D" type="AudioStreamPlayer2D" parent="SFXGroup"]
+position = Vector2( 200, 200 )
+stream = ExtResource( 7 )
+
+[node name="TorusBase" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+centered = false
 
 [node name="VFXGroup" type="Control" parent="."]
 margin_right = 401.0
@@ -60,6 +157,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="AnimatedSprite" type="AnimatedSprite" parent="VFXGroup"]
+visible = false
+position = Vector2( -523, -526 )
+z_index = 1
+frames = SubResource( 5 )
+centered = false
+
 [node name="LightGroup" type="Control" parent="."]
 margin_right = 401.0
 margin_bottom = 401.0
@@ -68,28 +172,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="LightOff" type="TextureRect" parent="LightGroup"]
-margin_left = 47.0
-margin_top = 43.0
-margin_right = 334.0
-margin_bottom = 337.0
-mouse_filter = 2
+[node name="LightOff" type="Sprite" parent="LightGroup"]
+position = Vector2( 47, 43 )
 texture = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+centered = false
 
-[node name="LightOn" type="TextureRect" parent="LightGroup"]
+[node name="LightOn" type="Sprite" parent="LightGroup"]
 visible = false
-margin_left = 47.0
-margin_top = 43.0
-margin_right = 334.0
-margin_bottom = 337.0
-mouse_filter = 2
+position = Vector2( 47, 43 )
 texture = ExtResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+centered = false
 
 [node name="MouseDetector" type="Area2D" parent="."]
 position = Vector2( 200, 200 )

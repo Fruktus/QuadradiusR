@@ -1,3 +1,4 @@
+class_name Tile
 extends PanelContainer
 
 onready var slot = $TorusSlot
@@ -20,8 +21,18 @@ func is_steppable() -> bool:
 	return is_steppable
 
 
-func set_slot(torus: Control):
-	if slot.get_child_count() != 0:
+func has_piece() -> bool:
+	return slot.get_child_count() != 0
+
+
+func get_piece():  # will return the first piece that was added to tile (FIFO)
+	return slot.get_child(0)
+
+
+func del_piece():
+	if has_piece():
 		slot.remove_child(slot.get_child(0))
-	
+
+
+func set_slot(torus: Control):
 	slot.add_child(torus)

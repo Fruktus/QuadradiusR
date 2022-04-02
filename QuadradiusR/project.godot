@@ -23,11 +23,23 @@ _global_script_classes=[ {
 "class": "PowerupRule",
 "language": "GDScript",
 "path": "res://scripts/powerups/abstract.gd"
+}, {
+"base": "PanelContainer",
+"class": "Tile",
+"language": "GDScript",
+"path": "res://scripts/tile.gd"
+}, {
+"base": "Control",
+"class": "Torus",
+"language": "GDScript",
+"path": "res://scripts/torus.gd"
 } ]
 _global_script_class_icons={
 "Message": "",
 "MovementPowerupManager": "",
-"PowerupRule": ""
+"PowerupRule": "",
+"Tile": "",
+"Torus": ""
 }
 
 [application]

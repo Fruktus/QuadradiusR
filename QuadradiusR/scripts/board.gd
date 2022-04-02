@@ -2,7 +2,7 @@ extends Control
 
 onready var board = $BoardContainer
 const tile_template = preload("res://prefabs/tile.tscn")
-const torus_template = preload("res://prefabs/torus.tscn")  # Do we want this to be instanced here? or in manager?
+const torus_template = preload("res://prefabs/torus.tscn")
 
 var board_size: int
 var active_torus: Node
@@ -33,8 +33,8 @@ func _init_tiles():
 
 func _init_toruses(player_pieces: int):
 	for i in range(player_pieces):
-		var player1_torus = torus_template.instance().init(self)
-		var player2_torus = torus_template.instance().init(self)
+		var player1_torus = torus_template.instance().init(self, 0, Torus.COLORS.RED)
+		var player2_torus = torus_template.instance().init(self, 1, Torus.COLORS.BLUE)
 		
 		board.get_child(i).set_slot(player1_torus)
 		board.get_child(board_size * board_size - 1 - i).set_slot(player2_torus)
@@ -61,8 +61,11 @@ func _torus_putdown(torus: Node):
 		self.torus_source_slot.add_child(self.active_torus)
 		return
 	
-	if torus.should_move_torus(torus_source_slot.get_parent(), _get_child_at_pos(x, y)):
+	var target_tile: Tile = _get_child_at_pos(x, y)
+	if torus.should_move_torus(torus_source_slot.get_parent(), target_tile):
+		var is_colliding = target_tile.has_piece()
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)
+		torus.make_move(torus_source_slot.get_parent(), target_tile, is_colliding)
 		return
 	
 	self.torus_source_slot.add_child(self.active_torus)

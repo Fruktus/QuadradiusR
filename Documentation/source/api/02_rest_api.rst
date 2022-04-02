@@ -12,7 +12,7 @@ This section describes all of the REST API endpoints.
 Obtain a token.
 
 .. code-block:: json
-    :caption: Request
+    :caption: Request body
 
     {
         "username": "{username}",
@@ -20,12 +20,12 @@ Obtain a token.
     }
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     200 OK
 
 .. code-block:: json
-    :caption: Response
+    :caption: Response body
 
     {
         "token": "{token}"
@@ -40,12 +40,12 @@ Obtain a token.
 Get information about a game.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     200 OK
 
 .. code-block:: json
-    :caption: Response
+    :caption: Response body
 
     {
         "id": "{id}",
@@ -67,12 +67,12 @@ Get information about the gateway connection.
 See :ref:`ws_gateway`.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     200 OK
 
 .. code-block:: json
-    :caption: Response
+    :caption: Response body
 
     {
         "url": "{gateway_url}"
@@ -85,12 +85,12 @@ See :ref:`ws_gateway`.
 Get server's status.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     200 OK
 
 .. code-block:: json
-    :caption: Response
+    :caption: Response body
 
     {
         "status": "up"
@@ -103,7 +103,7 @@ Get server's status.
 Create a new invite for a game.
 
 .. code-block:: json
-    :caption: Request
+    :caption: Request body
 
     {
         "subject": "{user_id}",
@@ -111,12 +111,12 @@ Create a new invite for a game.
     }
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     201 Created
 
 .. code-block:: text
-    :caption: Headers
+    :caption: Response headers
 
     location: /game_invite/{id}
 
@@ -127,7 +127,7 @@ Create a new invite for a game.
 Reject or withdraw a game invite.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     204 No Content
 
@@ -138,12 +138,12 @@ Reject or withdraw a game invite.
 Get information about a game invite.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     200 OK
 
 .. code-block:: json
-    :caption: Response
+    :caption: Response body
 
     {
         "id": "{id}",
@@ -160,12 +160,12 @@ Accept a game invite.
 Upon successful acceptance, the user is redirected to the game resource.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     303 See Other
 
 .. code-block:: text
-    :caption: Headers
+    :caption: Response headers
 
     location: /game/{id}
 
@@ -176,7 +176,7 @@ Upon successful acceptance, the user is redirected to the game resource.
 Create a user.
 
 .. code-block:: json
-    :caption: Request
+    :caption: Request body
 
     {
         "username": "{username}",
@@ -184,12 +184,12 @@ Create a user.
     }
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     201 Created
 
 .. code-block:: text
-    :caption: Headers
+    :caption: Response headers
 
     location: /user/{user_id}
 
@@ -202,12 +202,12 @@ The parameter ``{user_id}`` may be equal to ``@me``
 in order to retrieve information about yourself.
 
 .. code-block:: text
-    :caption: Status
+    :caption: Response status
 
     200 OK
 
 .. code-block:: json
-    :caption: Response
+    :caption: Response body
 
     {
         "id": "{id}",

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_293_LightRings/1.png" type="Texture" id=1]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_280_RightOfBoardArt/1.png" type="Texture" id=2]
@@ -6,12 +6,14 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_265_BottomOfBoardArt/1.png" type="Texture" id=4]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_271_TopOfBoardArt/1.png" type="Texture" id=5]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_399_RightSidePanel/1.png" type="Texture" id=6]
+[ext_resource path="res://prefabs/board.tscn" type="PackedScene" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 
 [node name="Game" type="Control"]
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -19,6 +21,7 @@ __meta__ = {
 [node name="MarginContainer" type="MarginContainer" parent="."]
 margin_right = 1920.0
 margin_bottom = 1080.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -26,21 +29,25 @@ __meta__ = {
 [node name="ScreenHBox" type="HBoxContainer" parent="MarginContainer"]
 margin_right = 1920.0
 margin_bottom = 1080.0
+mouse_filter = 2
 
 [node name="GameBoardPanel" type="PanelContainer" parent="MarginContainer/ScreenHBox"]
 margin_right = 1411.0
 margin_bottom = 1080.0
+mouse_filter = 2
 size_flags_horizontal = 3
 custom_styles/panel = SubResource( 1 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScreenHBox/GameBoardPanel"]
 margin_right = 1411.0
 margin_bottom = 1080.0
+mouse_filter = 2
 custom_constants/separation = 0
 
 [node name="BarTop" type="TextureRect" parent="MarginContainer/ScreenHBox/GameBoardPanel/VBoxContainer"]
 margin_right = 1411.0
 margin_bottom = 65.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 5 )
@@ -50,6 +57,7 @@ expand = true
 margin_top = 65.0
 margin_right = 1411.0
 margin_bottom = 1015.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 0
@@ -57,6 +65,7 @@ custom_constants/separation = 0
 [node name="BarLeft" type="TextureRect" parent="MarginContainer/ScreenHBox/GameBoardPanel/VBoxContainer/BoardMiddle"]
 margin_right = 55.0
 margin_bottom = 950.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 3 )
@@ -67,6 +76,12 @@ margin_left = 55.0
 margin_right = 1355.0
 margin_bottom = 950.0
 rect_min_size = Vector2( 1300, 950 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Board" parent="MarginContainer/ScreenHBox/GameBoardPanel/VBoxContainer/BoardMiddle/GameBoardPlaceholder" instance=ExtResource( 7 )]
+rect_scale = Vector2( 0.26, 0.24 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -74,6 +89,7 @@ size_flags_vertical = 3
 margin_left = 1355.0
 margin_right = 1411.0
 margin_bottom = 950.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 2 )
@@ -83,6 +99,7 @@ expand = true
 margin_top = 1015.0
 margin_right = 1411.0
 margin_bottom = 1080.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 4 )
@@ -92,6 +109,7 @@ expand = true
 modulate = Color( 1, 1, 1, 0.752941 )
 margin_right = 1411.0
 margin_bottom = 1080.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 1 )
@@ -101,12 +119,17 @@ expand = true
 margin_left = 1415.0
 margin_right = 1920.41
 margin_bottom = 1080.0
+mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
 
 [node name="RightSidePanelPlaceholder" type="TextureRect" parent="MarginContainer/ScreenHBox/RightSidePanel"]
-margin_right = 505.41
-margin_bottom = 1080.0
+margin_left = -40.0
+margin_top = -20.0
+margin_right = 465.41
+margin_bottom = 1036.38
 rect_min_size = Vector2( 505.41, 1056.38 )
+rect_scale = Vector2( 1.05, 1.05 )
+mouse_filter = 2
 texture = ExtResource( 6 )
 expand = true
 stretch_mode = 5

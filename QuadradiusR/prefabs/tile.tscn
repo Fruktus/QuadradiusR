@@ -18,6 +18,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="DirtA" type="Sprite" parent="."]
+position = Vector2( 251, 251 )
+
+[node name="DirtB" type="Sprite" parent="."]
+position = Vector2( 251, 251 )
+
 [node name="TileBase" type="Sprite" parent="."]
 show_behind_parent = true
 texture = ExtResource( 1 )

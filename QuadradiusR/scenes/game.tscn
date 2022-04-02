@@ -123,12 +123,9 @@ mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
 
 [node name="RightSidePanelPlaceholder" type="TextureRect" parent="MarginContainer/ScreenHBox/RightSidePanel"]
-margin_left = -40.0
-margin_top = -20.0
-margin_right = 465.41
-margin_bottom = 1036.38
+margin_right = 505.41
+margin_bottom = 1080.0
 rect_min_size = Vector2( 505.41, 1056.38 )
-rect_scale = Vector2( 1.05, 1.05 )
 mouse_filter = 2
 texture = ExtResource( 6 )
 expand = true

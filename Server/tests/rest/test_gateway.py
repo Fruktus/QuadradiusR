@@ -12,7 +12,7 @@ from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
 class TestGateway(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
-        await self.setup_server(ServerConfig(
+        await self.setup_server(config=ServerConfig(
             host='',
             port=0,
             href='example.com',

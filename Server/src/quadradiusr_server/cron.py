@@ -1,6 +1,7 @@
 import asyncio
 
 from quadradiusr_server.config import CronConfig
+from quadradiusr_server.db.base import Lobby
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import NotificationService, Notification
@@ -37,3 +38,22 @@ class Cron:
                             'reason': 'expired',
                         },
                     ))
+
+
+class SetupService:
+    def __init__(
+            self, repository: Repository) -> None:
+        self.repository = repository
+
+    async def run_setup_jobs(self):
+        await self._create_main_lobby()
+
+    async def _create_main_lobby(self):
+        async with transaction_context(self.repository.database):
+            lobby_repo = self.repository.lobby_repository
+            if await lobby_repo.get_by_id('@main') is None:
+                main = Lobby(
+                    id_='@main',
+                    name_='Main',
+                )
+                await lobby_repo.add(main)

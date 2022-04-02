@@ -25,12 +25,14 @@ func has_piece() -> bool:
 	return slot.get_child_count() != 0
 
 
-func get_piece():
+func get_piece():  # will return the first piece that was added to tile (FIFO)
 	return slot.get_child(0)
 
 
-func set_slot(torus: Control):
+func del_piece():
 	if has_piece():
 		slot.remove_child(slot.get_child(0))
-	
+
+
+func set_slot(torus: Control):
 	slot.add_child(torus)

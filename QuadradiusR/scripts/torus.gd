@@ -5,6 +5,7 @@ enum COLORS {RED, BLUE, GREEN, YELLOW, CYAN, MAGENTA}
 
 onready var pickup_sfx = $SFXGroup/PickupSFX2D
 onready var putdown_sfx = $SFXGroup/PutdownSFX2D
+onready var anim = $AnimationPlayer
 onready var light_on = $LightGroup/LightOn
 onready var light_off = $LightGroup/LightOff
 onready var collision_detector = $MouseDetector/CollisionShape2D
@@ -59,7 +60,8 @@ func _begin_drag():
 	pickup_sfx.play()
 	get_tree().call_group("torus", "set_interaction", false)
 	get_tree().call_group("board", "_torus_pickup", self)
-	self.rect_scale = Vector2(1.1, 1.1)
+	yield(get_tree(), "idle_frame")  # needed for the scaling to work properly
+	self.rect_scale = Vector2(1.5, 1.5)
 	set_process(true)
 
 
@@ -105,10 +107,17 @@ func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 	# 		if can collide, dont check the conditions again later, but
 	#		do check in board or somewhere if collision occurs and if so delete piece,
 	#		run animation, sound etc
-		pass
-
+	
 	# 	if no other piece, return true
 	return true
+
+func make_move(source_tile: Tile, target_tile: Tile, is_colliding: bool = false) -> void:
+	if is_colliding:
+		target_tile.del_piece()
+		anim.play("DestroyOpponent")
+	# TODO move the sound playing to here maybe to handle dropping the piece
+	pass
+	
 # TODO maybe add method destroy() which would handle aftermath
 # OR destroy_piece(torus) which would make one piece destroy the other, so it could handle
 # all the consequences

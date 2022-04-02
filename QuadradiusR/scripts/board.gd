@@ -2,7 +2,7 @@ extends Control
 
 onready var board = $BoardContainer
 const tile_template = preload("res://prefabs/tile.tscn")
-const torus_template = preload("res://prefabs/torus.tscn")  # Do we want this to be instanced here? or in manager?
+const torus_template = preload("res://prefabs/torus.tscn")
 
 var board_size: int
 var active_torus: Node
@@ -63,9 +63,9 @@ func _torus_putdown(torus: Node):
 	
 	var target_tile: Tile = _get_child_at_pos(x, y)
 	if torus.should_move_torus(torus_source_slot.get_parent(), target_tile):
-		if target_tile.has_piece():
-			$AudioStreamPlayer.play(0)  # TODO how to handle animation? tile.destroy_piece()?
+		var is_colliding = target_tile.has_piece()
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)
+		torus.make_move(torus_source_slot.get_parent(), target_tile, is_colliding)
 		return
 	
 	self.torus_source_slot.add_child(self.active_torus)

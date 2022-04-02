@@ -72,3 +72,16 @@ class Game(Base):
             f'player_a_id_={self.player_a_id_!r}' \
             f'player_b_id_={self.player_b_id_!r}' \
             f')'
+
+
+class Lobby(Base):
+    __tablename__ = 'lobby'
+    id_ = Column(String, nullable=False, primary_key=True)
+    name_ = Column(String, nullable=False)
+
+    def __repr__(self):
+        return \
+            f'{type(self).__name__}(' \
+            f'id_={self.id_!r}, ' \
+            f'name_={self.name_!r}' \
+            f')'

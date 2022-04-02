@@ -1,17 +1,23 @@
 import datetime
 import uuid
 from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock
 
 from harness import RestTestHarness, TestUserHarness, NotificationHandlerForTests
 from quadradiusr_server.db.base import GameInvite
 from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import Notification
+from quadradiusr_server.server import QuadradiusRServer
 
 
 class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
-        await self.setup_server()
+        def sc(server: QuadradiusRServer):
+            # prevent automatic execution
+            server.cron.register = AsyncMock()
+            server.setup_service.run_setup_jobs = AsyncMock()
+        await self.setup_server(server_configurator=sc)
 
     async def asyncTearDown(self) -> None:
         await self.shutdown_server()
@@ -70,3 +76,18 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             },
         )
         self.assertEqual(expected_n1, nh1.notifications[0])
+
+    async def test_create_main_lobby(self):
+        await self.create_test_user(0)
+
+        lobby_repo = self.server.repository.lobby_repository
+        async with transaction_context(self.server.database):
+            main_lobby = await lobby_repo.get_by_id('@main')
+            self.assertIsNone(main_lobby)
+
+        await self.server.setup_service._create_main_lobby()
+
+        async with transaction_context(self.server.database):
+            main_lobby = await lobby_repo.get_by_id('@main')
+            self.assertIsNotNone(main_lobby)
+

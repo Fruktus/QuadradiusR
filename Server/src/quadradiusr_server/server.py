@@ -7,7 +7,7 @@ from aiohttp.web_runner import AppRunner, TCPSite
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.config import ServerConfig
-from quadradiusr_server.cron import Cron
+from quadradiusr_server.cron import Cron, SetupService
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.game import GameInProgress
@@ -31,6 +31,7 @@ class QuadradiusRServer:
         self.repository = Repository(self.database)
         self.auth = Auth(config.auth, self.repository)
         self.cron = Cron(config.cron, self.repository, self.notification_service)
+        self.setup_service = SetupService(self.repository)
         self.app = web.Application()
         self.app['server'] = self
         self.app['auth'] = self.auth
@@ -100,8 +101,9 @@ class QuadradiusRServer:
             # TODO ssl_context=ssl_context,
         )
 
-        await self.site.start()
+        await self.setup_service.run_setup_jobs()
         await self.cron.register()
+        await self.site.start()
 
     async def shutdown(self):
         if self.runner:

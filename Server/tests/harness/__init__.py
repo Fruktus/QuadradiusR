@@ -1,6 +1,7 @@
 import asyncio
 import dataclasses
 from abc import ABCMeta
+from typing import Callable
 
 import aiohttp
 
@@ -14,12 +15,16 @@ class RestTestHarness(metaclass=ABCMeta):
     config: ServerConfig
     server: QuadradiusRServer
 
-    async def setup_server(self, config: ServerConfig = ServerConfig(host='', port=0)) -> None:
+    async def setup_server(
+            self, *, config: ServerConfig = ServerConfig(host='', port=0),
+            server_configurator: Callable[[QuadradiusRServer], None] = None) -> None:
         self.config = dataclasses.replace(config)
         self.config.host = '127.0.0.1'
         self.config.port = 0
         self.config.database.create_metadata = True
         self.server = QuadradiusRServer(self.config)
+        if server_configurator:
+            server_configurator(self.server)
         await self.server.start()
 
     def server_url(self, path: str, *, protocol: str = 'http'):

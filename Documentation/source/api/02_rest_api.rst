@@ -170,6 +170,44 @@ Upon successful acceptance, the user is redirected to the game resource.
     location: /game/{id}
 
 
+``GET /lobby``
+--------------
+
+List lobbies.
+
+.. code-block:: text
+    :caption: Response status
+
+    200 OK
+
+Response body is an array of lobbies.
+See :ref:`rest_lobby` for data structure.
+
+
+.. _rest_lobby:
+
+``GET /lobby/{lobby_id}``
+-------------------------
+
+Get information about lobby.
+
+If ``{lobby_id}`` is equal to ``@main``,
+the main lobby is returned.
+
+.. code-block:: text
+    :caption: Response status
+
+    200 OK
+
+.. code-block:: json
+    :caption: Response body
+
+    {
+        "id": "{lobby_id}",
+        "name": "{lobby_name}"
+    }
+
+
 ``POST /user``
 --------------
 

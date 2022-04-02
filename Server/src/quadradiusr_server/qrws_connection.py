@@ -112,12 +112,17 @@ class BasicConnection(ABC):
 
     async def handle_connection(self):
         qrws = self.qrws
-        while not qrws.closed:
-            message = await qrws.receive_message()
-            handled = await self.handle_message(message)
-            if not handled:
-                await qrws.send_message(ErrorMessage(
-                    message='Unexpected opcode', fatal=False))
+        try:
+            while not qrws.closed:
+                message = await qrws.receive_message()
+                handled = await self.handle_message(message)
+                if not handled:
+                    await qrws.send_message(ErrorMessage(
+                        message='Unexpected opcode', fatal=False))
+        except QrwsCloseException as e:
+            await qrws.ws.close(
+                code=e.code,
+                message=e.message.encode() if e.message else None)
 
     async def handle_message(self, message: Message) -> bool:
         qrws = self.qrws

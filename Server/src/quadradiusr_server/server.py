@@ -1,6 +1,6 @@
 import asyncio
 from collections import defaultdict
-from typing import Optional, Mapping, List
+from typing import Optional, Mapping, List, Dict
 
 from aiohttp import web
 from aiohttp.web_runner import AppRunner, TCPSite
@@ -8,9 +8,11 @@ from aiohttp.web_runner import AppRunner, TCPSite
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.cron import Cron, SetupService
+from quadradiusr_server.db.base import Game, Lobby
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.game import GameInProgress
+from quadradiusr_server.lobby import LiveLobby
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.utils import import_submodules
 
@@ -24,8 +26,6 @@ class ServerNotStartedException(Exception):
 class QuadradiusRServer:
     def __init__(self, config: ServerConfig) -> None:
         self.config: ServerConfig = config
-        self.gateway_connections: Mapping[str, List[object]] = \
-            defaultdict(lambda: [])
         self.notification_service = NotificationService()
         self.database = DatabaseEngine(config.database)
         self.repository = Repository(self.database)
@@ -42,6 +42,10 @@ class QuadradiusRServer:
 
         self.runner: Optional[AppRunner] = None
         self.site: Optional[TCPSite] = None
+
+        self.lobbies: Dict[str, LiveLobby] = dict()
+        self.gateway_connections: Dict[str, List[object]] = \
+            defaultdict(lambda: [])
 
     def _ensure_started(self):
         if not self.site:
@@ -129,7 +133,12 @@ class QuadradiusRServer:
         user = gateway.user
         self.gateway_connections[user.id_].remove(gateway)
 
-    def start_game(self, game_id: str) -> GameInProgress:
+    def start_lobby(self, lobby: Lobby) -> LiveLobby:
+        if lobby.id_ not in self.lobbies.keys():
+            self.lobbies[lobby.id_] = LiveLobby(lobby)
+        return self.lobbies[lobby.id_]
+
+    def start_game(self, game: Game) -> GameInProgress:
         # TODO implement
         ...
 

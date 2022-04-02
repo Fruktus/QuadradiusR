@@ -90,4 +90,3 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         async with transaction_context(self.server.database):
             main_lobby = await lobby_repo.get_by_id('@main')
             self.assertIsNotNone(main_lobby)
-

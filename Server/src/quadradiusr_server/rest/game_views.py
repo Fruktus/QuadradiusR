@@ -35,29 +35,23 @@ class GameView(web.View):
                 'ws_url': server.get_href('ws') + f'/game/{game.id_}',
             })
 
-        game_in_progress = server.start_game(game.id_)
+        game_in_progress = server.start_game(game)
         if game_in_progress.is_player_connected(auth_user.id_):
             raise HTTPConflict()
 
         ws = web.WebSocketResponse()
         await ws.prepare(self.request)
 
-        try:
-            qrws = QrwsConnection(ws)
-            user = await qrws.handshake(auth, repository)
+        qrws = QrwsConnection(ws)
+        user = await qrws.handshake(auth, repository)
 
-            conn = GameConnection(qrws, user, ns)
-            game_in_progress.connect_player(conn)
-            try:
-                await conn.handle_connection()
-            finally:
-                game_in_progress.disconnect_player(conn)
+        conn = GameConnection(qrws, user, ns)
+        game_in_progress.connect_player(conn)
+        try:
+            await conn.handle_connection()
             return ws
-        except QrwsCloseException as e:
-            await ws.close(
-                code=e.code,
-                message=e.message.encode() if e.message else None)
-            return ws
+        finally:
+            game_in_progress.disconnect_player(conn)
 
     async def _get_game(
             self, auth_user: User,

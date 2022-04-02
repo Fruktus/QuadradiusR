@@ -80,6 +80,30 @@ class SubscribedMessage(Message):
         super().__init__(QrwsOpcode.SUBSCRIBED)
 
 
+class SendMessageMessage(Message):
+    def __init__(self, *, content: str) -> None:
+        super().__init__(QrwsOpcode.SEND_MESSAGE)
+        self.content = content
+
+    def _to_json_data(self):
+        return {
+            'content': self.content,
+        }
+
+
+class MessageSentMessage(Message):
+    def __init__(self, *, content: str, user_id: str) -> None:
+        super().__init__(QrwsOpcode.MESSAGE_SENT)
+        self.user_id = user_id
+        self.content = content
+
+    def _to_json_data(self):
+        return {
+            'user_id': self.user_id,
+            'content': self.content,
+        }
+
+
 def parse_message(*, op: int, data: dict) -> Message:
     if op == QrwsOpcode.HEARTBEAT:
         return HeartbeatMessage()
@@ -95,6 +119,10 @@ def parse_message(*, op: int, data: dict) -> Message:
     elif op == QrwsOpcode.SUBSCRIBE:
         return SubscribeMessage(
             topic=data['topic'],
+        )
+    elif op == QrwsOpcode.SEND_MESSAGE:
+        return SendMessageMessage(
+            content=data['content'],
         )
     else:
         raise ValueError(f'Unknown opcode: {op}')

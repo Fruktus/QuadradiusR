@@ -25,7 +25,6 @@ var color = COLORS.RED
 var player = 0
 var is_held = false
 var can_interact = true
-# TODO some way to tell whose torus it is
 
 
 
@@ -36,7 +35,7 @@ func _ready():
 
 
 func _process(delta: float):
-	self.rect_global_position = get_global_mouse_position() - rect_size/2 * board.rect_scale
+	self.rect_global_position = get_global_mouse_position() - rect_min_size/2 * board.rect_scale
 
 
 func init(board: Control, player=0, color=COLORS.RED):

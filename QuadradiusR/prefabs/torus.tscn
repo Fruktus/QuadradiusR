@@ -27,6 +27,7 @@
 
 [sub_resource type="Animation" id=3]
 resource_name = "DestroyOpponent"
+length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("VFXGroup/AnimatedSprite:visible")
 tracks/0/interp = 1
@@ -46,7 +47,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 1 ),
+"times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 0, 14 ]
@@ -115,10 +116,11 @@ margin_right = -1519.0
 margin_bottom = -679.0
 grow_horizontal = 2
 grow_vertical = 2
+rect_min_size = Vector2( 401, 401 )
 rect_pivot_offset = Vector2( 200, 200 )
 mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_styles/panel = SubResource( 2 )
 script = ExtResource( 4 )
 __meta__ = {
@@ -143,14 +145,9 @@ stream = ExtResource( 5 )
 position = Vector2( 200, 200 )
 stream = ExtResource( 7 )
 
-[node name="TorusBase" type="TextureRect" parent="."]
-margin_right = 401.0
-margin_bottom = 401.0
-mouse_filter = 2
+[node name="TorusBase" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+centered = false
 
 [node name="VFXGroup" type="Control" parent="."]
 margin_right = 401.0
@@ -163,6 +160,7 @@ __meta__ = {
 [node name="AnimatedSprite" type="AnimatedSprite" parent="VFXGroup"]
 visible = false
 position = Vector2( -523, -526 )
+z_index = 1
 frames = SubResource( 5 )
 centered = false
 
@@ -174,28 +172,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="LightOff" type="TextureRect" parent="LightGroup"]
-margin_left = 47.0
-margin_top = 43.0
-margin_right = 334.0
-margin_bottom = 337.0
-mouse_filter = 2
+[node name="LightOff" type="Sprite" parent="LightGroup"]
+position = Vector2( 47, 43 )
 texture = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+centered = false
 
-[node name="LightOn" type="TextureRect" parent="LightGroup"]
+[node name="LightOn" type="Sprite" parent="LightGroup"]
 visible = false
-margin_left = 47.0
-margin_top = 43.0
-margin_right = 334.0
-margin_bottom = 337.0
-mouse_filter = 2
+position = Vector2( 47, 43 )
 texture = ExtResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+centered = false
 
 [node name="MouseDetector" type="Area2D" parent="."]
 position = Vector2( 200, 200 )

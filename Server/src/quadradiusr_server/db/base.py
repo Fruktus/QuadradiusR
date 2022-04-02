@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, DateTime, String
+from sqlalchemy import Column, ForeignKey, DateTime, String, PickleType
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -38,4 +38,28 @@ class GameInvite(Base):
             f'id_={self.id_!r}, ' \
             f'from_id_={self.from_id_!r}' \
             f'subject_id_={self.subject_id_!r}' \
+            f')'
+
+
+class Game(Base):
+    __tablename__ = 'game'
+    id_ = Column(String, nullable=False, primary_key=True)
+    player_a_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
+    player_b_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
+    expiration_ = Column(DateTime, nullable=False)
+    game_data_ = Column(PickleType, nullable=False)
+
+    player_a_ = relationship(
+        'User',
+        foreign_keys=[player_a_id_])
+    player_b_ = relationship(
+        'User',
+        foreign_keys=[player_b_id_])
+
+    def __repr__(self):
+        return \
+            f'{type(self).__name__}(' \
+            f'id_={self.id_!r}, ' \
+            f'player_a_id_={self.player_a_id_!r}' \
+            f'player_b_id_={self.player_b_id_!r}' \
             f')'

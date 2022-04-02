@@ -32,6 +32,32 @@ Obtain a token.
     }
 
 
+.. _rest_game:
+
+``GET /game/{id}``
+------------------
+
+Get information about a game.
+
+.. code-block:: text
+    :caption: Status
+
+    200 OK
+
+.. code-block:: json
+    :caption: Response
+
+    {
+        "id": "{id}",
+        "players": [
+            "{player_id_1}",
+            "{player_id_2}"
+        ],
+        "expiration": "{iso_date_time_expiration}",
+        "ws_url": "{websocket_url}"
+    }
+
+
 .. _rest_gateway:
 
 ``GET /gateway``

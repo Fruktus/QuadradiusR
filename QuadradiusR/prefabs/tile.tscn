@@ -18,18 +18,46 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DirtA" type="Sprite" parent="."]
+[node name="TileContent" type="Control" parent="."]
+margin_right = 502.0
+margin_bottom = 502.0
+mouse_filter = 2
+
+[node name="DirtA" type="Sprite" parent="TileContent"]
 position = Vector2( 251, 251 )
 
-[node name="DirtB" type="Sprite" parent="."]
+[node name="DirtB" type="Sprite" parent="TileContent"]
 position = Vector2( 251, 251 )
 
-[node name="TileBase" type="Sprite" parent="."]
+[node name="TileBase" type="Sprite" parent="TileContent"]
 show_behind_parent = true
 texture = ExtResource( 1 )
 centered = false
 
-[node name="TorusSlot" type="CenterContainer" parent="."]
+[node name="TorusSlot" type="CenterContainer" parent="TileContent"]
 margin_right = 502.0
 margin_bottom = 502.0
 mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UP2" type="Button" parent="."]
+margin_right = 150.0
+margin_bottom = 150.0
+rect_min_size = Vector2( 150, 150 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UP" type="Button" parent="."]
+margin_right = 50.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[connection signal="pressed" from="UP2" to="." method="_on_UP2_pressed"]
+[connection signal="pressed" from="UP" to="." method="_on_UP_pressed"]

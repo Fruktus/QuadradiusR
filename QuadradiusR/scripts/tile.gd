@@ -1,9 +1,10 @@
 class_name Tile
 extends PanelContainer
 
-onready var slot = $TorusSlot
-onready var dirt_a = $DirtA
-onready var dirt_b = $DirtB
+onready var tile_content = $TileContent
+onready var slot = $TileContent/TorusSlot
+onready var dirt_a = $TileContent/DirtA
+onready var dirt_b = $TileContent/DirtB
 
 const square_dirts_asset_path = "res://original_assets/game/sprites/{dirt}/1.png"
 const square_dirts = {0: "DefineSprite_283_SquareDirt1",
@@ -13,6 +14,9 @@ const square_dirts = {0: "DefineSprite_283_SquareDirt1",
 					  4: "DefineSprite_259_SquareDirt5",
 					  5: "DefineSprite_291_SquareDirt6"} 
 # TODO game's source code mentions dirt styles 7 & 8 too, but I was not able to find them anywhere 
+const MAX_ELEVATION = 2
+const MIN_ELEVATION = -2
+const ELEVATION_OFFSET = -50
 
 var is_steppable = true
 var tile_pos: Vector3  # Z - elevation, from -2 to +2, total 5 levels
@@ -44,6 +48,12 @@ func _set_random_dirt():
 		dirt_b.self_modulate.a = (randi() % 6 + 5) / 100.0
 
 
+func _update_tile_elevation():
+	var elevation = self.tile_pos.z
+	tile_content.rect_position = Vector2(ELEVATION_OFFSET * elevation,
+										 ELEVATION_OFFSET * elevation)
+
+
 func get_pos() -> Vector3:
 	return tile_pos
 
@@ -67,3 +77,17 @@ func del_piece():
 
 func set_slot(torus: Control):
 	slot.add_child(torus)
+
+
+func set_elevation(elevation: int):
+	self.tile_pos.z = clamp(elevation, MIN_ELEVATION, MAX_ELEVATION)
+	self._update_tile_elevation()
+	# TODO: play SFX
+
+
+func raise():
+	self.set_elevation(self.tile_pos.z + 1)
+
+
+func lower():
+	self.set_elevation(self.tile_pos.z - 1)

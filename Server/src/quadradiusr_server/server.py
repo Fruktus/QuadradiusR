@@ -111,9 +111,14 @@ class QuadradiusRServer:
         if self.database:
             await self.database.dispose()
 
+    async def _run_async(self):
+        await self.start()
+        while True:
+            await asyncio.sleep(10000)
+
     def run(self):
         loop = asyncio.new_event_loop()
-        loop.run_until_complete(self.start())
+        loop.run_until_complete(self._run_async())
         loop.close()
 
     def register_gateway(self, gateway):

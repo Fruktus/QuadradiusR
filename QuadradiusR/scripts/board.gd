@@ -6,7 +6,7 @@ const torus_template = preload("res://prefabs/torus.tscn")
 
 var board_size: Vector2
 var active_torus: Node
-var torus_source_slot: Node
+
 
 
 func _ready():  # TMP, used to test initialisation
@@ -25,6 +25,10 @@ func _get_child_at_pos(x: int, y: int):
 	return board.get_child(y * board_size.x + x)
 
 
+func _get_child_at_idx(idx: int):
+	return board.get_child(idx)
+
+
 func _init_tiles():
 	for i in range(board_size.x * board_size.y):
 		var new_tile = tile_template.instance().init(Vector3(i % int(board_size.x), int(i / board_size.x), 0))
@@ -33,11 +37,11 @@ func _init_tiles():
 
 func _init_toruses(player_pieces: int):
 	for i in range(player_pieces):
-		var player1_torus = torus_template.instance().init(self, 0, Torus.COLORS.RED)
-		var player2_torus = torus_template.instance().init(self, 1, Torus.COLORS.BLUE)
+		var player1_torus = torus_template.instance().init(self, _get_child_at_idx(i), 0, Torus.COLORS.RED)
+		var player2_torus = torus_template.instance().init(self, _get_child_at_idx(board_size.x * board_size.y - 1 - i), 1, Torus.COLORS.BLUE)
 		
-		board.get_child(i).set_slot(player1_torus)
-		board.get_child(board_size.x * board_size.y - 1 - i).set_slot(player2_torus)
+		_get_child_at_idx(i).set_slot(player1_torus)
+		_get_child_at_idx(board_size.x * board_size.y - 1 - i).set_slot(player2_torus)
 
 
 # After picking up torus, move it to top of the tree, so it won't get covered
@@ -45,8 +49,7 @@ func _init_toruses(player_pieces: int):
 # it was a new tile, in this case move to it
 func _torus_pickup(torus: Node):
 	self.active_torus = torus
-	self.torus_source_slot = torus.get_parent()
-	torus_source_slot.remove_child(torus)
+	torus.current_tile.del_piece()
 	add_child(torus)
 
 
@@ -58,14 +61,14 @@ func _torus_putdown(torus: Node):
 	var y = int(dest_tile_pos.y)
 	
 	if 0 > x or x >= board_size.x or 0 > y or y >= board_size.y:
-		self.torus_source_slot.add_child(self.active_torus)
+		self.active_torus.current_tile.set_slot(self.active_torus)
 		return
 	
 	var target_tile: Tile = _get_child_at_pos(x, y)
-	if torus.should_move_torus(torus_source_slot.get_parent().get_parent(), target_tile):
+	if torus.should_move_torus(self.active_torus.current_tile, target_tile):
 		var is_colliding = target_tile.has_piece()
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)
-		torus.make_move(torus_source_slot.get_parent(), target_tile, is_colliding)
+		torus.make_move(self.active_torus.current_tile, target_tile, is_colliding)
 		return
 	
 	self.torus_source_slot.add_child(self.active_torus)

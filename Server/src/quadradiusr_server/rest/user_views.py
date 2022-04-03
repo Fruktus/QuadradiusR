@@ -1,7 +1,9 @@
+import logging
 import uuid
 from json import JSONDecodeError
 
 from aiohttp import web
+from aiohttp.web_exceptions import HTTPBadRequest
 
 from quadradiusr_server.auth import User, hash_password
 from quadradiusr_server.db.repository import Repository
@@ -21,11 +23,11 @@ class UsersView(web.View):
             username = str(body['username'])
             password = str(body['password'])
         except (JSONDecodeError, KeyError):
-            return web.Response(status=400)
+            raise HTTPBadRequest()
 
         existing_user = await repository.user_repository.get_by_username(username)
         if existing_user is not None:
-            return web.Response(status=400)
+            raise HTTPBadRequest()
 
         user = User(
             id_=str(uuid.uuid4()),
@@ -33,6 +35,7 @@ class UsersView(web.View):
             password_=hash_password(password.encode('utf-8')),
         )
         await repository.user_repository.add(user)
+        logging.info(f'New user created: {user.username_} ({user.id_})')
 
         return web.Response(status=201, headers={
             'location': f'/user/{user.id_}',

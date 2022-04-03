@@ -63,5 +63,4 @@ class ServerCli:
             return 1
 
         server = QuadradiusRServer(config.from_toml(args.config))
-        server.run()
-        return 0
+        return server.run()

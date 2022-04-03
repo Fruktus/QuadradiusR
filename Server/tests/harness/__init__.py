@@ -25,6 +25,9 @@ class RestTestHarness(metaclass=ABCMeta):
         self.config.port = 0
         self.config.href = 'example.com'
         self.config.database.create_metadata = True
+        self.config.auth.scrypt_n = 8
+        self.config.auth.scrypt_r = 8
+        self.config.auth.scrypt_p = 1
         self.server = QuadradiusRServer(self.config)
         if server_configurator:
             server_configurator(self.server)
@@ -38,7 +41,6 @@ class RestTestHarness(metaclass=ABCMeta):
 
 
 class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
-    __user: User = None
 
     def get_test_user_username(self, n):
         return f'test_user_{n}'

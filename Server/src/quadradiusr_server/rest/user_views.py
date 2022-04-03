@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPBadRequest
 
-from quadradiusr_server.auth import User, hash_password
+from quadradiusr_server.auth import User, Auth
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.rest.auth import authorized_endpoint
@@ -17,6 +17,7 @@ class UsersView(web.View):
     @transactional
     async def post(self):
         repository: Repository = self.request.app['repository']
+        auth: Auth = self.request.app['auth']
 
         try:
             body = await self.request.json()
@@ -32,7 +33,7 @@ class UsersView(web.View):
         user = User(
             id_=str(uuid.uuid4()),
             username_=username,
-            password_=hash_password(password.encode('utf-8')),
+            password_=auth.hash_password(password.encode('utf-8')),
         )
         await repository.user_repository.add(user)
         logging.info(f'New user created: {user.username_} ({user.id_})')

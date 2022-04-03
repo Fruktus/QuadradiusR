@@ -7,7 +7,7 @@ from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.game import GameConnection
 from quadradiusr_server.notification import NotificationService
-from quadradiusr_server.qrws_connection import QrwsConnection, QrwsCloseException
+from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.server import routes, QuadradiusRServer
 from quadradiusr_server.utils import is_request_websocket_upgradable

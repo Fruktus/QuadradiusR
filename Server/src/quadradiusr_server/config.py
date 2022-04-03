@@ -1,5 +1,4 @@
 import dataclasses
-import os.path
 from dataclasses import dataclass
 from typing import Optional, Callable
 
@@ -11,6 +10,9 @@ import toml as toml
 class AuthConfig:
     token_exp: int = 60
     token_leeway: int = 10
+    scrypt_n: int = 16 * 1024
+    scrypt_r: int = 8
+    scrypt_p: int = 1
 
 
 @dataclass

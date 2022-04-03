@@ -28,7 +28,8 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual([{
                     'id': '@main',
                     'name': 'Main',
-                    'ws_url': 'ws://example.com/lobby/@main/connect'
+                    'ws_url': 'ws://example.com/lobby/@main/connect',
+                    'players': None,
                 }], body)
 
             async with session.get(self.server_url('/lobby/@main'), headers={
@@ -39,7 +40,8 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual({
                     'id': '@main',
                     'name': 'Main',
-                    'ws_url': 'ws://example.com/lobby/@main/connect'
+                    'ws_url': 'ws://example.com/lobby/@main/connect',
+                    'players': [],
                 }, body)
 
     async def test_message_filtering(self):

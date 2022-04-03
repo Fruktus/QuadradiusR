@@ -25,7 +25,7 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         async with aiohttp.ClientSession() as session:
             exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
-                'subject': user1['id'],
+                'subject_id': user1['id'],
                 'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
@@ -137,7 +137,7 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         async with aiohttp.ClientSession() as session:
             exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
-                'subject': user1['id'],
+                'subject_id': user1['id'],
                 'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)

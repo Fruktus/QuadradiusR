@@ -40,8 +40,12 @@ class GameView(GameViewBase, web.View):
         return web.json_response({
             'id': game.id_,
             'players': [
-                game.player_a_id_,
-                game.player_b_id_,
+                {
+                    'id': game.player_a_id_,
+                },
+                {
+                    'id': game.player_b_id_,
+                },
             ],
             'expiration': game.expiration_.isoformat(),
             'ws_url': server.get_href('ws') + f'/game/{game.id_}/connect',

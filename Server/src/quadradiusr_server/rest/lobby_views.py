@@ -9,26 +9,36 @@ from quadradiusr_server.auth import Auth
 from quadradiusr_server.db.base import Lobby, User, LobbyMessage
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional, transaction_context
-from quadradiusr_server.lobby import LobbyConnection
+from quadradiusr_server.lobby import LobbyConnection, LiveLobby
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.server import routes, QuadradiusRServer
 
 
-def map_lobby_to_json(server: QuadradiusRServer, lobby: Lobby):
+def map_lobby_to_json(
+        server: QuadradiusRServer,
+        lobby: Lobby,
+        live_lobby: LiveLobby = None):
     return {
         'id': lobby.id_,
         'name': lobby.name_,
         'ws_url': server.get_href('ws') + f'/lobby/{lobby.id_}/connect',
+        'players': [{
+            'id': player.id,
+        } for player in live_lobby.players] if live_lobby is not None else None,
     }
 
 
 def map_lobby_message_to_json(lobby_message: LobbyMessage):
     return {
         'id': lobby_message.id_,
-        'lobby_id': lobby_message.lobby_id_,
-        'user': lobby_message.user_id_,
+        'lobby': {
+            'id': lobby_message.lobby_id_,
+        },
+        'user': {
+            'id': lobby_message.user_id_,
+        },
         'content': lobby_message.content_,
         'created_at': lobby_message.created_at_.isoformat(),
     }
@@ -52,7 +62,8 @@ class LobbiesView(web.View):
         repository: Repository = self.request.app['repository']
         lobbies = await repository.lobby_repository.get_all()
 
-        return web.json_response([map_lobby_to_json(server, l) for l in lobbies])
+        return web.json_response([
+            map_lobby_to_json(server, lobby) for lobby in lobbies])
 
 
 @routes.view('/lobby/{lobby_id}')
@@ -63,7 +74,8 @@ class LobbyView(LobbyViewBase, web.View):
         server: QuadradiusRServer = self.request.app['server']
         repository: Repository = self.request.app['repository']
         lobby = await self._get_lobby(repository)
-        return web.json_response(map_lobby_to_json(server, lobby))
+        live_lobby = server.start_lobby(lobby)
+        return web.json_response(map_lobby_to_json(server, lobby, live_lobby))
 
 
 @routes.view('/lobby/{lobby_id}/connect')

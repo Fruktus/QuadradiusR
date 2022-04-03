@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import Dict
+from typing import Dict, List
 
 from quadradiusr_server.db.base import Lobby, User, LobbyMessage
 from quadradiusr_server.db.database_engine import DatabaseEngine
@@ -15,16 +15,20 @@ class LiveLobby:
         self.lobby = lobby
         self.repository = repository
 
-        self.players: Dict[str, LobbyConnection] = {}
+        self._players: Dict[str, LobbyConnection] = {}
+
+    @property
+    def players(self) -> List[User]:
+        return [conn.user for conn in self._players.values()]
 
     def join(self, connection: 'LobbyConnection'):
-        if connection.user.id_ in self.players:
+        if connection.user.id_ in self._players:
             raise Exception()
-        self.players[connection.user.id_] = connection
+        self._players[connection.user.id_] = connection
 
     def leave(self, lobby_conn: 'LobbyConnection'):
-        if lobby_conn in self.players.values():
-            del self.players[lobby_conn.user.id_]
+        if lobby_conn in self._players.values():
+            del self._players[lobby_conn.user.id_]
 
     async def send_message(self, user: User, content: str):
         lobby_repo = self.repository.lobby_repository
@@ -36,11 +40,11 @@ class LiveLobby:
             created_at_=datetime.datetime.now(),
         )
         await lobby_repo.add_message(lobby_message)
-        for conn in self.players.values():
+        for conn in self._players.values():
             await conn.message_sent(user, content)
 
     def joined(self, user: User):
-        return user.id_ in self.players.keys()
+        return user.id_ in self._players.keys()
 
 
 class LobbyConnection(BasicConnection):

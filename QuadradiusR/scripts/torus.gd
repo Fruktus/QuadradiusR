@@ -8,6 +8,7 @@ onready var putdown_sfx = $SFXGroup/PutdownSFX2D
 onready var anim = $AnimationPlayer
 onready var light_on = $LightGroup/LightOn
 onready var light_off = $LightGroup/LightOff
+onready var shadow = $TorusShadow
 onready var collision_detector = $MouseDetector/CollisionShape2D
 
 const starting_pos = Vector2(50, 50)
@@ -32,6 +33,7 @@ func _ready():
 	set_process(false)
 	light_off.texture = load(color_asset_path.format({"color": color_textures[color], "mode": 1}))
 	light_on.texture = load(color_asset_path.format({"color": color_textures[color], "mode": 2}))
+	update_shadow(get_parent().get_parent().get_parent().tile_pos)
 
 
 func _process(delta: float):
@@ -57,6 +59,7 @@ func _on_mouse_event(viewport: Node, event: InputEvent, shape_idx: int):
 func _begin_drag():
 	is_held = true
 	pickup_sfx.play()
+	shadow.visible = false
 	get_tree().call_group("torus", "set_interaction", false)
 	get_tree().call_group("board", "_torus_pickup", self)
 	yield(get_tree(), "idle_frame")  # needed for the scaling to work properly
@@ -66,6 +69,7 @@ func _begin_drag():
 
 func _end_drag():
 	set_process(false)
+	shadow.visible = true
 	get_tree().call_group("torus", "set_interaction", true)
 	get_tree().call_group("board", "_torus_putdown", self)
 	is_held = false
@@ -92,6 +96,15 @@ func _get_parent_tile():
 	return self.get_parent().get_parent()
 
 
+func update_shadow(pos: Vector3):
+	var distance_from_center = pos - Vector3(board.board_size.x, board.board_size.y, 0) / 2.0
+	distance_from_center /= Vector3(board.board_size.x, board.board_size.y, 5)
+	print(distance_from_center)
+	shadow.position = Vector2(distance_from_center.x, distance_from_center.y) * 100
+	# TODO handle scale relative to elevation, check shadow alpha and offset values - whether matches original
+#	shadow.scale = Vector2(distance_from_center.z * 2, distance_from_center.z * 2)
+
+
 func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 	# check if can make move
 	if not movement_powerup_manager.can_make_move(source_tile, target_tile):
@@ -111,6 +124,8 @@ func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 	return true
 
 func make_move(source_tile: Tile, target_tile: Tile, is_colliding: bool = false) -> void:
+	update_shadow(target_tile.tile_pos)
+	
 	if is_colliding:
 		target_tile.del_piece()
 		anim.play("DestroyOpponent")

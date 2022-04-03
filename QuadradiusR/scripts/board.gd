@@ -54,7 +54,6 @@ func _torus_putdown(torus: Node):
 	remove_child(self.active_torus)
 
 	var dest_tile_pos = (get_global_mouse_position() - rect_global_position) / (get_child(0).get_child(0).rect_size * rect_scale)
-	print(dest_tile_pos)
 	var x = int(dest_tile_pos.x)
 	var y = int(dest_tile_pos.y)
 	

@@ -105,15 +105,10 @@ size_flags_vertical = 3
 texture = ExtResource( 4 )
 expand = true
 
-[node name="LightRing" type="TextureRect" parent="MarginContainer/ScreenHBox/GameBoardPanel"]
-modulate = Color( 1, 1, 1, 0.752941 )
-margin_right = 1411.0
-margin_bottom = 1080.0
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="LightRing" type="Sprite" parent="MarginContainer/ScreenHBox/GameBoardPanel"]
+scale = Vector2( 2.82036, 2.1497 )
 texture = ExtResource( 1 )
-expand = true
+centered = false
 
 [node name="RightSidePanel" type="PanelContainer" parent="MarginContainer/ScreenHBox"]
 margin_left = 1415.0

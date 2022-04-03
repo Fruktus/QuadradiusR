@@ -25,7 +25,7 @@ class Auth:
         if not user:
             return None
 
-        if is_password_valid(password, user.password_):
+        if self.is_password_valid(password, user.password_):
             return user
         else:
             return None
@@ -60,23 +60,24 @@ class Auth:
         except jwt.InvalidTokenError:
             return None
 
+    def __scrypt(self, password, salt):
+        return hashlib.scrypt(
+            password, salt=salt,
+            n=self.config.scrypt_n,
+            r=self.config.scrypt_r,
+            p=self.config.scrypt_p)
 
-def __scrypt(password, salt):
-    return hashlib.scrypt(password, salt=salt, n=16 * 1024, r=8, p=1)
+    def hash_password(self, password: bytes) -> str:
+        salt = os.urandom(16)
+        hashed = self.__scrypt(password, salt)
 
+        salt_b64 = base64.b64encode(salt).decode()
+        hashed_b64 = base64.b64encode(hashed).decode()
 
-def hash_password(password: bytes) -> str:
-    salt = os.urandom(16)
-    hashed = __scrypt(password, salt)
+        return f'{salt_b64}!{hashed_b64}'
 
-    salt_b64 = base64.b64encode(salt).decode()
-    hashed_b64 = base64.b64encode(hashed).decode()
-
-    return f'{salt_b64}!{hashed_b64}'
-
-
-def is_password_valid(password: bytes, hash_: str) -> bool:
-    [salt_b64, hashed_b64] = hash_.split('!', 2)
-    salt = base64.b64decode(salt_b64)
-    hashed = base64.b64decode(hashed_b64)
-    return __scrypt(password, salt) == hashed
+    def is_password_valid(self, password: bytes, hash_: str) -> bool:
+        [salt_b64, hashed_b64] = hash_.split('!', 2)
+        salt = base64.b64decode(salt_b64)
+        hashed = base64.b64decode(hashed_b64)
+        return self.__scrypt(password, salt) == hashed

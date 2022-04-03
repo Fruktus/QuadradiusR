@@ -25,3 +25,5 @@ scale = Vector2( 2, 2 )
 [node name="LearnTheGameButton" parent="." instance=ExtResource( 2 )]
 position = Vector2( 5018, 2911 )
 scale = Vector2( 1.75, 1.75 )
+
+[connection signal="login" from="LoginInputUI" to="." method="_on_login"]

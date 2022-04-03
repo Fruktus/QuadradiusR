@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/powerups/abstract.gd"
 }, {
+"base": "HTTPRequest",
+"class": "RestApi",
+"language": "GDScript",
+"path": "res://scripts/rest_api.gd"
+}, {
 "base": "PanelContainer",
 "class": "Tile",
 "language": "GDScript",
@@ -33,19 +38,27 @@ _global_script_classes=[ {
 "class": "Torus",
 "language": "GDScript",
 "path": "res://scripts/torus.gd"
+}, {
+"base": "Node",
+"class": "WSApi",
+"language": "GDScript",
+"path": "res://scripts/ws_api.gd"
 } ]
 _global_script_class_icons={
 "Message": "",
 "MovementPowerupManager": "",
 "PowerupRule": "",
+"RestApi": "",
 "Tile": "",
-"Torus": ""
+"Torus": "",
+"WSApi": ""
 }
 
 [application]
 
 config/name="Quadradius R"
 config/description="Reimplementation of Classic Quadradius game."
+run/main_scene="res://scenes/game.tscn"
 config/icon="res://icon.png"
 
 [autoload]

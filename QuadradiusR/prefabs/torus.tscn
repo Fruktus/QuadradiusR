@@ -180,6 +180,7 @@ centered = false
 [node name="LightOn" type="Sprite" parent="LightGroup"]
 visible = false
 position = Vector2( 47, 43 )
+z_index = 1
 texture = ExtResource( 3 )
 centered = false
 

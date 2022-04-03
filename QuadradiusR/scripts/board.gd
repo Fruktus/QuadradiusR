@@ -63,7 +63,7 @@ func _torus_putdown(torus: Node):
 		return
 	
 	var target_tile: Tile = _get_child_at_pos(x, y)
-	if torus.should_move_torus(torus_source_slot.get_parent(), target_tile):
+	if torus.should_move_torus(torus_source_slot.get_parent().get_parent(), target_tile):
 		var is_colliding = target_tile.has_piece()
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)
 		torus.make_move(torus_source_slot.get_parent(), target_tile, is_colliding)

@@ -3,6 +3,7 @@ import logging.config
 import os.path
 
 from quadradiusr_server import config
+from quadradiusr_server.config import ConfigGenerator
 from quadradiusr_server.server import QuadradiusRServer
 
 
@@ -22,6 +23,12 @@ class ServerCli:
             '-v', '--verbose',
             action='store_true',
             help='enable verbose output')
+        parser.add_argument(
+            '--generate-config',
+            nargs='?',
+            default='config.toml',
+            metavar='CONFIG_PATH',
+            help='generate server configuration')
 
         return parser.parse_args(args)
 
@@ -57,6 +64,11 @@ class ServerCli:
                 },
             },
         })
+
+        if args.generate_config:
+            gen = ConfigGenerator()
+            gen.generate(args.generate_config)
+            return 0
 
         if not os.path.isfile(args.config):
             logging.error(f'Config file {args.config} not found')

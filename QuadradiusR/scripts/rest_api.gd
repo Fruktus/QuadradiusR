@@ -1,78 +1,71 @@
 class_name RestApi
 extends HTTPRequest
 
+signal request_processed(req_id, message)
+
 var url
 var use_ssl = false
-var request_callbacks = []
+var request_running = false
+var current_req_id = 0
+var queued_requests = []
 
 
 
-func _on_request_completed(result, response_code, headers, body):
+func _process_requests():
+	if not request_running and not queued_requests.empty():
+		var req = queued_requests.pop_front()
+		current_req_id = req['req_id']
+		funcref(self, "request").call_funcv(req['args'])
+		request_running = true
+
+
+func _on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray):
 	var json = JSON.parse(body.get_string_from_utf8())
-	print(result)
-	print(response_code)
-	print(headers)
-	print(json.result)
-	request_callbacks.pop_front().call_func(response_code, json.result)
+	var message = Message.new().init(response_code, str(result), json.result)
+
+	print('rq cpl ', response_code) # DEBUG
+	print('rq cpl ', headers) #  DEBUG
+	print('rq cpl ', json.result) # DEBUG
+	
+	emit_signal("request_processed", current_req_id, message)
+	request_running = false
+	current_req_id = 0
+	_process_requests()
+
+
+func _build_request(args: Array):
+	var req_id = OS.get_ticks_msec()
+	queued_requests.append({'req_id': req_id, 'args': args})
+	_process_requests()
+	return req_id
 
 
 func get_gateway():
-	request_callbacks.append(funcref(self, "_handle_get_gateway"))
-	request("{url}/gateway".format({"url": url}), [], use_ssl)
-
-func _handle_get_gateway(response_code: int, result: Dictionary):
-	# TODO parse the json to get out gateway and return it
-	pass
+	return _build_request(["{url}/gateway".format({"url": url}), [], use_ssl])
 
 
 func create_user(username: String, password: String):
 	var headers = ["Content-Type: application/json"]
 	var query = JSON.print({'username': username, 'password': password})
-	
-	request_callbacks.append(funcref(self, "_handle_create_user"))
-	request("{url}/user".format({"url": url}), headers, use_ssl, HTTPClient.METHOD_POST, query)
-
-func _handle_create_user(response_code: int, result: Dictionary):
-	# 201 if worked
-	# 400 if did not
-	pass
+	return _build_request(["{url}/user".format({"url": url}), headers, use_ssl, HTTPClient.METHOD_POST, query])
 
 
 func authorize(username: String, password: String):
 	var headers = ["Content-Type: application/json"]
 	var query = JSON.print({'username': username, 'password': password})
-	
-	request_callbacks.append(funcref(self, "_handle_authorize"))
-	request("{url}/authorize".format({"url": url}), headers, use_ssl, HTTPClient.METHOD_POST, query)
-
-func _handle_authorize(response_code: int, result: Dictionary):
-	pass
+	return _build_request(["{url}/authorize".format({"url": url}), headers, use_ssl, HTTPClient.METHOD_POST, query])
 
 
 func get_lobby(token: String):
 	var headers = ["Authorization:{token}".format({"token": token})]
-	request_callbacks.append(funcref(self, "_handle_get_lobby"))
-	request("{url}/lobby".format({"url": url}), headers, use_ssl)
-
-func _handle_get_lobby(response_code: int, result: Array):
-	# result is an array instead of dict
-	# looks like this [{id:@main, name:Main}]
-	pass
+	return _build_request(["{url}/lobby".format({"url": url}), headers, use_ssl])
 
 
 func get_user(token: String, user_id: String):
 	var headers = ["Authorization:{token}".format({"token": token})]
-	request_callbacks.append(funcref(self, "_handle_get_lobby"))
-	request("{url}/user/{user_id}".format({"url": url, "user_id": user_id}), headers, use_ssl)
-
-func _handle_get_user(response_code: int, result: Dictionary):
-	pass
+	return _build_request(["{url}/user/{user_id}".format({"url": url, "user_id": user_id}), headers, use_ssl])
 
 
 func get_user_me(token: String):
 	var headers = ["Authorization:{token}".format({"token": token})]
-	request_callbacks.append(funcref(self, "_handle_get_lobby"))
-	request("{url}/user/@me".format({"url": url}), headers, use_ssl)
-
-func _handle_get_user_me(response_code: int, result: Dictionary):
-	pass
+	return _build_request(["{url}/user/@me".format({"url": url}), headers, use_ssl])

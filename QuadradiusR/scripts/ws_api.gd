@@ -4,7 +4,7 @@ extends Node
 
 var ws: WebSocketClient = WebSocketClient.new()
 var identified = false
-
+var token
 
 func _ready():
 	ws.connect("connection_closed", self, "_on_connection_closed")
@@ -30,7 +30,7 @@ func _on_connection_error():
 func _on_connection_established(protocol: String):
 	print('im in')
 	if not identified:
-		ws.get_peer(1).put_packet('{"op": 2}'.to_utf8())
+		ws.get_peer(1).put_packet(JSON.print({'op': 2, 'd': {"token": token}}).to_utf8())
 		identified = true
 
 func _on_data_received():
@@ -43,6 +43,8 @@ func _on_server_close_request(code: int, reason: String):
 # # # # # # # #
 # API Methods #
 # # # # # # # #
-func connect_to(url: String):
+func connect_to(url: String, token):
+	self.token = token
 	ws.connect_to_url(url)
+	ws.get_peer(1).set_write_mode(WebSocketPeer.WRITE_MODE_TEXT)
 	set_process(true)

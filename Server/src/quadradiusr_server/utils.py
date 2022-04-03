@@ -43,6 +43,6 @@ def filter_kwargs(f, kwargs):
 
 def is_request_websocket_upgradable(request: Request):
     return 'connection' in request.headers and \
-           'upgrade' in request.headers['connection'] and \
+           'upgrade' == request.headers['connection'].lower() and \
            'upgrade' in request.headers and \
-           'websocket' in request.headers['upgrade']
+           'websocket' == request.headers['upgrade'].lower()

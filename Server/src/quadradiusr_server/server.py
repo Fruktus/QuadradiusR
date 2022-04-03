@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from collections import defaultdict
 from typing import Optional, Mapping, List
 
@@ -90,6 +91,7 @@ class QuadradiusRServer:
         await self.runner.setup()
 
         cfg = self.config
+        logging.info(f'Starting server')
         self.site = TCPSite(
             runner=self.runner,
             host=cfg.host,
@@ -104,22 +106,32 @@ class QuadradiusRServer:
         await self.setup_service.run_setup_jobs()
         await self.cron.register()
         await self.site.start()
+        logging.info(f'Server started at {cfg.host}:{cfg.port}')
 
     async def shutdown(self):
+        logging.info(f'Server shutdown initiated')
         if self.runner:
             await self.runner.cleanup()
         if self.database:
             await self.database.dispose()
+        logging.info(f'Server shutdown finished')
 
     async def _run_async(self):
         await self.start()
         while True:
-            await asyncio.sleep(10000)
+            await asyncio.sleep(3600)
 
-    def run(self):
+    def run(self) -> int:
         loop = asyncio.new_event_loop()
-        loop.run_until_complete(self._run_async())
-        loop.close()
+        try:
+            loop.run_until_complete(self._run_async())
+            return 0
+        except KeyboardInterrupt:
+            logging.info('Interrupted')
+            loop.run_until_complete(self.shutdown())
+            return -1
+        finally:
+            loop.close()
 
     def register_gateway(self, gateway):
         user = gateway.user

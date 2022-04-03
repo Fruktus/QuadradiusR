@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from quadradiusr_server.config import CronConfig
 from quadradiusr_server.db.base import Lobby
@@ -16,9 +17,12 @@ class Cron:
         self.ns = notification_service
 
     async def register(self):
+        logging.info(f'Registering cron jobs')
         asyncio.create_task(self._cron_purge_game_invites())
+        logging.info(f'Cron jobs registered')
 
     async def _cron_purge_game_invites(self):
+        logging.debug(f'Purging game invites')
         while True:
             await asyncio.sleep(self.config.purge_game_invites_delay)
             await self._purge_game_invites()
@@ -46,9 +50,12 @@ class SetupService:
         self.repository = repository
 
     async def run_setup_jobs(self):
+        logging.info(f'Running setup jobs')
         await self._create_main_lobby()
+        logging.info(f'Setup jobs finished')
 
     async def _create_main_lobby(self):
+        logging.debug(f'Creating main lobby')
         async with transaction_context(self.repository.database):
             lobby_repo = self.repository.lobby_repository
             if await lobby_repo.get_by_id('@main') is None:
@@ -57,3 +64,4 @@ class SetupService:
                     name_='Main',
                 )
                 await lobby_repo.add(main)
+        logging.debug(f'Main lobby created')

@@ -3,7 +3,6 @@ extends Node
 
 
 var ws: WebSocketClient = WebSocketClient.new()
-var identified = false
 var token
 
 func _ready():
@@ -29,9 +28,8 @@ func _on_connection_error():
 
 func _on_connection_established(protocol: String):
 	print('im in')
-	if not identified:
-		ws.get_peer(1).put_packet(JSON.print({'op': 2, 'd': {"token": token}}).to_utf8())
-		identified = true
+	ws.get_peer(1).put_packet(JSON.print({'op': 2, 'd': {"token": token}}).to_utf8())
+
 
 func _on_data_received():
 	print('data received:', ws.get_peer(1).get_packet().get_string_from_utf8())

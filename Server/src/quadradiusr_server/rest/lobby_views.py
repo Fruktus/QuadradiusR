@@ -1,5 +1,8 @@
+from datetime import datetime
+
+import dateutil.parser
 from aiohttp import web
-from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden
+from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.db.base import Lobby, User, LobbyMessage
@@ -109,7 +112,28 @@ class LobbyMessagesView(web.View):
         if not live_lobby.joined(auth_user):
             raise HTTPForbidden()
 
-        messages = await repository.lobby_repository.get_all_messages(lobby)
+        try:
+            if 'before' in self.request.rel_url.query:
+                before_str = str(self.request.rel_url.query['before'])
+                before = dateutil.parser.isoparse(before_str)
+            else:
+                before = datetime.now()
+
+            if 'limit' in self.request.rel_url.query:
+                limit = int(self.request.rel_url.query['limit'])
+            else:
+                limit = 100
+        except ValueError:
+            raise HTTPBadRequest()
+
+        if limit > 100:
+            raise HTTPBadRequest()
+
+        messages = await repository.lobby_repository.get_messages(
+            lobby.id_,
+            before=before,
+            limit=limit,
+        )
         return web.json_response([
             map_lobby_message_to_json(lm) for lm in messages])
 

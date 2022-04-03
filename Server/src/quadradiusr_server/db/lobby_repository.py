@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Optional, List
 
 from sqlalchemy import select
@@ -44,4 +45,16 @@ class LobbyRepository:
             self, lobby: Lobby, *, db_session: AsyncSession) -> List[Lobby]:
         result = await db_session.execute(
             select(LobbyMessage).where(LobbyMessage.lobby_id_ == lobby.id_))
+        return result.scalars()
+
+    @transactional
+    async def get_messages(
+            self, lobby_id, *,
+            before: datetime, limit: int,
+            db_session: AsyncSession):
+        result = await db_session.execute(
+            select(LobbyMessage).where(
+                (LobbyMessage.lobby_id_ == lobby_id) &
+                (LobbyMessage.created_at_ < before)
+            ).order_by(LobbyMessage.created_at_.desc()).limit(limit))
         return result.scalars()

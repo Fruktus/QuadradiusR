@@ -214,6 +214,14 @@ the main lobby is returned.
 
 List messages from lobby.
 
+Query parameters:
+
+* ``limit`` --- maximum number of results, by default it's 100
+  and cannot be larger,
+* ``before`` --- ISO formatted date, only messages posted before
+  this date will be returned, by default all messages older than
+  now will be returned.
+
 .. code-block:: text
     :caption: Response status
 

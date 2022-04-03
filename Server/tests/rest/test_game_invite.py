@@ -54,6 +54,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(2),
             }) as response:
                 self.assertEqual(403, response.status)
+                self.assertEqual(
+                    '403: You are not a part of the invite',
+                    await response.text())
 
     async def test_create_invite_to_oneself(self):
         await self.create_test_user(0)
@@ -68,6 +71,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(0)
             }) as response:
                 self.assertEqual(400, response.status)
+                self.assertEqual(
+                    '400: User cannot invite themselves... or can they?',
+                    await response.text())
 
     async def test_create_invite_exp_in_past(self):
         await self.create_test_user(0)
@@ -83,6 +89,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(0)
             }) as response:
                 self.assertEqual(400, response.status)
+                self.assertEqual(
+                    '400: Invite cannot expire in the past',
+                    await response.text())
 
     async def test_create_invite_exp_too_late(self):
         await self.create_test_user(0)
@@ -98,6 +107,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(0)
             }) as response:
                 self.assertEqual(400, response.status)
+                self.assertEqual(
+                    '400: Expiration date too late',
+                    await response.text())
 
     async def test_create_invite_nonexisting_user(self):
         await self.create_test_user(0)
@@ -111,6 +123,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(0)
             }) as response:
                 self.assertEqual(400, response.status)
+                self.assertEqual(
+                    '400: Subject not found',
+                    await response.text())
 
     async def test_delete_invite(self):
         await self.create_test_user(0)
@@ -139,6 +154,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(2),
             }) as response:
                 self.assertEqual(403, response.status)
+                self.assertEqual(
+                    '403: You are not a part of the invite',
+                    await response.text())
 
             async with session.delete(self.server_url(loc), headers={
                 'authorization': await self.authorize_test_user(1),
@@ -149,8 +167,14 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(0),
             }) as response:
                 self.assertEqual(404, response.status)
+                self.assertEqual(
+                    '404: Game invite not found',
+                    await response.text())
 
             async with session.get(self.server_url(loc), headers={
                 'authorization': await self.authorize_test_user(2),
             }) as response:
                 self.assertEqual(404, response.status)
+                self.assertEqual(
+                    '404: Game invite not found',
+                    await response.text())

@@ -8,9 +8,8 @@ from quadradiusr_server.db.transactions import transactional, transaction_contex
 from quadradiusr_server.lobby import LobbyConnection
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
-from quadradiusr_server.rest.auth import authorized_endpoint, require_authorization
+from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.server import routes, QuadradiusRServer
-from quadradiusr_server.utils import is_request_websocket_upgradable
 
 
 def map_lobby_to_json(server: QuadradiusRServer, lobby: Lobby):
@@ -24,6 +23,7 @@ def map_lobby_to_json(server: QuadradiusRServer, lobby: Lobby):
 def map_lobby_message_to_json(lobby_message: LobbyMessage):
     return {
         'id': lobby_message.id_,
+        'lobby_id': lobby_message.lobby_id_,
         'user': lobby_message.user_id_,
         'content': lobby_message.content_,
         'created_at': lobby_message.created_at_.isoformat(),

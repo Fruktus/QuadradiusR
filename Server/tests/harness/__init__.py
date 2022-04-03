@@ -4,8 +4,10 @@ from abc import ABCMeta
 from typing import Callable
 
 import aiohttp
+from aiohttp import ClientWebSocketResponse
 
 from quadradiusr_server.config import ServerConfig
+from quadradiusr_server.constants import QrwsOpcode
 from quadradiusr_server.db.base import User
 from quadradiusr_server.notification import Handler, Notification
 from quadradiusr_server.server import QuadradiusRServer
@@ -21,6 +23,7 @@ class RestTestHarness(metaclass=ABCMeta):
         self.config = dataclasses.replace(config)
         self.config.host = '127.0.0.1'
         self.config.port = 0
+        self.config.href = 'example.com'
         self.config.database.create_metadata = True
         self.server = QuadradiusRServer(self.config)
         if server_configurator:
@@ -49,7 +52,7 @@ class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
                 'username': self.get_test_user_username(n),
                 'password': self.get_test_user_password(n),
             }) as response:
-                self.assertEqual(201, response.status)
+                assert 201 == response.status
 
     async def authorize_test_user(self, n):
         async with aiohttp.ClientSession() as session:
@@ -66,6 +69,16 @@ class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
                 'authorization': await self.authorize_test_user(n),
             }) as response:
                 return await response.json()
+
+    async def authorize_ws(self, n: int, ws: ClientWebSocketResponse):
+        await ws.send_json({
+            'op': QrwsOpcode.IDENTIFY,
+            'd': {
+                'token': await self.authorize_test_user(n),
+            },
+        })
+        data = await ws.receive_json()
+        assert QrwsOpcode.SERVER_READY == data['op']
 
 
 class NotificationHandlerForTests(Handler):

@@ -27,19 +27,13 @@ class GatewayView(web.View):
         ws = web.WebSocketResponse()
         await ws.prepare(self.request)
 
-        try:
-            qrws = QrwsConnection(ws)
-            user = await qrws.handshake(auth, repository)
+        qrws = QrwsConnection(ws)
+        user = await qrws.handshake(auth, repository)
 
-            gateway = GatewayConnection(qrws, user, ns)
-            server.register_gateway(gateway)
-            try:
-                await gateway.handle_connection()
-            finally:
-                server.unregister_gateway(gateway)
+        gateway = GatewayConnection(qrws, user, ns)
+        server.register_gateway(gateway)
+        try:
+            await gateway.handle_connection()
             return ws
-        except QrwsCloseException as e:
-            await ws.close(
-                code=e.code,
-                message=e.message.encode() if e.message else None)
-            return ws
+        finally:
+            server.unregister_gateway(gateway)

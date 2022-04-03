@@ -24,7 +24,8 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 body = await response.json()
                 self.assertEqual([{
                     'id': '@main',
-                    'name': 'Main'
+                    'name': 'Main',
+                    'ws_url': 'ws://example.com/lobby/@main'
                 }], body)
 
             async with session.get(self.server_url('/lobby/@main'), headers={
@@ -34,5 +35,6 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 body = await response.json()
                 self.assertEqual({
                     'id': '@main',
-                    'name': 'Main'
+                    'name': 'Main',
+                    'ws_url': 'ws://example.com/lobby/@main'
                 }, body)

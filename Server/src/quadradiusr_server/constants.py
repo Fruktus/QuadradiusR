@@ -11,6 +11,8 @@ class QrwsOpcode(IntEnum):
     NOTIFICATION = 4
     SUBSCRIBE = 5
     SUBSCRIBED = 6
+    SEND_MESSAGE = 7
+    MESSAGE_SENT = 6
 
 
 class QrwsCloseCode(IntEnum):

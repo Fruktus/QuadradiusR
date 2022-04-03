@@ -21,7 +21,7 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         async with timeout(2), \
                 aiohttp.ClientSession() as session, \
                 session.ws_connect(self.server_url(
-                    '/lobby/@main', protocol='ws')) as ws:
+                    '/lobby/@main/connect', protocol='ws')) as ws:
             await ws.send_json({
                 'op': QrwsOpcode.IDENTIFY,
                 'd': {
@@ -36,14 +36,16 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         await self.create_test_user(1)
         await self.create_test_user(2)
 
+        user0 = await self.get_test_user(0)
+
         async with timeout(2), \
                 aiohttp.ClientSession() as session, \
                 session.ws_connect(self.server_url(
-                    '/lobby/@main', protocol='ws')) as ws0, \
+                    '/lobby/@main/connect', protocol='ws')) as ws0, \
                 session.ws_connect(self.server_url(
-                    '/lobby/@main', protocol='ws')) as ws1, \
+                    '/lobby/@main/connect', protocol='ws')) as ws1, \
                 session.ws_connect(self.server_url(
-                    '/lobby/@main', protocol='ws')) as ws2:
+                    '/lobby/@main/connect', protocol='ws')) as ws2:
             await self.authorize_ws(0, ws0)
             await self.authorize_ws(1, ws1)
             await self.authorize_ws(2, ws2)
@@ -54,7 +56,18 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     'content': 'test message',
                 },
             })
+
             for ws in [ws0, ws1, ws2]:
                 data = await ws.receive_json()
                 self.assertEqual(QrwsOpcode.MESSAGE_SENT, data['op'])
+                self.assertEqual(user0['id'], data['d']['user_id'])
                 self.assertEqual('test message', data['d']['content'])
+
+            async with session.get(self.server_url('/lobby/@main/message'), headers={
+                'authorization': await self.authorize_test_user(0)
+            }) as response:
+                self.assertEqual(200, response.status)
+                body = await response.json()
+                self.assertEqual(1, len(body))
+                self.assertEqual(user0['id'], body[0]['user'])
+                self.assertEqual('test message', body[0]['content'])

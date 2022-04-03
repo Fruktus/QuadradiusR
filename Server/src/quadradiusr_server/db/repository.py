@@ -1,7 +1,10 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.game_invite_repository import GameInviteRepository
 from quadradiusr_server.db.game_repository import GameRepository
 from quadradiusr_server.db.lobby_repository import LobbyRepository
+from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.db.user_repository import UserRepository
 
 
@@ -32,3 +35,13 @@ class Repository:
     @property
     def lobby_repository(self) -> LobbyRepository:
         return self._lobby_repository
+
+    @transactional
+    async def add(self, *args, db_session: AsyncSession):
+        for obj in args:
+            db_session.add(obj)
+
+    @transactional
+    async def expunge(self, *args, db_session: AsyncSession):
+        for obj in args:
+            db_session.expunge(obj)

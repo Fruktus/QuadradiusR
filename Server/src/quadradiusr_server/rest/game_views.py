@@ -39,17 +39,15 @@ class GameView(web.View):
         if game_in_progress.is_player_connected(auth_user.id_):
             raise HTTPConflict()
 
-        ws = web.WebSocketResponse()
-        await ws.prepare(self.request)
+        qrws = QrwsConnection()
+        await qrws.prepare(self.request)
+        user = await qrws.authorize(auth, repository)
 
-        qrws = QrwsConnection(ws)
-        user = await qrws.handshake(auth, repository)
-
-        conn = GameConnection(qrws, user, ns)
+        conn = GameConnection(qrws, user, ns, repository.database)
         game_in_progress.connect_player(conn)
         try:
             await conn.handle_connection()
-            return ws
+            return qrws.ws
         finally:
             game_in_progress.disconnect_player(conn)
 

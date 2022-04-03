@@ -24,16 +24,14 @@ class GatewayView(web.View):
                 'url': server.get_href('ws') + '/gateway',
             })
 
-        ws = web.WebSocketResponse()
-        await ws.prepare(self.request)
+        qrws = QrwsConnection()
+        await qrws.prepare(self.request)
+        user = await qrws.authorize(auth, repository)
 
-        qrws = QrwsConnection(ws)
-        user = await qrws.handshake(auth, repository)
-
-        gateway = GatewayConnection(qrws, user, ns)
+        gateway = GatewayConnection(qrws, user, ns, repository.database)
         server.register_gateway(gateway)
         try:
             await gateway.handle_connection()
-            return ws
+            return qrws.ws
         finally:
             server.unregister_gateway(gateway)

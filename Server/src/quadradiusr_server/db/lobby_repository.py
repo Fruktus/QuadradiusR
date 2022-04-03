@@ -3,7 +3,7 @@ from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from quadradiusr_server.db.base import Lobby
+from quadradiusr_server.db.base import Lobby, LobbyMessage
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.transactions import transactional
 
@@ -32,3 +32,16 @@ class LobbyRepository:
             self, lobby: Lobby,
             *, db_session: AsyncSession):
         db_session.add(lobby)
+
+    @transactional
+    async def add_message(
+            self, lobby_message: LobbyMessage,
+            *, db_session: AsyncSession):
+        db_session.add(lobby_message)
+
+    @transactional
+    async def get_all_messages(
+            self, lobby: Lobby, *, db_session: AsyncSession) -> List[Lobby]:
+        result = await db_session.execute(
+            select(LobbyMessage).where(LobbyMessage.lobby_id_ == lobby.id_))
+        return result.scalars()

@@ -2,14 +2,17 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import Optional
 
-from aiohttp import WSMsgType
+from aiohttp import WSMsgType, web
+from aiohttp.abc import BaseRequest
 from aiohttp.web_exceptions import HTTPUnauthorized
 from aiohttp.web_ws import WebSocketResponse
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
 from quadradiusr_server.db.base import User
+from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
+from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import NotificationService, Handler, Notification
 from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage, ServerReadyMessage, IdentifyMessage, \
     SubscribeMessage, NotificationMessage, SubscribedMessage
@@ -26,14 +29,18 @@ class QrwsConnection:
     A wrapper for QR WS connection.
     """
 
-    def __init__(self, ws: WebSocketResponse) -> None:
-        self.ws = ws
+    def __init__(self, ws: WebSocketResponse = None) -> None:
+        self.ws = ws if ws is not None else web.WebSocketResponse()
+        self.is_ready = False
+
+    async def prepare(self, request: BaseRequest):
+        await self.ws.prepare(request)
 
     @property
     def closed(self):
         return self.ws.closed
 
-    async def handshake(self, auth: Auth, repository: Repository):
+    async def authorize(self, auth: Auth, repository: Repository):
         identify_msg = await self.receive_message()
         if not isinstance(identify_msg, IdentifyMessage):
             await self.send_error(
@@ -49,8 +56,12 @@ class QrwsConnection:
             raise HTTPUnauthorized()
         user = await repository.user_repository.get_by_id(user_id)
 
-        await self.send_message(ServerReadyMessage())
         return user
+
+    async def ready(self):
+        if not self.is_ready:
+            self.is_ready = True
+            await self.send_message(ServerReadyMessage())
 
     async def receive_message(self) -> Message:
         while True:
@@ -92,11 +103,13 @@ class QrwsConnection:
 class BasicConnection(ABC):
     def __init__(
             self, qrws: QrwsConnection, user: User,
-            notification_service: NotificationService) -> None:
+            notification_service: NotificationService,
+            database: DatabaseEngine) -> None:
         super().__init__()
         self._qrws = qrws
         self._user = user
         self._notification_service = notification_service
+        self._database = database
 
     @property
     def qrws(self) -> QrwsConnection:
@@ -112,10 +125,12 @@ class BasicConnection(ABC):
 
     async def handle_connection(self):
         qrws = self.qrws
+        await qrws.ready()
         try:
             while not qrws.closed:
                 message = await qrws.receive_message()
-                handled = await self.handle_message(message)
+                async with transaction_context(self._database):
+                    handled = await self.handle_message(message)
                 if not handled:
                     await qrws.send_message(ErrorMessage(
                         message='Unexpected opcode', fatal=False))

@@ -85,3 +85,29 @@ class Lobby(Base):
             f'id_={self.id_!r}, ' \
             f'name_={self.name_!r}' \
             f')'
+
+
+class LobbyMessage(Base):
+    __tablename__ = 'lobby_message'
+    id_ = Column(String, nullable=False, primary_key=True)
+    user_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
+    lobby_id_ = Column(String, ForeignKey('lobby.id_'), nullable=False)
+    content_ = Column(String, nullable=False)
+    created_at_ = Column(DateTime, nullable=False)
+
+    user_ = relationship(
+        'User',
+        foreign_keys=[user_id_])
+    lobby_ = relationship(
+        'Lobby',
+        foreign_keys=[lobby_id_])
+
+    def __repr__(self):
+        return \
+            f'{type(self).__name__}(' \
+            f'id_={self.id_!r}, ' \
+            f'user_id_={self.user_id_!r}' \
+            f'lobby_id_={self.lobby_id_!r}' \
+            f'content_={self.content_!r}' \
+            f'created_at_={self.created_at_!r}' \
+            f')'

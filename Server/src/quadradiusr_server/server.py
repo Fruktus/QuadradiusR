@@ -147,7 +147,7 @@ class QuadradiusRServer:
 
     def start_lobby(self, lobby: Lobby) -> LiveLobby:
         if lobby.id_ not in self.lobbies.keys():
-            self.lobbies[lobby.id_] = LiveLobby(lobby)
+            self.lobbies[lobby.id_] = LiveLobby(lobby, self.repository)
         return self.lobbies[lobby.id_]
 
     def start_game(self, game: Game) -> GameInProgress:

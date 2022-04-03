@@ -22,6 +22,7 @@ const color_textures = {COLORS.RED: "DefineSprite_412_Decoration0",
 
 var movement_powerup_manager = preload("res://scripts/movement_powerup_manager.gd").new()
 var board: Control
+var current_tile: Tile
 var color = COLORS.RED
 var player = 0
 var is_held = false
@@ -40,10 +41,11 @@ func _process(delta: float):
 	self.rect_global_position = get_global_mouse_position() - rect_min_size/2 * board.rect_scale
 
 
-func init(board: Control, player=0, color=COLORS.RED):
+func init(board: Control, tile: Tile, player=0, color=COLORS.RED):
 	self.player = player
 	self.board = board
 	self.color = color
+	self.current_tile = tile
 	return self
 
 
@@ -125,6 +127,7 @@ func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 
 func make_move(source_tile: Tile, target_tile: Tile, is_colliding: bool = false) -> void:
 	update_shadow(target_tile.tile_pos)
+	self.current_tile = target_tile
 	
 	if is_colliding:
 		target_tile.del_piece()

@@ -204,8 +204,31 @@ the main lobby is returned.
 
     {
         "id": "{lobby_id}",
-        "name": "{lobby_name}"
+        "name": "{lobby_name}",
+        "ws_url": "{websocket_url}"
     }
+
+
+``GET /lobby/{lobby_id}/message``
+---------------------------------
+
+List messages from lobby.
+
+.. code-block:: text
+    :caption: Response status
+
+    200 OK
+
+.. code-block:: json
+    :caption: Response body
+
+    [{
+        "id": "{message_id}",
+        "lobby_id": "{lobby_id}",
+        "user": "{user_id}",
+        "content": "{content}",
+        "created_at": "{iso_date_time_created_at}"
+    }]
 
 
 ``POST /user``

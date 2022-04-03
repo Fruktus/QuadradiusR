@@ -1,5 +1,7 @@
+import dataclasses
+import os.path
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Callable
 
 import dacite as dacite
 import toml as toml
@@ -60,3 +62,70 @@ def from_toml(path) -> ServerConfig:
         ).server
     except Exception as e:
         raise ConfigError(f'Error while loading configuration {path}') from e
+
+
+def to_toml(server_config: ServerConfig, path):
+    try:
+        with open(path, 'x') as f:
+            toml.dump({
+                'server': dataclasses.asdict(server_config),
+            }, f)
+    except Exception as e:
+        raise ConfigError(f'Error while saving configuration {path}') from e
+
+
+class ConfigGenerator:
+
+    def _ask(
+            self, *,
+            question: str, default,
+            mapper: Callable[[str], any] = None):
+        while True:
+            answer = input(f'{question}\n[{default}] > ')
+            if answer == '':
+                return default
+            if mapper:
+                try:
+                    return mapper(answer)
+                except:
+                    print('Invalid format')
+                    continue
+            else:
+                return answer
+
+    def generate(self, destination: str):
+        config = ServerConfig(host='0.0.0.0', port=8080)
+        config.host = self._ask(
+            question='[server.host] Bind address',
+            default='0.0.0.0',
+        )
+        config.port = self._ask(
+            question='[server.port] Bind port',
+            default=8080,
+            mapper=int,
+        )
+        config.href = self._ask(
+            question='[server.href] Address used for self-referencing',
+            default=config.href,
+        )
+        config.shutdown_timeout = self._ask(
+            question='[server.shutdown_timeout] Server shutdown timeout in seconds',
+            default=config.shutdown_timeout,
+            mapper=float,
+        )
+        config.backlog = self._ask(
+            question='[server.backlog] Number of unaccepted connections that '
+                     'the system will allow before refusing new connections',
+            default=config.backlog,
+            mapper=int,
+        )
+        config.database.url = self._ask(
+            question='[server.database.url] Database URL',
+            default=config.database.url,
+        )
+        config.database.create_metadata = self._ask(
+            question='[server.database.create_metadata] Create database metadata on startup',
+            default=config.database.create_metadata,
+            mapper=bool,
+        )
+        to_toml(config, destination)

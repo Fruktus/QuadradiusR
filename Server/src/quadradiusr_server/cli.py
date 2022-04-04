@@ -25,8 +25,6 @@ class ServerCli:
             help='enable verbose output')
         parser.add_argument(
             '--generate-config',
-            nargs='?',
-            default='config.toml',
             metavar='CONFIG_PATH',
             help='generate server configuration')
 

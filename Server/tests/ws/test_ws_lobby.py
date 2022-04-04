@@ -1,3 +1,4 @@
+import asyncio
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
@@ -121,3 +122,71 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual('test message 2', body[1]['content'])
                 self.assertEqual({'id': user0['id']}, body[2]['user'])
                 self.assertEqual('test message 1', body[2]['content'])
+
+    async def test_lobby_players(self):
+        await self.create_test_user(0)
+        await self.create_test_user(1)
+        await self.create_test_user(2)
+
+        user0 = await self.get_test_user(0)
+        user1 = await self.get_test_user(1)
+        user2 = await self.get_test_user(2)
+
+        async with timeout(2), \
+                aiohttp.ClientSession() as session, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect', protocol='ws')) as ws0, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect', protocol='ws')) as ws1, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect', protocol='ws')) as ws2:
+            await self.authorize_ws(0, ws0)
+            await self.authorize_ws(1, ws1)
+            await self.authorize_ws(2, ws2)
+
+            async with session.get(self.server_url('/lobby/@main'), headers={
+                'authorization': await self.authorize_test_user(0)
+            }) as response:
+                self.assertEqual(200, response.status)
+                body = await response.json()
+                self.assertSetEqual({
+                    user0['id'],
+                    user1['id'],
+                    user2['id'],
+                }, {p['id'] for p in body['players']})
+
+    async def test_lobby_connect_duplicate_user(self):
+        await self.create_test_user(0)
+
+        async with timeout(2), \
+                aiohttp.ClientSession() as session, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect', protocol='ws')) as ws0, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect', protocol='ws')) as ws1:
+            await self.authorize_ws(0, ws0)
+            await ws1.send_json({
+                'op': QrwsOpcode.IDENTIFY,
+                'd': {
+                    'token': await self.authorize_test_user(0),
+                },
+            })
+            data = await ws1.receive_json()
+            self.assertEqual(QrwsOpcode.ERROR, data['op'])
+            self.assertEqual('You are already connected to this lobby', data['d']['message'])
+            self.assertEqual(True, data['d']['fatal'])
+
+    async def test_lobby_connect_duplicate_user_force(self):
+        await self.create_test_user(0)
+
+        async with timeout(2000), \
+                aiohttp.ClientSession() as session, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect', protocol='ws')) as ws0, \
+                session.ws_connect(self.server_url(
+                    '/lobby/@main/connect?force=true', protocol='ws')) as ws1:
+            await self.authorize_ws(0, ws0)
+            await self.authorize_ws(0, ws1)
+
+            data = await ws0.receive_json()
+            self.assertEqual(QrwsOpcode.KICK, data['op'])

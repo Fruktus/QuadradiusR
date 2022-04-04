@@ -41,38 +41,6 @@ Only after receiving this message the client
 may send any requests to the server.
 
 
-Common flows
-============
-
-This section describes the common message flows
-shared between all WS connections.
-
-
-Subscribing to notifications
-----------------------------
-
-+----------------+--------------------------+-------------------------------------------+
-| Direction      | Message                  | Comment                                   |
-+================+==========================+===========================================+
-| Client->Server | :ref:`ws_msg_subscribe`  | Client sends a request for subscription.  |
-+----------------+--------------------------+-------------------------------------------+
-| Server->Client | :ref:`ws_msg_subscribed` | Server acknowledges that the subscription |
-|                |                          | has been processed and the client will    |
-|                |                          | receive notifications on this topic from  |
-|                |                          | now on.                                   |
-+----------------+--------------------------+-------------------------------------------+
-
-
-Receiving notifications
------------------------
-
-+----------------+----------------------------+--------------------------------------------+
-| Direction      | Message                    | Comment                                    |
-+================+============================+============================================+
-| Server->Client | :ref:`ws_msg_notification` | Server notifies the client about an event. |
-+----------------+----------------------------+--------------------------------------------+
-
-
 .. _ws_gateway:
 
 Gateway connection
@@ -82,6 +50,16 @@ The gateway is the main two-way connection
 used to communicate with the server.
 In order to obtain the gateway URL, the endpoint
 :ref:`rest_gateway` must be used.
+
+
+.. _ws_lobby:
+
+Lobby connection
+================
+
+Lobby connection is equivalent to joining and being present in a lobby.
+In order to obtain the lobby connection URL, the endpoint
+:ref:`rest_lobby` must be used.
 
 
 .. _ws_game:

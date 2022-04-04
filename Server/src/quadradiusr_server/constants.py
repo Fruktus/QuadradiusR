@@ -13,9 +13,11 @@ class QrwsOpcode(IntEnum):
     SUBSCRIBED = 6
     SEND_MESSAGE = 7
     MESSAGE_SENT = 6
+    KICK = 7
 
 
 class QrwsCloseCode(IntEnum):
     OK = WSCloseCode.OK
     MALFORMED_MESSAGE = 4000
     UNAUTHORIZED = 4001
+    CONFLICT = 4002

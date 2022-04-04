@@ -87,3 +87,21 @@ Subscription confirmation.
         "op": 6,
         "d": {}
     }
+
+
+.. _ws_msg_kick:
+
+``KICK (7)``
+------------
+
+Information about forceful session closure.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 7,
+        "d": {
+            "reason": "{reason}"
+        }
+    }

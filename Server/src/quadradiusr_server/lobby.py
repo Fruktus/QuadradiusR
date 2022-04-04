@@ -2,12 +2,13 @@ import datetime
 import uuid
 from typing import Dict, List
 
+from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Lobby, User, LobbyMessage
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
-from quadradiusr_server.qrws_messages import Message, SendMessageMessage, MessageSentMessage
+from quadradiusr_server.qrws_messages import Message, SendMessageMessage, MessageSentMessage, KickMessage
 
 
 class LiveLobby:
@@ -21,12 +22,13 @@ class LiveLobby:
     def players(self) -> List[User]:
         return [conn.user for conn in self._players.values()]
 
-    def join(self, connection: 'LobbyConnection'):
-        if connection.user.id_ in self._players:
-            raise Exception()
-        self._players[connection.user.id_] = connection
+    async def join(self, connection: 'LobbyConnection'):
+        user_id = connection.user.id_
+        if user_id in self._players:
+            await self._players[user_id].kick()
+        self._players[user_id] = connection
 
-    def leave(self, lobby_conn: 'LobbyConnection'):
+    async def leave(self, lobby_conn: 'LobbyConnection'):
         if lobby_conn in self._players.values():
             del self._players[lobby_conn.user.id_]
 
@@ -74,3 +76,11 @@ class LobbyConnection(BasicConnection):
             user_id=user.id_,
             content=content,
         ))
+
+    async def kick(self):
+        await self.qrws.send_message(KickMessage(
+            reason='Connected from another location',
+        ))
+        await self.qrws.close(
+            QrwsCloseCode.CONFLICT,
+            'Connected from another location')

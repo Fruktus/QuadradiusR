@@ -104,6 +104,17 @@ class MessageSentMessage(Message):
         }
 
 
+class KickMessage(Message):
+    def __init__(self, *, reason: str) -> None:
+        super().__init__(QrwsOpcode.KICK)
+        self.reason = reason
+
+    def _to_json_data(self):
+        return {
+            'reason': self.reason,
+        }
+
+
 def parse_message(*, op: int, data: dict) -> Message:
     if op == QrwsOpcode.HEARTBEAT:
         return HeartbeatMessage()

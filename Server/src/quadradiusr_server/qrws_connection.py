@@ -66,7 +66,10 @@ class QrwsConnection:
     async def receive_message(self) -> Message:
         while True:
             ws_msg = await self.ws.receive()
-            if ws_msg.type == WSMsgType.CLOSE:
+            if ws_msg.type in {
+                WSMsgType.ERROR, WSMsgType.CLOSING,
+                WSMsgType.CLOSE, WSMsgType.CLOSED
+            }:
                 raise QrwsCloseException()
             elif ws_msg.type != WSMsgType.TEXT:
                 await self.send_error('Unexpected message type')
@@ -98,6 +101,11 @@ class QrwsConnection:
             fatal=close_code is not None))
         if close_code is not None:
             await self.ws.close(code=close_code, message=message.encode())
+
+    async def close(self, code: int, message: str) -> bool:
+        return await self.ws.close(
+            code=code,
+            message=message.encode() if message else None)
 
 
 class BasicConnection(ABC):
@@ -135,9 +143,9 @@ class BasicConnection(ABC):
                     await qrws.send_message(ErrorMessage(
                         message='Unexpected opcode', fatal=False))
         except QrwsCloseException as e:
-            await qrws.ws.close(
+            await qrws.close(
                 code=e.code,
-                message=e.message.encode() if e.message else None)
+                message=e.message)
 
     async def handle_message(self, message: Message) -> bool:
         qrws = self.qrws

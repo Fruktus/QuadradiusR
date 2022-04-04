@@ -4,6 +4,7 @@ from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPConflict
 
 from quadradiusr_server.auth import User, Auth
+from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import GameInvite
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
@@ -54,25 +55,33 @@ class GameView(GameViewBase, web.View):
 
 @routes.view('/game/{game_id}/connect')
 class GameConnectView(GameViewBase, web.View):
-    async def get(self, *, auth_user: User):
+    async def get(self):
         server: QuadradiusRServer = self.request.app['server']
         auth: Auth = self.request.app['auth']
         repository: Repository = self.request.app['repository']
         ns: NotificationService = self.request.app['notification']
-        game = await self._get_game(auth_user, repository)
 
-        game_in_progress = server.start_game(game)
-        if game_in_progress.is_player_connected(auth_user.id_):
-            raise HTTPConflict(reason='You are already connected to this game')
+        if 'force' in self.request.rel_url.query:
+            force = bool(self.request.rel_url.query['force'])
+        else:
+            force = False
 
         qrws = QrwsConnection()
         await qrws.prepare(self.request)
         user = await qrws.authorize(auth, repository)
 
+        game = await self._get_game(user, repository)
+        game_in_progress = server.start_game(game)
+        if game_in_progress.is_player_connected(user.id_) and not force:
+            await qrws.send_error(
+                'You are already connected to this game',
+                close_code=QrwsCloseCode.CONFLICT)
+            return qrws.ws
+
         conn = GameConnection(qrws, user, ns, repository.database)
-        game_in_progress.connect_player(conn)
+        await game_in_progress.connect_player(conn)
         try:
             await conn.handle_connection()
             return qrws.ws
         finally:
-            game_in_progress.disconnect_player(conn)
+            await game_in_progress.disconnect_player(conn)

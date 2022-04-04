@@ -6,6 +6,7 @@ from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 
 from quadradiusr_server.auth import Auth
+from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Lobby, User, LobbyMessage
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional, transaction_context
@@ -86,6 +87,11 @@ class LobbyConnectView(LobbyViewBase, web.View):
         auth: Auth = self.request.app['auth']
         ns: NotificationService = self.request.app['notification']
 
+        if 'force' in self.request.rel_url.query:
+            force = bool(self.request.rel_url.query['force'])
+        else:
+            force = False
+
         async with transaction_context(repository.database):
             lobby = await self._get_lobby(repository)
             qrws = QrwsConnection()
@@ -95,15 +101,21 @@ class LobbyConnectView(LobbyViewBase, web.View):
             await repository.expunge(lobby, user)
 
         live_lobby = server.start_lobby(lobby)
+        if live_lobby.joined(user) and not force:
+            await qrws.send_error(
+                'You are already connected to this lobby',
+                close_code=QrwsCloseCode.CONFLICT)
+            return qrws.ws
+
         lobby_conn = LobbyConnection(
             live_lobby, qrws, user,
             ns, repository.database)
-        live_lobby.join(lobby_conn)
+        await live_lobby.join(lobby_conn)
         try:
             await lobby_conn.handle_connection()
             return qrws.ws
         finally:
-            live_lobby.leave(lobby_conn)
+            await live_lobby.leave(lobby_conn)
 
 
 @routes.view('/lobby/{lobby_id}/message')

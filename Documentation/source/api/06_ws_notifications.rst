@@ -1,3 +1,5 @@
+.. _ws_notification:
+
 Notifications
 =============
 

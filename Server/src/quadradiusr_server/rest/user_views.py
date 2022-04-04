@@ -3,7 +3,7 @@ import uuid
 from json import JSONDecodeError
 
 from aiohttp import web
-from aiohttp.web_exceptions import HTTPBadRequest
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPConflict
 
 from quadradiusr_server.auth import User, Auth
 from quadradiusr_server.db.repository import Repository
@@ -24,11 +24,11 @@ class UsersView(web.View):
             username = str(body['username'])
             password = str(body['password'])
         except (JSONDecodeError, KeyError):
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Malformed request body')
 
         existing_user = await repository.user_repository.get_by_username(username)
         if existing_user is not None:
-            raise HTTPBadRequest()
+            raise HTTPConflict(reason='User already exists')
 
         user = User(
             id_=str(uuid.uuid4()),

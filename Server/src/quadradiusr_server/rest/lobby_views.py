@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from datetime import datetime
 
 import dateutil.parser
@@ -33,6 +34,15 @@ def map_lobby_message_to_json(lobby_message: LobbyMessage):
     }
 
 
+class LobbyViewBase(web.View, metaclass=ABCMeta):
+    async def _get_lobby(self, repository: Repository) -> Lobby:
+        lobby_id = self.request.match_info.get('lobby_id')
+        lobby = await repository.lobby_repository.get_by_id(lobby_id)
+        if not lobby:
+            raise HTTPNotFound(reason='Lobby not found')
+        return lobby
+
+
 @routes.view('/lobby')
 class LobbiesView(web.View):
     @transactional
@@ -46,7 +56,7 @@ class LobbiesView(web.View):
 
 
 @routes.view('/lobby/{lobby_id}')
-class LobbyView(web.View):
+class LobbyView(LobbyViewBase, web.View):
     @transactional
     @authorized_endpoint
     async def get(self):
@@ -55,16 +65,9 @@ class LobbyView(web.View):
         lobby = await self._get_lobby(repository)
         return web.json_response(map_lobby_to_json(server, lobby))
 
-    async def _get_lobby(self, repository: Repository) -> Lobby:
-        lobby_id = self.request.match_info.get('lobby_id')
-        lobby = await repository.lobby_repository.get_by_id(lobby_id)
-        if not lobby:
-            raise HTTPNotFound()
-        return lobby
-
 
 @routes.view('/lobby/{lobby_id}/connect')
-class LobbyConnectView(web.View):
+class LobbyConnectView(LobbyViewBase, web.View):
     async def get(self):
         server: QuadradiusRServer = self.request.app['server']
         repository: Repository = self.request.app['repository']
@@ -90,16 +93,9 @@ class LobbyConnectView(web.View):
         finally:
             live_lobby.leave(lobby_conn)
 
-    async def _get_lobby(self, repository: Repository) -> Lobby:
-        lobby_id = self.request.match_info.get('lobby_id')
-        lobby = await repository.lobby_repository.get_by_id(lobby_id)
-        if not lobby:
-            raise HTTPNotFound()
-        return lobby
-
 
 @routes.view('/lobby/{lobby_id}/message')
-class LobbyMessagesView(web.View):
+class LobbyMessagesView(LobbyViewBase, web.View):
     @transactional
     @authorized_endpoint
     async def get(self, *, auth_user: User):
@@ -110,7 +106,7 @@ class LobbyMessagesView(web.View):
         live_lobby = server.start_lobby(lobby)
 
         if not live_lobby.joined(auth_user):
-            raise HTTPForbidden()
+            raise HTTPForbidden(reason='User not inside the lobby')
 
         try:
             if 'before' in self.request.rel_url.query:
@@ -124,10 +120,10 @@ class LobbyMessagesView(web.View):
             else:
                 limit = 100
         except ValueError:
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Malformed query params')
 
         if limit > 100:
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Limit too high')
 
         messages = await repository.lobby_repository.get_messages(
             lobby.id_,
@@ -136,10 +132,3 @@ class LobbyMessagesView(web.View):
         )
         return web.json_response([
             map_lobby_message_to_json(lm) for lm in messages])
-
-    async def _get_lobby(self, repository: Repository) -> Lobby:
-        lobby_id = self.request.match_info.get('lobby_id')
-        lobby = await repository.lobby_repository.get_by_id(lobby_id)
-        if not lobby:
-            raise HTTPNotFound()
-        return lobby

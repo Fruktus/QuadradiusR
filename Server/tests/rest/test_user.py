@@ -77,4 +77,7 @@ class TestUser(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'username': username,
                 'password': 'test_password',
             }) as response:
-                self.assertEqual(400, response.status)
+                self.assertEqual(409, response.status)
+                self.assertEqual(
+                    '409: User already exists',
+                    await response.text())

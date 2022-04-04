@@ -28,19 +28,19 @@ class GameInvitesView(web.View):
             subject_id = str(body['subject'])
             expiration = dateutil.parser.isoparse(str(body['expiration']))
         except (JSONDecodeError, KeyError, ValueError):
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Malformed body data')
 
         if subject_id == auth_user.id_:
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='User cannot invite themselves... or can they?')
         if expiration < datetime.datetime.now():
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Invite cannot expire in the past')
         if expiration > datetime.datetime.now() + \
                 datetime.timedelta(minutes=60):
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Expiration date too late')
 
         subject = await repository.user_repository.get_by_id(subject_id)
         if subject is None:
-            raise HTTPBadRequest()
+            raise HTTPBadRequest(reason='Subject not found')
 
         game_invite = GameInvite(
             id_=str(uuid.uuid4()),
@@ -103,10 +103,10 @@ class GameInviteView(web.View):
         game_invite_id = self.request.match_info.get('game_invite_id')
         game_invite = await repository.game_invite_repository.get_by_id(game_invite_id)
         if not game_invite:
-            raise HTTPNotFound()
+            raise HTTPNotFound(reason='Game invite not found')
         if auth_user.id_ != game_invite.from_id_ and \
                 auth_user.id_ != game_invite.subject_id_:
-            raise HTTPForbidden()
+            raise HTTPForbidden(reason='You are not a part of the invite')
         return game_invite
 
 
@@ -115,4 +115,4 @@ class GameInviteAcceptView(web.View):
     @transactional
     @authorized_endpoint
     async def post(self, *, auth_user: User):
-        raise HTTPNotImplemented()
+        raise HTTPNotImplemented(reason='Welp...')

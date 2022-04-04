@@ -25,7 +25,7 @@ class GameInvitesView(web.View):
 
         try:
             body = await self.request.json()
-            subject_id = str(body['subject'])
+            subject_id = str(body['subject_id'])
             expiration = dateutil.parser.isoparse(str(body['expiration']))
         except (JSONDecodeError, KeyError, ValueError):
             raise HTTPBadRequest(reason='Malformed body data')
@@ -73,8 +73,12 @@ class GameInviteView(web.View):
 
         return web.json_response({
             'id': game_invite.id_,
-            'from': game_invite.from_id_,
-            'subject': game_invite.subject_id_,
+            'from': {
+                'id': game_invite.from_id_,
+            },
+            'subject': {
+                'id': game_invite.subject_id_,
+            },
             'expiration': game_invite.expiration_.isoformat(),
         })
 

@@ -69,7 +69,7 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual(200, response.status)
                 body = await response.json()
                 self.assertEqual(1, len(body))
-                self.assertEqual(user0['id'], body[0]['user'])
+                self.assertEqual({'id': user0['id']}, body[0]['user'])
                 self.assertEqual('test message', body[0]['content'])
 
     async def test_persist_messages(self):
@@ -115,9 +115,9 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual(200, response.status)
                 body = await response.json()
                 self.assertEqual(3, len(body))
-                self.assertEqual(user0['id'], body[0]['user'])
+                self.assertEqual({'id': user0['id']}, body[0]['user'])
                 self.assertEqual('test message 3', body[0]['content'])
-                self.assertEqual(user1['id'], body[1]['user'])
+                self.assertEqual({'id': user1['id']}, body[1]['user'])
                 self.assertEqual('test message 2', body[1]['content'])
-                self.assertEqual(user0['id'], body[2]['user'])
+                self.assertEqual({'id': user0['id']}, body[2]['user'])
                 self.assertEqual('test message 1', body[2]['content'])

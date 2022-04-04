@@ -50,8 +50,12 @@ Get information about a game.
     {
         "id": "{id}",
         "players": [
-            "{player_id_1}",
-            "{player_id_2}"
+            {
+                "id": "{player_id_1}"
+            },
+            {
+                "id": "{player_id_2}"
+            }
         ],
         "expiration": "{iso_date_time_expiration}",
         "ws_url": "{websocket_url}"
@@ -106,7 +110,7 @@ Create a new invite for a game.
     :caption: Request body
 
     {
-        "subject": "{user_id}",
+        "subject_id": "{user_id}",
         "expiration": "{iso_date_time_expiration}"
     }
 
@@ -147,8 +151,12 @@ Get information about a game invite.
 
     {
         "id": "{id}",
-        "from": "{user_id}",
-        "subject": "{user_id}",
+        "from": {
+            "id": "{user_id}"
+        },
+        "subject": {
+            "id": "{user_id}"
+        },
         "expiration": "{iso_date_time_expiration}"
     }
 
@@ -205,7 +213,12 @@ the main lobby is returned.
     {
         "id": "{lobby_id}",
         "name": "{lobby_name}",
-        "ws_url": "{websocket_url}"
+        "ws_url": "{websocket_url}",
+        "players": [
+            {
+                "id": "{player_id}"
+            }
+        ]
     }
 
 
@@ -232,8 +245,12 @@ Query parameters:
 
     [{
         "id": "{message_id}",
-        "lobby_id": "{lobby_id}",
-        "user": "{user_id}",
+        "lobby": {
+            "id": "{lobby_id}"
+        },
+        "user": {
+            "id": "{user_id}"
+        },
         "content": "{content}",
         "created_at": "{iso_date_time_created_at}"
     }]

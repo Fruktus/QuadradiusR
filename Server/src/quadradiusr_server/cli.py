@@ -2,7 +2,7 @@ import argparse
 import logging.config
 import os.path
 
-from quadradiusr_server import config
+from quadradiusr_server import config, logger
 from quadradiusr_server.config import ConfigGenerator
 from quadradiusr_server.server import QuadradiusRServer
 
@@ -21,8 +21,8 @@ class ServerCli:
             help='specify path of the configuration file')
         parser.add_argument(
             '-v', '--verbose',
-            action='store_true',
-            help='enable verbose output')
+            action='count', default=0,
+            help='enable verbose output (it stacks)')
         parser.add_argument(
             '--generate-config',
             metavar='CONFIG_PATH',
@@ -32,36 +32,7 @@ class ServerCli:
 
     def run(self) -> int:
         args = self.args
-        logging.config.dictConfig({
-            'version': 1,
-            'disable_existing_loggers': True,
-            'formatters': {
-                'standard': {
-                    'class': 'logging.Formatter',
-                    'format': '[{asctime}.{msecs:3.0f}] {levelname} {message}',
-                    'style': '{',
-                    'datefmt': '%H:%M:%S',
-                },
-                'verbose': {
-                    'class': 'logging.Formatter',
-                    'format': '{asctime} {threadName:10} [{name:24}] {levelname:7} {message}',
-                    'style': '{',
-                },
-            },
-            'handlers': {
-                'default': {
-                    'class': 'logging.StreamHandler',
-                    'level': 'DEBUG' if args.verbose else 'INFO',
-                    'formatter': 'verbose' if args.verbose else 'standard',
-                },
-            },
-            'loggers': {
-                '': {
-                    'handlers': ['default'],
-                    'level': 'DEBUG',
-                },
-            },
-        })
+        logger.configure_logger(args.verbose)
 
         if args.generate_config:
             gen = ConfigGenerator()

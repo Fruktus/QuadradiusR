@@ -25,7 +25,7 @@ def map_lobby_to_json(
         'name': lobby.name_,
         'ws_url': server.get_href('ws') + f'/lobby/{lobby.id_}/connect',
         'players': [{
-            'id': player.id,
+            'id': player.id_,
         } for player in live_lobby.players] if live_lobby is not None else None,
     }
 

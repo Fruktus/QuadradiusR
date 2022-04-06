@@ -18,11 +18,7 @@ class GameInviteRepository:
     async def get_by_id(
             self, id_: str,
             *, db_session: AsyncSession) -> Optional[GameInvite]:
-        stmt = select(GameInvite) \
-            .where(GameInvite.id_ == id_) \
-            .options(selectinload(GameInvite.from_), selectinload(GameInvite.subject_))
-        result = await db_session.execute(stmt)
-        return result.scalar()
+        return await db_session.get(GameInvite, id_)
 
     @transactional
     async def add(

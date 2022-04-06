@@ -8,7 +8,6 @@ from aiohttp import ClientWebSocketResponse
 
 from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.constants import QrwsOpcode
-from quadradiusr_server.db.base import User
 from quadradiusr_server.notification import Handler, Notification
 from quadradiusr_server.server import QuadradiusRServer
 
@@ -62,6 +61,7 @@ class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
                 'username': self.get_test_user_username(n),
                 'password': self.get_test_user_password(n),
             }) as response:
+                assert response.status == 200
                 json = await response.json()
                 return json['token']
 

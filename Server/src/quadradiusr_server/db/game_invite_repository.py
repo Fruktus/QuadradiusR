@@ -29,8 +29,9 @@ class GameInviteRepository:
     @transactional
     async def get_old_invites(
             self, *, db_session: AsyncSession) -> List[GameInvite]:
+        now = datetime.datetime.now(datetime.timezone.utc)
         result = await db_session.execute(
-            select(GameInvite).where(GameInvite.expiration_ < datetime.datetime.now()))
+            select(GameInvite).where(GameInvite.expires_at_ < now))
         return result.scalars()
 
     @transactional

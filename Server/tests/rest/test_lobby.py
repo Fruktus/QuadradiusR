@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+import urllib.parse
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
+from isodate import parse_datetime
 
 from harness import RestTestHarness, TestUserHarness
 from quadradiusr_server.db.base import LobbyMessage
@@ -49,11 +50,11 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user0 = await self.get_test_user(0)
 
         dates = [
-            datetime.now() - timedelta(seconds=0),
-            datetime.now() - timedelta(seconds=5),
-            datetime.now() - timedelta(seconds=10),
-            datetime.now() - timedelta(seconds=15),
-            datetime.now() - timedelta(seconds=20),
+            parse_datetime('2022-01-01T10:00:20Z'),
+            parse_datetime('2022-01-01T10:00:15Z'),
+            parse_datetime('2022-01-01T10:00:10Z'),
+            parse_datetime('2022-01-01T10:00:05Z'),
+            parse_datetime('2022-01-01T10:00:00Z'),
         ]
 
         async with transaction_context(self.server.database):
@@ -89,7 +90,8 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     self.assertEqual('1', body[1]['id'])
                     self.assertEqual('2', body[2]['id'])
 
-                async with session.get(self.server_url(f'/lobby/@main/message?before={dates[2]}'), headers={
+                before = urllib.parse.quote(dates[2].isoformat())
+                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'), headers={
                     'authorization': await self.authorize_test_user(0)
                 }) as response:
                     self.assertEqual(200, response.status)
@@ -97,3 +99,19 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     self.assertEqual(2, len(body))
                     self.assertEqual('3', body[0]['id'])
                     self.assertEqual('4', body[1]['id'])
+
+                before = urllib.parse.quote('2022-01-01T11:00:10+01:00')
+                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'), headers={
+                    'authorization': await self.authorize_test_user(0)
+                }) as response:
+                    self.assertEqual(200, response.status)
+                    body = await response.json()
+                    self.assertEqual(2, len(body))
+
+                before = urllib.parse.quote('2022-01-01T10:00:10')
+                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'), headers={
+                    'authorization': await self.authorize_test_user(0)
+                }) as response:
+                    self.assertEqual(400, response.status)
+                    body = await response.text()
+                    self.assertEqual('400: Malformed query params', body)

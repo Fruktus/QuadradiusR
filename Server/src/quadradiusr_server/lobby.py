@@ -39,7 +39,7 @@ class LiveLobby:
             user_id_=user.id_,
             lobby_id_=self.lobby.id_,
             content_=content,
-            created_at_=datetime.datetime.now(),
+            created_at_=datetime.datetime.now(datetime.timezone.utc),
         )
         await lobby_repo.add_message(lobby_message)
         for conn in self._players.values():

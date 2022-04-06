@@ -45,7 +45,7 @@ class GameView(GameViewBase, web.View):
                 user_to_json(game.player_a_),
                 user_to_json(game.player_b_),
             ],
-            'expiration': game.expiration_.isoformat(),
+            'expires_at': game.expires_at_.isoformat(),
             'ws_url': server.get_href('ws') + f'/game/{game.id_}/connect',
         })
 

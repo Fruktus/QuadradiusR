@@ -1,7 +1,27 @@
-from sqlalchemy import Column, ForeignKey, DateTime, String, PickleType
+from datetime import datetime, timezone
+
+from sqlalchemy import Column, ForeignKey, DateTime, String, PickleType, TypeDecorator
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
+
+
+# noinspection PyAbstractClass
+class DateTimeUTC(TypeDecorator):
+    impl = DateTime
+    LOCAL_TIMEZONE = datetime.utcnow().astimezone().tzinfo
+
+    def process_bind_param(self, value: datetime, dialect):
+        if value.tzinfo is None:
+            raise ValueError('Tried to bind datetime without tz')
+
+        return value.astimezone(timezone.utc)
+
+    def process_result_value(self, value, dialect):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+
+        return value.astimezone(timezone.utc)
 
 
 class User(Base):
@@ -23,7 +43,7 @@ class GameInvite(Base):
     id_ = Column(String, nullable=False, primary_key=True)
     from_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     subject_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
-    expiration_ = Column(DateTime, nullable=False)
+    expires_at_ = Column(DateTimeUTC, nullable=False)
 
     from_ = relationship(
         'User',
@@ -59,7 +79,7 @@ class Game(Base):
     id_ = Column(String, nullable=False, primary_key=True)
     player_a_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     player_b_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
-    expiration_ = Column(DateTime, nullable=False)
+    expires_at_ = Column(DateTimeUTC, nullable=False)
     game_state_ = Column(PickleType, nullable=False)
 
     player_a_ = relationship(
@@ -101,7 +121,7 @@ class LobbyMessage(Base):
     user_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     lobby_id_ = Column(String, ForeignKey('lobby.id_'), nullable=False)
     content_ = Column(String, nullable=False)
-    created_at_ = Column(DateTime, nullable=False)
+    created_at_ = Column(DateTimeUTC, nullable=False)
 
     user_ = relationship(
         'User',

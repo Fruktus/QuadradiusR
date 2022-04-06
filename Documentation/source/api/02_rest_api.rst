@@ -59,7 +59,7 @@ Get information about a game.
                 "username": "{player_name_2}"
             }
         ],
-        "expiration": "{iso_date_time_expiration}",
+        "expires_at": "{iso_date_time}",
         "ws_url": "{websocket_url}"
     }
 
@@ -113,7 +113,7 @@ Create a new invite for a game.
 
     {
         "subject_id": "{user_id}",
-        "expiration": "{iso_date_time_expiration}"
+        "expires_in": "{iso_duration} (optional)"
     }
 
 .. code-block:: text
@@ -161,7 +161,7 @@ Get information about a game invite.
             "id": "{user_id}",
             "username": "{user_name}"
         },
-        "expiration": "{iso_date_time_expiration}"
+        "expires_at": "{iso_date_time}"
     }
 
 

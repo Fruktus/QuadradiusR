@@ -41,7 +41,10 @@ class GameInvitesView(web.View):
         try:
             body = await self.request.json()
             subject_id = str(body['subject_id'])
-            expiration = dateutil.parser.isoparse(str(body['expiration']))
+            if 'expiration' in body:
+                expiration = dateutil.parser.isoparse(str(body['expiration']))
+            else:
+                expiration = datetime.datetime.now() + datetime.timedelta(minutes=2)
         except (JSONDecodeError, KeyError, ValueError):
             raise HTTPBadRequest(reason='Malformed body data')
 

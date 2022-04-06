@@ -9,6 +9,7 @@ from quadradiusr_server.auth import User, Auth
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.rest.auth import authorized_endpoint
+from quadradiusr_server.rest.mappers import user_to_json
 from quadradiusr_server.server import routes
 
 
@@ -52,7 +53,5 @@ class UserView(web.View):
         if user_id != '@me' and user_id != auth_user.id_:
             return web.Response(status=403)
 
-        return web.json_response({
-            'id': auth_user.id_,
-            'username': auth_user.username_,
-        })
+        json = user_to_json(auth_user)
+        return web.json_response(json)

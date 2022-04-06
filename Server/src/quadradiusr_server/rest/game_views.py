@@ -12,6 +12,7 @@ from quadradiusr_server.game import GameConnection
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
+from quadradiusr_server.rest.mappers import user_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
 
 
@@ -41,12 +42,8 @@ class GameView(GameViewBase, web.View):
         return web.json_response({
             'id': game.id_,
             'players': [
-                {
-                    'id': game.player_a_id_,
-                },
-                {
-                    'id': game.player_b_id_,
-                },
+                user_to_json(game.player_a_),
+                user_to_json(game.player_b_),
             ],
             'expiration': game.expiration_.isoformat(),
             'ws_url': server.get_href('ws') + f'/game/{game.id_}/connect',

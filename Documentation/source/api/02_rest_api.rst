@@ -51,10 +51,12 @@ Get information about a game.
         "id": "{id}",
         "players": [
             {
-                "id": "{player_id_1}"
+                "id": "{player_id_1}",
+                "username": "{player_name_1}"
             },
             {
-                "id": "{player_id_2}"
+                "id": "{player_id_2}",
+                "username": "{player_name_2}"
             }
         ],
         "expiration": "{iso_date_time_expiration}",
@@ -152,10 +154,12 @@ Get information about a game invite.
     {
         "id": "{id}",
         "from": {
-            "id": "{user_id}"
+            "id": "{user_id}",
+            "username": "{user_name}"
         },
         "subject": {
-            "id": "{user_id}"
+            "id": "{user_id}",
+            "username": "{user_name}"
         },
         "expiration": "{iso_date_time_expiration}"
     }
@@ -216,7 +220,8 @@ the main lobby is returned.
         "ws_url": "{websocket_url}",
         "players": [
             {
-                "id": "{player_id}"
+                "id": "{player_id}",
+                "username": "{player_name}"
             }
         ]
     }
@@ -249,7 +254,8 @@ Query parameters:
             "id": "{lobby_id}"
         },
         "user": {
-            "id": "{user_id}"
+            "id": "{user_id}",
+            "username": "{user_name}"
         },
         "content": "{content}",
         "created_at": "{iso_date_time_created_at}"

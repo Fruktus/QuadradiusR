@@ -2,6 +2,7 @@ import importlib
 import inspect
 import pkgutil
 from inspect import Parameter
+from typing import Optional
 
 from aiohttp.abc import Request
 from isodate import parse_datetime
@@ -47,6 +48,20 @@ def is_request_websocket_upgradable(request: Request):
            'upgrade' == request.headers['connection'].lower() and \
            'upgrade' in request.headers and \
            'websocket' == request.headers['upgrade'].lower()
+
+
+def parse_etag_header(header_value):
+    if not header_value.startswith('W/'):
+        return None
+    if header_value[2] != '"' or header_value[-1] != '"':
+        return None
+    return header_value[3:-1]
+
+
+def get_if_none_match_from_request(request: Request) -> Optional[str]:
+    if 'if-none-match' in request.headers:
+        return parse_etag_header(request.headers['if-none-match'])
+    return None
 
 
 def parse_iso_datetime_tz(string: str):

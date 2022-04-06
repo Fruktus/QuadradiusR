@@ -5,6 +5,7 @@ import aiohttp
 from async_timeout import timeout
 
 from harness import TestUserHarness, RestTestHarness
+from quadradiusr_server.constants import QrwsOpcode
 
 
 class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
@@ -51,3 +52,12 @@ class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness
                     self.authorize_ws(0, ws0),
                     self.authorize_ws(1, ws1),
                 )
+
+                msg0 = await ws0.receive_json()
+                self.assertEqual(QrwsOpcode.GAME_STATE, msg0['op'])
+                self.assertIsNotNone(msg0['d']['game_state'])
+                self.assertIsNotNone(msg0['d']['etag'])
+                msg1 = await ws1.receive_json()
+                self.assertEqual(QrwsOpcode.GAME_STATE, msg1['op'])
+                self.assertIsNotNone(msg1['d']['game_state'])
+                self.assertIsNotNone(msg1['d']['etag'])

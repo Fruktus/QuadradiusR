@@ -132,9 +132,13 @@ class BasicConnection(ABC):
     def notification_service(self) -> NotificationService:
         return self._notification_service
 
+    async def on_ready(self):
+        pass
+
     async def handle_connection(self):
         qrws = self.qrws
         await qrws.ready()
+        await self.on_ready()
         try:
             while not qrws.closed:
                 message = await qrws.receive_message()

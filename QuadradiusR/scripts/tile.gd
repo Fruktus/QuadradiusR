@@ -5,6 +5,7 @@ onready var tile_content = $TileContent
 onready var slot = $TileContent/TorusSlot
 onready var dirt_a = $TileContent/DirtA
 onready var dirt_b = $TileContent/DirtB
+onready var anim = $AnimationPlayer
 
 const square_dirts_asset_path = "res://original_assets/game/sprites/{dirt}/1.png"
 const square_dirts = {0: "DefineSprite_283_SquareDirt1",
@@ -91,3 +92,13 @@ func raise():
 
 func lower():
 	self.set_elevation(self.tile_pos.z - 1)
+
+
+func _torus_pickup(current_tile: Tile):
+	if current_tile == self:
+		anim.play("HighlightOn")
+
+
+func _torus_putdown(current_tile: Tile):
+	if current_tile == self:
+		anim.play("HighlightOff")

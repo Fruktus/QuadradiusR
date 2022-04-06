@@ -44,6 +44,7 @@ Declared variables order (follow recursively if multiple modifiers are used):
 * `export var`
 * `var`
 
+Any debug print statements have to include ``` # DEBUG``` comment.
 
 ### Godot Scripts
 We follow the style specified [here](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)

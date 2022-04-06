@@ -64,6 +64,7 @@ func _begin_drag():
 	shadow.visible = false
 	get_tree().call_group("torus", "set_interaction", false)
 	get_tree().call_group("board", "_torus_pickup", self)
+	get_tree().call_group("tile", "_torus_pickup", current_tile)
 	yield(get_tree(), "idle_frame")  # needed for the scaling to work properly
 	self.rect_scale = Vector2(1.5, 1.5)
 	set_process(true)
@@ -74,6 +75,8 @@ func _end_drag():
 	shadow.visible = true
 	get_tree().call_group("torus", "set_interaction", true)
 	get_tree().call_group("board", "_torus_putdown", self)
+	get_tree().call_group("tile", "_torus_putdown", current_tile)
+	
 	is_held = false
 	putdown_sfx.play()
 	self.rect_scale = Vector2(1, 1)

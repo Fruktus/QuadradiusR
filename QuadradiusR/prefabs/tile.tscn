@@ -1,11 +1,79 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://original_assets/game/shapes/246.png" type="Texture" id=1]
 [ext_resource path="res://scripts/tile.gd" type="Script" id=2]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/2.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/4.png" type="Texture" id=4]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/3.png" type="Texture" id=5]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/5.png" type="Texture" id=6]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/6.png" type="Texture" id=7]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/1.png" type="Texture" id=8]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/7.png" type="Texture" id=9]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/8.png" type="Texture" id=10]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/9.png" type="Texture" id=11]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/11.png" type="Texture" id=12]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/12.png" type="Texture" id=13]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/13.png" type="Texture" id=14]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/10.png" type="Texture" id=15]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
-[node name="Tile" type="PanelContainer"]
+[sub_resource type="Animation" id=2]
+resource_name = "HighlightOff"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("TileContent/Highlight:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 7, 12 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "HighlightOn"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("TileContent/Highlight:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0, 7 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "RESET"
+tracks/0/type = "value"
+tracks/0/path = NodePath("TileContent/Highlight:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="SpriteFrames" id=5]
+animations = [ {
+"frames": [ ExtResource( 8 ), ExtResource( 3 ), ExtResource( 5 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 15 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ) ],
+"loop": true,
+"name": "default",
+"speed": 1.0
+} ]
+
+[node name="Tile" type="PanelContainer" groups=["tile"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -1418.0
@@ -14,9 +82,11 @@ rect_min_size = Vector2( 502, 502 )
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/HighlightOff = SubResource( 2 )
+anims/HighlightOn = SubResource( 3 )
+anims/RESET = SubResource( 4 )
 
 [node name="TileContent" type="Control" parent="."]
 margin_right = 502.0
@@ -29,6 +99,11 @@ position = Vector2( 251, 251 )
 [node name="DirtB" type="Sprite" parent="TileContent"]
 position = Vector2( 251, 251 )
 
+[node name="Highlight" type="AnimatedSprite" parent="TileContent"]
+self_modulate = Color( 1, 1, 1, 0.8 )
+position = Vector2( 251, 251 )
+frames = SubResource( 5 )
+
 [node name="TileBase" type="Sprite" parent="TileContent"]
 show_behind_parent = true
 texture = ExtResource( 1 )
@@ -38,6 +113,3 @@ centered = false
 margin_right = 502.0
 margin_bottom = 502.0
 mouse_filter = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}

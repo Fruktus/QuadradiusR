@@ -71,4 +71,4 @@ func _torus_putdown(torus: Node):
 		torus.make_move(self.active_torus.current_tile, target_tile, is_colliding)
 		return
 	
-	self.torus_source_slot.add_child(self.active_torus)
+	self.active_torus.current_tile.set_slot(self.active_torus)

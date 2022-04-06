@@ -32,6 +32,7 @@ func _on_connection_established(protocol: String):
 
 func _on_data_received():
 	print('data received:', ws.get_peer(1).get_packet().get_string_from_utf8())
+	# emit signal
 
 func _on_server_close_request(code: int, reason: String):
 	print('server closed. reason: ', reason, ' code: ', code)

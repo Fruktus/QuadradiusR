@@ -11,6 +11,7 @@ onready var player_left_sfx = $PlayerLeftSFX
 
 const player_template = preload("res://prefabs/player_list_row.tscn")
 
+var players_to_uuid = {}
 
 
 func receive_challenge(username: String):
@@ -19,8 +20,9 @@ func receive_challenge(username: String):
 			child.receive_challenge()
 
 
-func add_player(username: String, is_current=false):
+func add_player(username: String, uuid: String, is_current=false):
 	var new_player = player_template.instance().init(username, is_current)
+	self.players_to_uuid[username] = uuid
 
 	new_player.connect("player_hover_start", self, "_on_hover_start")
 	new_player.connect("player_hover_end", self, "_on_hover_end")
@@ -50,4 +52,5 @@ func _on_hover_end(username: String):
 
 
 func _on_player_clicked(username: String):
+	NetworkHandler.invite_player(self.players_to_uuid[username])
 	emit_signal("challenge_issued", username)

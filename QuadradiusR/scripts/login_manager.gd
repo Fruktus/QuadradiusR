@@ -14,7 +14,6 @@ func _on_login(is_guest, remember_pw, username, password):
 	NetworkHandler.create_user('asd', '', null, {})
 	NetworkHandler.create_user('test', '', null, {})
 	NetworkHandler.authorize_user(username, password, funcref(self, "_cb_login_done"), user_data)
-#	get_tree().change_scene("res://scenes/lobby.tscn")
 
 func _cb_login_done(is_authorized, user_data, message: Message):
 	print('login done ', is_authorized, ' ', user_data)

@@ -5,11 +5,11 @@ onready var player_list = $PlayerList
 
 
 func _ready():
-	player_list.add_player("Stefan GUEST", true)
-	player_list.add_player(NetworkHandler.username, false)
+	player_list.add_player("Stefan GUEST", "123", true)
+	player_list.add_player(NetworkHandler.username, "312", false)
 	if not NetworkHandler.lobby_data['players'].empty():
-		for i in NetworkHandler.lobby_data['players']:
-			player_list.add_player(i['id'], false)  # TODO request own id too
+		for player in NetworkHandler.lobby_data['players']:
+			player_list.add_player("username-" + player['id'], player['id'], false) # TODO: Fix username (param 1)
 
 
 func _on_challenge_issued(username):

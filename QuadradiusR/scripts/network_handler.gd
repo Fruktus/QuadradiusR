@@ -66,3 +66,7 @@ func _join_lobby_1(message: Message, args: Dictionary):
 
 	
 	args['cb'].call_func()
+	
+
+func invite_player(opponent_uuid: String):
+	rest_api.invite_player(token, opponent_uuid)

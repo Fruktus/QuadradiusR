@@ -58,7 +58,7 @@ _global_script_class_icons={
 
 config/name="Quadradius R"
 config/description="Reimplementation of Classic Quadradius game."
-run/main_scene="res://scenes/game.tscn"
+run/main_scene="res://scenes/login.tscn"
 config/icon="res://icon.png"
 
 [autoload]

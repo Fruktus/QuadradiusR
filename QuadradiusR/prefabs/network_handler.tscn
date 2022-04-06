@@ -15,4 +15,3 @@ script = ExtResource( 2 )
 script = ExtResource( 3 )
 
 [connection signal="request_completed" from="RESTApi" to="RESTApi" method="_on_request_completed"]
-[connection signal="request_processed" from="RESTApi" to="." method="_on_RESTApi_request_processed"]

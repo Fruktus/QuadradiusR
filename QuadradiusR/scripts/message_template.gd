@@ -11,3 +11,8 @@ func init(result: int, message: String, body=null):
 	self.message = message
 	self.body = body
 	return self
+
+
+func _to_string():
+	return "Message(result:{result}, message:{message}, body:{body})".format(
+		{"result": result, "message": message, "body": body})

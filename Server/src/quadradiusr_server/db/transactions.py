@@ -1,3 +1,4 @@
+import inspect
 from contextvars import ContextVar
 from typing import Optional, Union, Callable
 
@@ -23,6 +24,10 @@ def transactional(f):
 
     Currently, the only supported tx mode is REQUIRES.
     """
+
+    if not inspect.iscoroutinefunction(f):
+        raise Exception(
+            '@transactional may be present only on async functions')
 
     async def wrapper(*args, **kwargs):
         async def call_transactional_method(s):

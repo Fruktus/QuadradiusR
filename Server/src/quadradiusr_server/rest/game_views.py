@@ -5,9 +5,9 @@ from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPConflict
 
 from quadradiusr_server.auth import User, Auth
 from quadradiusr_server.constants import QrwsCloseCode
-from quadradiusr_server.db.base import GameInvite
+from quadradiusr_server.db.base import GameInvite, Game
 from quadradiusr_server.db.repository import Repository
-from quadradiusr_server.db.transactions import transactional
+from quadradiusr_server.db.transactions import transactional, transaction_context
 from quadradiusr_server.game import GameConnection
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
@@ -18,7 +18,7 @@ from quadradiusr_server.server import routes, QuadradiusRServer
 class GameViewBase(web.View, metaclass=ABCMeta):
     async def _get_game(
             self, auth_user: User,
-            repository: Repository) -> GameInvite:
+            repository: Repository) -> Game:
         game_id = self.request.match_info.get('game_id')
         game = await repository.game_repository.get_by_id(game_id)
         if not game:
@@ -66,11 +66,14 @@ class GameConnectView(GameViewBase, web.View):
         else:
             force = False
 
-        qrws = QrwsConnection()
-        await qrws.prepare(self.request)
-        user = await qrws.authorize(auth, repository)
+        async with transaction_context(repository.database):
+            qrws = QrwsConnection()
+            await qrws.prepare(self.request)
+            user = await qrws.authorize(auth, repository)
+            game = await self._get_game(user, repository)
 
-        game = await self._get_game(user, repository)
+            await repository.expunge(game)
+
         game_in_progress = server.start_game(game)
         if game_in_progress.is_player_connected(user.id_) and not force:
             await qrws.send_error(

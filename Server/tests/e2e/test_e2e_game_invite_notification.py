@@ -31,39 +31,19 @@ class E2eGameInviteNotificationTest(IsolatedAsyncioTestCase, TestUserHarness, Re
             async with session.ws_connect(gateway_ws) as ws0, \
                     session.ws_connect(gateway_ws) as ws1, \
                     session.ws_connect(gateway_ws) as ws2:
-                await ws0.send_json({
-                    'op': QrwsOpcode.IDENTIFY,
-                    'd': {
-                        'token': await self.authorize_test_user(0),
-                    },
-                })
-                data = await ws0.receive_json()
-                self.assertEqual(QrwsOpcode.SERVER_READY, data['op'])
-                await ws1.send_json({
-                    'op': QrwsOpcode.IDENTIFY,
-                    'd': {
-                        'token': await self.authorize_test_user(1),
-                    },
-                })
-                data = await ws1.receive_json()
-                self.assertEqual(QrwsOpcode.SERVER_READY, data['op'])
-                await ws2.send_json({
-                    'op': QrwsOpcode.IDENTIFY,
-                    'd': {
-                        'token': await self.authorize_test_user(2),
-                    },
-                })
-                data = await ws2.receive_json()
-                self.assertEqual(QrwsOpcode.SERVER_READY, data['op'])
+                await self.authorize_ws(0, ws0)
+                await self.authorize_ws(1, ws1)
+                await self.authorize_ws(2, ws2)
 
-                await ws1.send_json({
-                    'op': QrwsOpcode.SUBSCRIBE,
-                    'd': {
-                        'topic': 'game.invite.received',
-                    },
-                })
-                data = await ws1.receive_json()
-                self.assertEqual(QrwsOpcode.SUBSCRIBED, data['op'])
+                for ws in [ws0, ws1, ws2]:
+                    await ws.send_json({
+                        'op': QrwsOpcode.SUBSCRIBE,
+                        'd': {
+                            'topic': 'game.invite.received',
+                        },
+                    })
+                    data = await ws.receive_json()
+                    self.assertEqual(QrwsOpcode.SUBSCRIBED, data['op'])
 
                 exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
                 async with session.post(self.server_url('/game_invite'), json={

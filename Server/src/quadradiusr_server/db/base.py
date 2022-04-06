@@ -27,9 +27,13 @@ class GameInvite(Base):
 
     from_ = relationship(
         'User',
+        lazy='joined',
+        cascade='expunge',
         foreign_keys=[from_id_])
     subject_ = relationship(
         'User',
+        lazy='joined',
+        cascade='expunge',
         foreign_keys=[subject_id_])
 
     def get_other_player(self, this_player: User) -> User:
@@ -56,13 +60,17 @@ class Game(Base):
     player_a_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     player_b_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     expiration_ = Column(DateTime, nullable=False)
-    game_data_ = Column(PickleType, nullable=False)
+    game_state_ = Column(PickleType, nullable=False)
 
     player_a_ = relationship(
         'User',
+        lazy='joined',
+        cascade='expunge',
         foreign_keys=[player_a_id_])
     player_b_ = relationship(
         'User',
+        lazy='joined',
+        cascade='expunge',
         foreign_keys=[player_b_id_])
 
     def __repr__(self):

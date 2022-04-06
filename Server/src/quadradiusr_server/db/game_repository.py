@@ -1,6 +1,8 @@
 from typing import Optional
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.database_engine import DatabaseEngine
@@ -22,3 +24,9 @@ class GameRepository:
             self, game: Game,
             *, db_session: AsyncSession):
         db_session.add(game)
+
+    @transactional
+    async def save(
+            self, game: Game,
+            *, db_session: AsyncSession):
+        await db_session.merge(game)

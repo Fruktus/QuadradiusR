@@ -45,6 +45,7 @@ class QuadradiusRServer:
         self.site: Optional[TCPSite] = None
 
         self.lobbies: Dict[str, LiveLobby] = dict()
+        self.games: Dict[str, GameInProgress] = dict()
         self.gateway_connections: Dict[str, List[object]] = \
             defaultdict(lambda: [])
 
@@ -151,8 +152,9 @@ class QuadradiusRServer:
         return self.lobbies[lobby.id_]
 
     def start_game(self, game: Game) -> GameInProgress:
-        # TODO implement
-        ...
+        if game.id_ not in self.games.keys():
+            self.games[game.id_] = GameInProgress(game, self.repository)
+        return self.games[game.id_]
 
 
 # importing submodules automatically registers endpoints

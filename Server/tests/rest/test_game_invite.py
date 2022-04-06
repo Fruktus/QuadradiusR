@@ -111,6 +111,19 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     '400: Expiration date too late',
                     await response.text())
 
+    async def test_create_invite_exp_optional(self):
+        await self.create_test_user(0)
+        await self.create_test_user(1)
+        user1 = await self.get_test_user(1)
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.server_url('/game_invite'), json={
+                'subject_id': user1['id'],
+            }, headers={
+                'authorization': await self.authorize_test_user(0)
+            }) as response:
+                self.assertEqual(201, response.status)
+
     async def test_create_invite_nonexisting_user(self):
         await self.create_test_user(0)
 

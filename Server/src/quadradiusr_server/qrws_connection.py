@@ -161,7 +161,7 @@ class BasicConnection(ABC):
 
                 async def handle(self, notification: Notification):
                     await qrws.send_message(NotificationMessage(
-                        topic=topic,
+                        topic=notification.topic,
                         data=notification.data,
                     ))
 

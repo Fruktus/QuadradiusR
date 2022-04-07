@@ -29,3 +29,22 @@ Notifications
 |         "reason": "{reason}"           |                                  |
 |     }                                  |                                  |
 +----------------------------------------+----------------------------------+
+| .. code-block:: json                   | Someone joined the lobby.        |
+|     :caption: ``lobby.joined``         |                                  |
+|                                        |                                  |
+|     {                                  |                                  |
+|         "lobby_id": "{id}",            |                                  |
+|         "user": {                      |                                  |
+|             "id": "{id}",              |                                  |
+|             "username": "{username}"   |                                  |
+|         }                              |                                  |
+|     }                                  |                                  |
++----------------------------------------+----------------------------------+
+| .. code-block:: json                   | Someone left the lobby.          |
+|     :caption: ``lobby.left``           |                                  |
+|                                        |                                  |
+|     {                                  |                                  |
+|         "lobby_id": "{id}",            |                                  |
+|         "user_id": "{user_id}"         |                                  |
+|     }                                  |                                  |
++----------------------------------------+----------------------------------+

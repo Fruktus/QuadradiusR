@@ -6,15 +6,18 @@ from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Lobby, User, LobbyMessage
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
-from quadradiusr_server.notification import NotificationService
+from quadradiusr_server.notification import NotificationService, Notification
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
 from quadradiusr_server.qrws_messages import Message, SendMessageMessage, MessageSentMessage, KickMessage
 
 
 class LiveLobby:
-    def __init__(self, lobby: Lobby, repository: Repository) -> None:
+    def __init__(
+            self, lobby: Lobby, repository: Repository,
+            ns: NotificationService) -> None:
         self.lobby = lobby
         self.repository = repository
+        self.ns = ns
 
         self._players: Dict[str, LobbyConnection] = {}
 
@@ -22,15 +25,41 @@ class LiveLobby:
     def players(self) -> List[User]:
         return [conn.user for conn in self._players.values()]
 
-    async def join(self, connection: 'LobbyConnection'):
-        user_id = connection.user.id_
+    async def join(self, lobby_conn: 'LobbyConnection'):
+        user_id = lobby_conn.user.id_
         if user_id in self._players:
             await self._players[user_id].kick()
-        self._players[user_id] = connection
+        self._players[user_id] = lobby_conn
+
+        subjects = set(self._players.keys()) - {user_id}
+        for subject_id in subjects:
+            self.ns.notify(Notification(
+                topic='lobby.joined',
+                subject_id=subject_id,
+                data={
+                    'lobby_id': self.lobby.id_,
+                    'user': {
+                        'id': user_id,
+                        'username': lobby_conn.user.username_,
+                    },
+                },
+            ))
 
     async def leave(self, lobby_conn: 'LobbyConnection'):
+        user_id = lobby_conn.user.id_
         if lobby_conn in self._players.values():
-            del self._players[lobby_conn.user.id_]
+            del self._players[user_id]
+
+        subjects = set(self._players.keys())
+        for subject_id in subjects:
+            self.ns.notify(Notification(
+                topic='lobby.left',
+                subject_id=subject_id,
+                data={
+                    'lobby_id': self.lobby.id_,
+                    'user_id': user_id,
+                },
+            ))
 
     async def send_message(self, user: User, content: str):
         lobby_repo = self.repository.lobby_repository

@@ -1,4 +1,3 @@
-import datetime
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp

@@ -1,6 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Callable, List
 
 from aiohttp import WSMsgType, web
 from aiohttp.abc import BaseRequest
@@ -118,6 +118,7 @@ class BasicConnection(ABC):
         self._user = user
         self._notification_service = notification_service
         self._database = database
+        self._close_handlers: List[Callable[[], None]] = []
 
     @property
     def qrws(self) -> QrwsConnection:
@@ -146,6 +147,12 @@ class BasicConnection(ABC):
             await qrws.close(
                 code=e.code,
                 message=e.message)
+        finally:
+            for handler in self._close_handlers:
+                handler()
+
+    def add_close_handler(self, handler: Callable[[], None]):
+        self._close_handlers.append(handler)
 
     async def handle_message(self, message: Message) -> bool:
         qrws = self.qrws
@@ -165,8 +172,10 @@ class BasicConnection(ABC):
                         data=notification.data,
                     ))
 
+            sub_handler = SubscribeHandler()
             ns.register_handler(
-                user.id_, SubscribeHandler())
+                user.id_, sub_handler)
+            self.add_close_handler(lambda: ns.unregister_handler(sub_handler))
             await qrws.send_message(SubscribedMessage())
             return True
         else:

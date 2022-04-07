@@ -35,7 +35,10 @@ class NotificationService:
 
     def unregister_handler(self, handler: Handler):
         for handlers in self.handlers.values():
-            handlers.remove(handler)
+            try:
+                handlers.remove(handler)
+            except ValueError:
+                pass
 
     def notify(self, notification: Notification):
         import asyncio

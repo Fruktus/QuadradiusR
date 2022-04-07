@@ -1,4 +1,3 @@
-import asyncio
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
@@ -191,7 +190,7 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
     async def test_lobby_connect_duplicate_user_force(self):
         await self.create_test_user(0)
 
-        async with timeout(2000), \
+        async with timeout(2), \
                 aiohttp.ClientSession() as session, \
                 session.ws_connect(self.server_url(
                     '/lobby/@main/connect', protocol='ws')) as ws0, \

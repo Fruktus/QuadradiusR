@@ -105,9 +105,13 @@ class LobbyMessage(Base):
 
     user_ = relationship(
         'User',
+        lazy='joined',
+        cascade='expunge',
         foreign_keys=[user_id_])
     lobby_ = relationship(
         'Lobby',
+        lazy='joined',
+        cascade='expunge',
         foreign_keys=[lobby_id_])
 
     def __repr__(self):

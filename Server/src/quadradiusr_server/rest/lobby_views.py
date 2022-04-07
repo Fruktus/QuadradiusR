@@ -14,6 +14,7 @@ from quadradiusr_server.lobby import LobbyConnection, LiveLobby
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
+from quadradiusr_server.rest.mappers import user_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
 
 
@@ -25,9 +26,9 @@ def map_lobby_to_json(
         'id': lobby.id_,
         'name': lobby.name_,
         'ws_url': server.get_href('ws') + f'/lobby/{lobby.id_}/connect',
-        'players': [{
-            'id': player.id_,
-        } for player in live_lobby.players] if live_lobby is not None else None,
+        'players': [
+            user_to_json(player) for player in live_lobby.players
+        ] if live_lobby is not None else None,
     }
 
 
@@ -37,9 +38,7 @@ def map_lobby_message_to_json(lobby_message: LobbyMessage):
         'lobby': {
             'id': lobby_message.lobby_id_,
         },
-        'user': {
-            'id': lobby_message.user_id_,
-        },
+        'user': user_to_json(lobby_message.user_),
         'content': lobby_message.content_,
         'created_at': lobby_message.created_at_.isoformat(),
     }

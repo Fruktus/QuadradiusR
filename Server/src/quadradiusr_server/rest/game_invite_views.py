@@ -14,6 +14,7 @@ from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.game import GameState
 from quadradiusr_server.notification import Notification, NotificationService
 from quadradiusr_server.rest.auth import authorized_endpoint
+from quadradiusr_server.rest.mappers import user_to_json
 from quadradiusr_server.server import routes
 
 
@@ -91,12 +92,8 @@ class GameInviteView(GameInviteViewBase, web.View):
 
         return web.json_response({
             'id': game_invite.id_,
-            'from': {
-                'id': game_invite.from_id_,
-            },
-            'subject': {
-                'id': game_invite.subject_id_,
-            },
+            'from': user_to_json(game_invite.from_),
+            'subject': user_to_json(game_invite.subject_),
             'expiration': game_invite.expiration_.isoformat(),
         })
 

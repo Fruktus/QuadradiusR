@@ -37,6 +37,9 @@ class NotificationService:
         for handlers in self.handlers.values():
             handlers.remove(handler)
 
+    def unregister_user(self, user: str):
+        self.handlers.pop(user)
+
     def notify(self, notification: Notification):
         import asyncio
         asyncio.create_task(self.notify_now(notification))

@@ -88,7 +88,7 @@ class QrwsConnection:
             op = data['op']
             try:
                 return parse_message(op=QrwsOpcode(op), data=data['d'])
-            except ValueError | KeyError as e:
+            except (ValueError, KeyError) as e:
                 await self.send_error(f'Malformed data: {e}')
                 continue
 
@@ -143,6 +143,7 @@ class BasicConnection(ABC):
                     await qrws.send_message(ErrorMessage(
                         message='Unexpected opcode', fatal=False))
         except QrwsCloseException as e:
+            self.notification_service.unregister_user(self.user.id_)
             await qrws.close(
                 code=e.code,
                 message=e.message)

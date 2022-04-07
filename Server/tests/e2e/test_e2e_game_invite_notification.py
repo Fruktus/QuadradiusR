@@ -45,10 +45,8 @@ class E2eGameInviteNotificationTest(IsolatedAsyncioTestCase, TestUserHarness, Re
                     data = await ws.receive_json()
                     self.assertEqual(QrwsOpcode.SUBSCRIBED, data['op'])
 
-                exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
                 async with session.post(self.server_url('/game_invite'), json={
                     'subject_id': user1['id'],
-                    'expiration': exp.isoformat(),
                 }, headers={
                     'authorization': await self.authorize_test_user(0)
                 }) as response:

@@ -36,18 +36,19 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
         game_invite_id = str(uuid.uuid4())
         async with transaction_context(self.server.database):
+            now = datetime.datetime.now(datetime.timezone.utc)
             gi = GameInvite(
                 id_=game_invite_id,
                 from_id_=user0['id'],
                 subject_id_=user1['id'],
-                expiration_=(datetime.datetime.now() - datetime.timedelta(seconds=10)),
+                expires_at_=(now - datetime.timedelta(seconds=10)),
             )
             await self.server.repository.game_invite_repository.add(gi)
             gi = GameInvite(
                 id_=str(uuid.uuid4()),
                 from_id_=user0['id'],
                 subject_id_=user1['id'],
-                expiration_=(datetime.datetime.now() + datetime.timedelta(seconds=10)),
+                expires_at_=(now + datetime.timedelta(seconds=10)),
             )
             await self.server.repository.game_invite_repository.add(gi)
 

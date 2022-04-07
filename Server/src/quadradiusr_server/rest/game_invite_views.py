@@ -3,7 +3,7 @@ import uuid
 from abc import ABCMeta
 from json import JSONDecodeError
 
-import dateutil.parser
+import isodate as isodate
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 
@@ -42,19 +42,15 @@ class GameInvitesView(web.View):
         try:
             body = await self.request.json()
             subject_id = str(body['subject_id'])
-            if 'expiration' in body:
-                expiration = dateutil.parser.isoparse(str(body['expiration']))
-            else:
-                expiration = datetime.datetime.now() + datetime.timedelta(minutes=2)
+            expires_in = isodate.parse_duration(str(body.get('expires_in', 'PT2M')))
         except (JSONDecodeError, KeyError, ValueError):
             raise HTTPBadRequest(reason='Malformed body data')
 
         if subject_id == auth_user.id_:
             raise HTTPBadRequest(reason='User cannot invite themselves... or can they?')
-        if expiration < datetime.datetime.now():
+        if expires_in < datetime.timedelta():
             raise HTTPBadRequest(reason='Invite cannot expire in the past')
-        if expiration > datetime.datetime.now() + \
-                datetime.timedelta(minutes=60):
+        if expires_in > datetime.timedelta(minutes=60):
             raise HTTPBadRequest(reason='Expiration date too late')
 
         subject = await repository.user_repository.get_by_id(subject_id)
@@ -65,7 +61,7 @@ class GameInvitesView(web.View):
             id_=str(uuid.uuid4()),
             from_id_=auth_user.id_,
             subject_id_=subject_id,
-            expiration_=expiration,
+            expires_at_=datetime.datetime.now(datetime.timezone.utc) + expires_in,
         )
         await repository.game_invite_repository.add(game_invite)
 
@@ -94,7 +90,7 @@ class GameInviteView(GameInviteViewBase, web.View):
             'id': game_invite.id_,
             'from': user_to_json(game_invite.from_),
             'subject': user_to_json(game_invite.subject_),
-            'expiration': game_invite.expiration_.isoformat(),
+            'expires_at': game_invite.expires_at_.isoformat(),
         })
 
     @transactional
@@ -134,7 +130,7 @@ class GameInviteAcceptView(GameInviteViewBase, web.View):
             id_=str(uuid.uuid4()),
             player_a_id_=game_invite.from_id_,
             player_b_id_=game_invite.subject_id_,
-            expiration_=datetime.datetime.now() + datetime.timedelta(days=5),
+            expires_at_=datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=5),
             game_state_=GameState.initial()
         )
 

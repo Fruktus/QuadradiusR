@@ -4,6 +4,7 @@ import pkgutil
 from inspect import Parameter
 
 from aiohttp.abc import Request
+from isodate import parse_datetime
 
 
 def import_submodules(package, recursive=True):
@@ -46,3 +47,10 @@ def is_request_websocket_upgradable(request: Request):
            'upgrade' == request.headers['connection'].lower() and \
            'upgrade' in request.headers and \
            'websocket' == request.headers['upgrade'].lower()
+
+
+def parse_iso_datetime_tz(string: str):
+    dt = parse_datetime(string)
+    if dt.tzinfo is None:
+        raise ValueError('datetime lacks timezone')
+    return dt

@@ -1,4 +1,3 @@
-import datetime
 import re
 from unittest import IsolatedAsyncioTestCase
 
@@ -23,10 +22,8 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -63,10 +60,8 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user0 = await self.get_test_user(0)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user0['id'],
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -81,10 +76,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() - datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
+                'expires_in': '-PT5M',
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -99,10 +93,9 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(days=1000)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
+                'expires_in': 'PT100H',
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -111,27 +104,12 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     '400: Expiration date too late',
                     await response.text())
 
-    async def test_create_invite_exp_optional(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        user1 = await self.get_test_user(1)
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(self.server_url('/game_invite'), json={
-                'subject_id': user1['id'],
-            }, headers={
-                'authorization': await self.authorize_test_user(0)
-            }) as response:
-                self.assertEqual(201, response.status)
-
     async def test_create_invite_nonexisting_user(self):
         await self.create_test_user(0)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': 'asasdasd',
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -148,10 +126,8 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -199,10 +175,8 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:
@@ -225,10 +199,8 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:

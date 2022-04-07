@@ -1,7 +1,6 @@
 from abc import ABCMeta
-from datetime import datetime
+from datetime import datetime, timezone
 
-import dateutil.parser
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 
@@ -16,6 +15,7 @@ from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.rest.mappers import user_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
+from quadradiusr_server.utils import parse_iso_datetime_tz
 
 
 def map_lobby_to_json(
@@ -134,15 +134,15 @@ class LobbyMessagesView(LobbyViewBase, web.View):
         try:
             if 'before' in self.request.rel_url.query:
                 before_str = str(self.request.rel_url.query['before'])
-                before = dateutil.parser.isoparse(before_str)
+                before = parse_iso_datetime_tz(before_str)
             else:
-                before = datetime.now()
+                before = datetime.now(timezone.utc)
 
             if 'limit' in self.request.rel_url.query:
                 limit = int(self.request.rel_url.query['limit'])
             else:
                 limit = 100
-        except ValueError:
+        except (ValueError, AssertionError):
             raise HTTPBadRequest(reason='Malformed query params')
 
         if limit > 100:

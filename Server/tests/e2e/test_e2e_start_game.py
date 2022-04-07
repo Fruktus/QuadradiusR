@@ -27,10 +27,8 @@ class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness
         user1 = await self.get_test_user(1)
 
         async with timeout(2), aiohttp.ClientSession() as session:
-            exp = datetime.datetime.now() + datetime.timedelta(seconds=60)
             async with session.post(self.server_url('/game_invite'), json={
                 'subject_id': user1['id'],
-                'expiration': exp.isoformat(),
             }, headers={
                 'authorization': await self.authorize_test_user(0)
             }) as response:

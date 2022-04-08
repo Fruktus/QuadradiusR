@@ -5,16 +5,16 @@
 [ext_resource path="res://original_assets/lobby/frames/121.png" type="Texture" id=3]
 [ext_resource path="res://scripts/lobby_manager.gd" type="Script" id=4]
 
-[node name="Lobby" type="Node2D"]
+[node name="Lobby" type="Node2D" groups=["ws_lobby"]]
 script = ExtResource( 4 )
 
-[node name="LobbyLayoutTemplate" type="Sprite" parent="."]
+[node name="LobbySideBar" type="Sprite" parent="."]
 position = Vector2( 64, 0 )
 scale = Vector2( 0.17997, 0.17997 )
 texture = ExtResource( 3 )
 centered = false
 
-[node name="1" type="Sprite" parent="."]
+[node name="LobbyRightSide" type="Sprite" parent="."]
 position = Vector2( 1149, 1352 )
 scale = Vector2( 0.17997, 0.17997 )
 texture = ExtResource( 2 )
@@ -23,4 +23,5 @@ texture = ExtResource( 2 )
 position = Vector2( 635, 272 )
 scale = Vector2( 0.365, 0.365 )
 
+[connection signal="challenge_accepted" from="PlayerList" to="." method="_on_challenge_accepted"]
 [connection signal="challenge_issued" from="PlayerList" to="." method="_on_challenge_issued"]

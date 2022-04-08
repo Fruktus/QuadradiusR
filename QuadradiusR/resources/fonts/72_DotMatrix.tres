@@ -3,5 +3,7 @@
 [ext_resource path="res://original_assets/lobby/fonts/72_DotMatrix.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 40
+size = 55
+use_mipmaps = true
+use_filter = true
 font_data = ExtResource( 1 )

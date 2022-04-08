@@ -31,7 +31,6 @@ func _create_user_and_connect_ws_2(message: Message, args: Dictionary):
 	print('cr user 2 ', message) # DEBUG
 	var token = message.body['token']
 	args['cb'].call_func(message)
-#	ws_api.connect_to('ws://127.0.0.1:8888/gateway', token)
 
 
 func create_user(username: String, password: String, cb: FuncRef, args: Dictionary):
@@ -66,7 +65,7 @@ func _join_lobby_1(message: Message, args: Dictionary):
 
 	
 	args['cb'].call_func()
-	
+
 
 func invite_player(opponent_uuid: String):
 	rest_api.invite_player(token, opponent_uuid)

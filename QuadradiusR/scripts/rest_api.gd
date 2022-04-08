@@ -80,3 +80,12 @@ func invite_player(token: String, opponent_uuid: String, cb: FuncRef = null, cb_
 	var query = JSON.print({'subject_id': opponent_uuid})
 	return _build_request(["{url}/game_invite".format({"url": url}), headers, use_ssl, HTTPClient.METHOD_POST, query], cb, cb_args)
 
+
+func get_game_invite(token: String, game_id: String, cb: FuncRef = null, cb_args: Dictionary = {}):
+	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
+	return _build_request(["{url}/game_invite/{id}".format({"url": url, "id": game_id}), headers, use_ssl, HTTPClient.METHOD_GET, ""], cb, cb_args)
+
+
+func accept_game_invite(token: String, game_id: String, cb: FuncRef = null, cb_args: Dictionary = {}):
+	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
+	return _build_request(["{url}/game_invite/{id}/accept".format({"url": url, "id": game_id}), headers, use_ssl, HTTPClient.METHOD_POST, ""], cb, cb_args)

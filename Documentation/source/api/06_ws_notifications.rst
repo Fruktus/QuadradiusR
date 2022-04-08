@@ -75,3 +75,17 @@ Someone left the lobby.
         "lobby_id": "{id}",
         "user_id": "{user_id}"
     }
+
+
+``lobby.message.received``
+--------------------------
+
+A message has been received.
+
+.. code-block:: json
+
+    {
+        "message": {}
+    }
+
+See :ref:`rest_lobby_message` for data structures.

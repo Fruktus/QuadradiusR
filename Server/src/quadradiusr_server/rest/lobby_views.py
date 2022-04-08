@@ -6,14 +6,14 @@ from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsCloseCode
-from quadradiusr_server.db.base import Lobby, User, LobbyMessage
+from quadradiusr_server.db.base import Lobby, User
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional, transaction_context
 from quadradiusr_server.lobby import LobbyConnection, LiveLobby
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
-from quadradiusr_server.rest.mappers import user_to_json
+from quadradiusr_server.rest.mappers import user_to_json, lobby_message_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
 from quadradiusr_server.utils import parse_iso_datetime_tz
 
@@ -29,18 +29,6 @@ def map_lobby_to_json(
         'players': [
             user_to_json(player) for player in live_lobby.players
         ] if live_lobby is not None else None,
-    }
-
-
-def map_lobby_message_to_json(lobby_message: LobbyMessage):
-    return {
-        'id': lobby_message.id_,
-        'lobby': {
-            'id': lobby_message.lobby_id_,
-        },
-        'user': user_to_json(lobby_message.user_),
-        'content': lobby_message.content_,
-        'created_at': lobby_message.created_at_.isoformat(),
     }
 
 
@@ -154,4 +142,4 @@ class LobbyMessagesView(LobbyViewBase, web.View):
             limit=limit,
         )
         return web.json_response([
-            map_lobby_message_to_json(lm) for lm in messages])
+            lobby_message_to_json(lm) for lm in messages])

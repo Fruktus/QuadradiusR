@@ -229,6 +229,8 @@ the main lobby is returned.
     }
 
 
+.. _rest_lobby_message:
+
 ``GET /lobby/{lobby_id}/message``
 ---------------------------------
 

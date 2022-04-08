@@ -91,19 +91,6 @@ class SendMessageMessage(Message):
         }
 
 
-class MessageSentMessage(Message):
-    def __init__(self, *, content: str, user_id: str) -> None:
-        super().__init__(QrwsOpcode.MESSAGE_SENT)
-        self.user_id = user_id
-        self.content = content
-
-    def _to_json_data(self):
-        return {
-            'user_id': self.user_id,
-            'content': self.content,
-        }
-
-
 class KickMessage(Message):
     def __init__(self, *, reason: str) -> None:
         super().__init__(QrwsOpcode.KICK)

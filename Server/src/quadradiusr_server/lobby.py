@@ -8,14 +8,15 @@ from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.notification import NotificationService, Notification
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
-from quadradiusr_server.qrws_messages import Message, SendMessageMessage, MessageSentMessage, KickMessage
+from quadradiusr_server.qrws_messages import Message, SendMessageMessage, KickMessage
+from quadradiusr_server.rest.mappers import lobby_message_to_json
 
 
 class LiveLobby:
     def __init__(
-            self, lobby: Lobby, repository: Repository,
+            self, lobby_id: str, repository: Repository,
             ns: NotificationService) -> None:
-        self.lobby = clone_db_object(lobby)
+        self.lobby_id = lobby_id
         self.repository = repository
         self.ns = ns
 
@@ -37,7 +38,7 @@ class LiveLobby:
                 topic='lobby.joined',
                 subject_id=subject_id,
                 data={
-                    'lobby_id': self.lobby.id_,
+                    'lobby_id': self.lobby_id,
                     'user': {
                         'id': user_id,
                         'username': lobby_conn.user.username_,
@@ -56,23 +57,35 @@ class LiveLobby:
                 topic='lobby.left',
                 subject_id=subject_id,
                 data={
-                    'lobby_id': self.lobby.id_,
+                    'lobby_id': self.lobby_id,
                     'user_id': user_id,
                 },
             ))
 
     async def send_message(self, user: User, content: str):
         lobby_repo = self.repository.lobby_repository
+        user_repo = self.repository.user_repository
+        # TODO add some sane object and transaction management to WS
+        user = await user_repo.get_by_id(user.id_)
+        lobby = await lobby_repo.get_by_id(self.lobby_id)
         lobby_message = LobbyMessage(
             id_=str(uuid.uuid4()),
             user_id_=user.id_,
-            lobby_id_=self.lobby.id_,
+            user_=user,
+            lobby_id_=self.lobby_id,
+            lobby_=lobby,
             content_=content,
             created_at_=datetime.datetime.now(datetime.timezone.utc),
         )
         await lobby_repo.add_message(lobby_message)
-        for conn in self._players.values():
-            await conn.message_sent(user, content)
+        for subject_id in self._players.keys():
+            self.ns.notify(Notification(
+                topic='lobby.message.received',
+                subject_id=subject_id,
+                data={
+                    'message': lobby_message_to_json(lobby_message),
+                },
+            ))
 
     def joined(self, user: User):
         return user.id_ in self._players.keys()
@@ -99,12 +112,6 @@ class LobbyConnection(BasicConnection):
             return True
         else:
             return False
-
-    async def message_sent(self, user, content):
-        await self.qrws.send_message(MessageSentMessage(
-            user_id=user.id_,
-            content=content,
-        ))
 
     async def kick(self):
         await self.qrws.send_message(KickMessage(

@@ -43,6 +43,7 @@ Available in:
 | Server->Client | :ref:`ws_msg_notification` | Server notifies the client about an event. |
 +----------------+----------------------------+--------------------------------------------+
 
+
 Being kicked from the session
 -----------------------------
 
@@ -58,3 +59,17 @@ Available in:
 |                |                    | disconnected from the session.               |
 |                |                    | After this message the connection is closed. |
 +----------------+--------------------+----------------------------------------------+
+
+
+Sending a message
+-----------------
+
+Available in:
+
+* :ref:`ws_lobby`
+
++----------------+----------------------------+---------------------------+
+| Direction      | Message                    | Comment                   |
++================+============================+===========================+
+| Client->Server | :ref:`ws_msg_send_message` | Client sends the message. |
++----------------+----------------------------+---------------------------+

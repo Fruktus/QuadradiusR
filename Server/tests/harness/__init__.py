@@ -39,6 +39,24 @@ class RestTestHarness(metaclass=ABCMeta):
         await self.server.shutdown()
 
 
+# noinspection PyMethodMayBeStatic
+class WebsocketHarness(metaclass=ABCMeta):
+    async def ws_subscribe(self, ws: ClientWebSocketResponse, topic: str):
+        await ws.send_json({
+            'op': QrwsOpcode.SUBSCRIBE,
+            'd': {
+                'topic': topic,
+            },
+        })
+        data = await ws.receive_json()
+        assert QrwsOpcode.SUBSCRIBED == data['op']
+
+    async def ws_receive_notification(self, ws: ClientWebSocketResponse):
+        data = await ws.receive_json()
+        assert QrwsOpcode.NOTIFICATION == data['op']
+        return data['d']
+
+
 class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
 
     def get_test_user_username(self, n):

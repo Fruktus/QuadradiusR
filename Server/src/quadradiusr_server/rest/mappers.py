@@ -1,4 +1,4 @@
-from quadradiusr_server.db.base import User, GameInvite, Game
+from quadradiusr_server.db.base import User, GameInvite, Game, LobbyMessage
 
 
 def user_to_json(user: User):
@@ -25,4 +25,16 @@ def game_to_json(game: Game):
             user_to_json(game.player_b_),
         ],
         'expires_at': game.expires_at_.isoformat(),
+    }
+
+
+def lobby_message_to_json(lobby_message: LobbyMessage):
+    return {
+        'id': lobby_message.id_,
+        'lobby': {
+            'id': lobby_message.lobby_id_,
+        },
+        'user': user_to_json(lobby_message.user_),
+        'content': lobby_message.content_,
+        'created_at': lobby_message.created_at_.isoformat(),
     }

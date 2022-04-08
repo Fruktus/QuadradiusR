@@ -97,7 +97,7 @@ class LobbyConnectView(LobbyViewBase, web.View):
             await qrws.prepare(self.request)
             user = await qrws.authorize(auth, repository)
 
-            await repository.expunge(lobby, user)
+            await repository.expunge_all()
 
         live_lobby = server.start_lobby(lobby)
         if live_lobby.joined(user) and not force:

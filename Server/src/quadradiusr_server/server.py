@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from collections import defaultdict
-from typing import Optional, Mapping, List, Dict
+from typing import Optional, List, Dict
 
 from aiohttp import web
 from aiohttp.web_runner import AppRunner, TCPSite

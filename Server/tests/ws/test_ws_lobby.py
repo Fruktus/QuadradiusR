@@ -201,3 +201,22 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
             data = await ws0.receive_json()
             self.assertEqual(QrwsOpcode.KICK, data['op'])
+
+    async def test_double_connect_after_get(self):
+        await self.create_test_user(0)
+        await self.create_test_user(1)
+
+        async with timeout(2), \
+                aiohttp.ClientSession() as session:
+            async with session.get(self.server_url('/lobby/@main'), headers={
+                'authorization': await self.authorize_test_user(0)
+            }) as response:
+                self.assertEqual(200, response.status)
+
+            async with session.ws_connect(self.server_url(
+                        '/lobby/@main/connect', protocol='ws')) as ws:
+                await self.authorize_ws(0, ws)
+
+                async with session.ws_connect(self.server_url(
+                        '/lobby/@main/connect', protocol='ws')) as ws1:
+                    await self.authorize_ws(1, ws1)

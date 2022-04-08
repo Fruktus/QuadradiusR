@@ -69,7 +69,7 @@ class GameConnectView(GameViewBase, web.View):
             user = await qrws.authorize(auth, repository)
             game = await self._get_game(user, repository)
 
-            await repository.expunge(game)
+            await repository.expunge_all()
 
         game_in_progress = server.start_game(game)
         if game_in_progress.is_player_connected(user.id_) and not force:

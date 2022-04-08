@@ -3,7 +3,7 @@ import uuid
 from typing import Dict, List
 
 from quadradiusr_server.constants import QrwsCloseCode
-from quadradiusr_server.db.base import Lobby, User, LobbyMessage
+from quadradiusr_server.db.base import Lobby, User, LobbyMessage, clone_db_object
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.notification import NotificationService, Notification
@@ -15,7 +15,7 @@ class LiveLobby:
     def __init__(
             self, lobby: Lobby, repository: Repository,
             ns: NotificationService) -> None:
-        self.lobby = lobby
+        self.lobby = clone_db_object(lobby)
         self.repository = repository
         self.ns = ns
 

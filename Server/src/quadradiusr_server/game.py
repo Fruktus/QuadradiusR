@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Tuple
 
 from quadradiusr_server.constants import QrwsCloseCode
-from quadradiusr_server.db.base import Game
+from quadradiusr_server.db.base import Game, clone_db_object
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.qrws_connection import BasicConnection
 from quadradiusr_server.qrws_messages import Message, KickMessage
@@ -40,7 +40,7 @@ class GameState:
 
 class GameInProgress:
     def __init__(self, game: Game, repository: Repository) -> None:
-        self.game = game
+        self.game = clone_db_object(game)
         self.repository = repository
 
         self.player_a_connection: GameConnection | None = None

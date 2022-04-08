@@ -11,7 +11,7 @@ func _ready():
 	player_list.add_player(NetworkHandler.username, "", true)  # TODO add uuid properly
 
 
-func _on_challenge_accepted(game_id, opponent_id):
+func _on_challenge_accepted(game_id: String, opponent_id: String):
 	NetworkHandler.rest_api.accept_game_invite(NetworkHandler.token, game_id)  # DEBUG implement proper method in NetworkHandler
 	get_tree().change_scene("res://scenes/game.tscn")
 

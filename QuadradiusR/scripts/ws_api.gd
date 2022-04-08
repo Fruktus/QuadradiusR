@@ -1,11 +1,18 @@
 class_name WSApi
 extends Node
 
+const IDENTIFY = 2
+const SERVER_READY = 3
+const NOTIFICATION = 4
+const SUBSCRIBE = 5
+const SUBSCRIBED = 6
+const KICK = 7
+
 var op_handlers = {
-	3: funcref(self, "_handle_server_ready"),
-	4: funcref(self, "_handle_notification"),
-	6: funcref(self, "_handle_subscribed"),
-	7: funcref(self, "_handle_kick"),
+	SERVER_READY: funcref(self, "_handle_server_ready"),
+	NOTIFICATION: funcref(self, "_handle_notification"),
+	SUBSCRIBED: funcref(self, "_handle_subscribed"),
+	KICK: funcref(self, "_handle_kick"),
 }
 var topic_handlers = {
 	"game.invite.accepted": funcref(self, "_handle_game_invite_accepted"),
@@ -45,12 +52,12 @@ func _on_connection_error():
 
 func _on_connection_established(protocol: String):
 	print('im in')  # DEBUG
-	_send_data({'op': 2, 'd': {"token": token}})  # authorize with the server before doing anything else
+	_send_data({'op': IDENTIFY, 'd': {"token": token}})  # authorize with the server before doing anything else
 
 func _on_data_received():
 	var data = _get_data()
 	print('data received:', data)  # DEBUG
-	op_handlers[int(data['op'])].call_func(data)
+	op_handlers[int(data['op'])].call_func(data['d'])
 
 func _on_server_close_request(code: int, reason: String):
 	print('server closed. reason: ', reason, ' code: ', code)
@@ -64,7 +71,7 @@ func _handle_server_ready(data: Dictionary):
 	subscribe_to("*")  # DEBUG
 
 func _handle_notification(data: Dictionary):
-	topic_handlers[data['d']['topic']].call_func(data['d']['data'])
+	topic_handlers[data['topic']].call_func(data['data'])
 
 func _handle_subscribed(data: Dictionary):
 	pass
@@ -76,6 +83,7 @@ func _handle_kick(data: Dictionary):
 # # # # # # # # # #
 # Topic Handlers  #
 # # # # # # # # # #
+# NOTE: All the parameters are always passed as String, so typehints for those will be skipped
 func _handle_game_invite_accepted(data: Dictionary):
 	var game_invite_id = data['game_invite_id']
 	var game_id = data['game']['id']
@@ -118,7 +126,7 @@ func connect_to(url: String, token):
 
 
 func subscribe_to(topic: String):
-	var query = {"op": 5, "d": {"topic": topic}}
+	var query = {"op": SUBSCRIBE, "d": {"topic": topic}}
 	_send_data(query)
 
 

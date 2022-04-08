@@ -18,7 +18,7 @@ func _on_login(is_guest, remember_pw, username, password):
 
 func _cb_login_done(is_authorized, user_data, message: Message):
 	print('login done ', is_authorized, ' ', user_data)
-	NetworkHandler.rest_api.get_user_me(NetworkHandler.token, funcref(self, "_dbg_print"))
+	NetworkHandler.rest_api.get_user_me(NetworkHandler.token, funcref(self, "_dbg_print"))  # DEBUG
 	if is_authorized:
 		_join_lobby()
 	else:

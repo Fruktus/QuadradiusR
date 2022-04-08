@@ -10,7 +10,7 @@ onready var new_player_joined_sfx = $NewPlayerJoinedSFX
 onready var player_left_sfx = $PlayerLeftSFX
 
 const player_template = preload("res://prefabs/player_list_row.tscn")
-var active_invites = {}  # uuid -> game invite
+var uuid_to_active_invites = {}  # uuid -> game invite
 
 
 func receive_challenge(uuid: String):
@@ -50,8 +50,8 @@ func _on_hover_end(username: String):
 
 
 func _on_player_clicked(uuid: String):
-	if active_invites.has(uuid):
-		emit_signal("challenge_accepted", active_invites[uuid], uuid)
+	if uuid_to_active_invites.has(uuid):
+		emit_signal("challenge_accepted", uuid_to_active_invites[uuid], uuid)
 	else:
 		NetworkHandler.invite_player(uuid)
 
@@ -67,5 +67,5 @@ func _lobby_left(lobby_id: String, user_id: String):
 	remove_player(user_id)
 
 func _game_invite_received(game_id, from_id, from_username, subject_id, subject_username):
-	active_invites[from_id] = game_id
+	uuid_to_active_invites[from_id] = game_id
 	receive_challenge(from_id)

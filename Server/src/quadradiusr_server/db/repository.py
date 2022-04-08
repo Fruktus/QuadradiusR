@@ -45,3 +45,7 @@ class Repository:
     async def expunge(self, *args, db_session: AsyncSession):
         for obj in args:
             db_session.expunge(obj)
+
+    @transactional
+    async def expunge_all(self, *, db_session: AsyncSession):
+        db_session.expunge_all()

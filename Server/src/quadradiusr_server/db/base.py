@@ -1,9 +1,21 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import Column, ForeignKey, DateTime, String, PickleType, TypeDecorator
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, class_mapper
 
 Base = declarative_base()
+
+
+def clone_db_object(obj, deep=True):
+    clazz = type(obj)
+    attrs = [p.key for p in class_mapper(clazz).iterate_properties]
+    props = {}
+    for attr in attrs:
+        prop = getattr(obj, attr)
+        if deep and isinstance(prop, Base):
+            prop = clone_db_object(prop, deep=True)
+        props[attr] = prop
+    return clazz(**props)
 
 
 # noinspection PyAbstractClass

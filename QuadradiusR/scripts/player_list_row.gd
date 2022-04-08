@@ -17,6 +17,7 @@ const CHALLENGE_ISSUED = preload("res://original_assets/lobby/shapes/1.png")
 const CHALLENGE_RECEIVED = preload("res://original_assets/lobby/shapes/3.png")
 
 export var username = "asd GUEST"
+var uuid: String
 var is_self_player = false  # denotes if this is the entry corresponding to the curent player
 
 
@@ -25,8 +26,9 @@ func _ready():
 	label.text = username
 
 
-func init(username: String, is_self_player: bool=false):
+func init(username: String, uuid: String, is_self_player: bool=false):
 	self.username = username
+	self.uuid = uuid
 	self.is_self_player = is_self_player
 	return self
 
@@ -58,4 +60,4 @@ func _on_click():
 		
 	dot.texture = CHALLENGE_ISSUED
 	
-	emit_signal("player_clicked", self.username)
+	emit_signal("player_clicked", self.uuid)

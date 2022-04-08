@@ -7,7 +7,7 @@
 [ext_resource path="res://original_assets/lobby/sounds/435_hum_loop01.wav" type="AudioStream" id=5]
 [ext_resource path="res://original_assets/lobby/sounds/433_final_login001.wav" type="AudioStream" id=6]
 
-[node name="PlayerList" type="Node2D"]
+[node name="PlayerList" type="Node2D" groups=["ws_lobby"]]
 script = ExtResource( 3 )
 
 [node name="PlayerJoinedSFX" type="AudioStreamPlayer" parent="."]
@@ -24,9 +24,9 @@ scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
-margin_left = -388.0
+margin_left = -354.0
 margin_top = -366.0
-margin_right = 386.0
+margin_right = 362.0
 margin_bottom = 375.0
 scroll_horizontal_enabled = false
 __meta__ = {
@@ -34,7 +34,7 @@ __meta__ = {
 }
 
 [node name="PlayerListVBox" type="VBoxContainer" parent="ScrollContainer"]
-margin_right = 774.0
+margin_right = 716.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
@@ -42,25 +42,25 @@ __meta__ = {
 
 [node name="PlayerListRow" parent="ScrollContainer/PlayerListVBox" instance=ExtResource( 2 )]
 visible = false
-margin_right = 774.0
+margin_right = 716.0
 
 [node name="PlayerListRow6" parent="ScrollContainer/PlayerListVBox" instance=ExtResource( 2 )]
 visible = false
-margin_right = 774.0
+margin_right = 716.0
 username = "as2d GUEST"
 
 [node name="PlayerListRow2" parent="ScrollContainer/PlayerListVBox" instance=ExtResource( 2 )]
 visible = false
-margin_right = 774.0
+margin_right = 716.0
 username = "a123123sd GUEST"
 
 [node name="PlayerListRow3" parent="ScrollContainer/PlayerListVBox" instance=ExtResource( 2 )]
 visible = false
-margin_right = 774.0
+margin_right = 716.0
 
 [node name="PlayerListRow4" parent="ScrollContainer/PlayerListVBox" instance=ExtResource( 2 )]
 visible = false
-margin_right = 774.0
+margin_right = 716.0
 
 [node name="PlayerListRow5" parent="ScrollContainer/PlayerListVBox" instance=ExtResource( 2 )]
 visible = false

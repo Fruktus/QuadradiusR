@@ -58,9 +58,9 @@ __meta__ = {
 }
 
 [node name="UsernameInput" type="LineEdit" parent="."]
-margin_left = -280.0
+margin_left = -272.0
 margin_top = 106.0
-margin_right = 310.0
+margin_right = 283.0
 margin_bottom = 198.0
 rect_pivot_offset = Vector2( -464, 92 )
 theme = SubResource( 2 )
@@ -73,9 +73,9 @@ __meta__ = {
 }
 
 [node name="PasswordInput" type="LineEdit" parent="."]
-margin_left = -284.0
+margin_left = -274.0
 margin_top = 208.0
-margin_right = 228.0
+margin_right = 200.0
 margin_bottom = 300.0
 rect_pivot_offset = Vector2( -464, 92 )
 theme = SubResource( 2 )

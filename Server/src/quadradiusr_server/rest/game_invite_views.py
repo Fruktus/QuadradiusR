@@ -14,7 +14,7 @@ from quadradiusr_server.db.transactions import transactional
 from quadradiusr_server.game import GameState
 from quadradiusr_server.notification import Notification, NotificationService
 from quadradiusr_server.rest.auth import authorized_endpoint
-from quadradiusr_server.rest.mappers import user_to_json
+from quadradiusr_server.rest.mappers import game_invite_to_json, game_to_json
 from quadradiusr_server.server import routes
 
 
@@ -59,9 +59,9 @@ class GameInvitesView(web.View):
 
         game_invite = GameInvite(
             id_=str(uuid.uuid4()),
-            from_id_=auth_user.id_,
-            subject_id_=subject_id,
             expires_at_=datetime.datetime.now(datetime.timezone.utc) + expires_in,
+            from_=auth_user,
+            subject_=subject,
         )
         await repository.game_invite_repository.add(game_invite)
 
@@ -69,7 +69,7 @@ class GameInvitesView(web.View):
             topic='game.invite.received',
             subject_id=subject_id,
             data={
-                'game_invite_id': game_invite.id_,
+                'game_invite': game_invite_to_json(game_invite),
             },
         ))
 
@@ -86,12 +86,7 @@ class GameInviteView(GameInviteViewBase, web.View):
         repository: Repository = self.request.app['repository']
         game_invite = await self._get_game_invite(auth_user, repository)
 
-        return web.json_response({
-            'id': game_invite.id_,
-            'from': user_to_json(game_invite.from_),
-            'subject': user_to_json(game_invite.subject_),
-            'expires_at': game_invite.expires_at_.isoformat(),
-        })
+        return web.json_response(game_invite_to_json(game_invite))
 
     @transactional
     @authorized_endpoint
@@ -128,8 +123,8 @@ class GameInviteAcceptView(GameInviteViewBase, web.View):
 
         game = Game(
             id_=str(uuid.uuid4()),
-            player_a_id_=game_invite.from_id_,
-            player_b_id_=game_invite.subject_id_,
+            player_a_=game_invite.from_,
+            player_b_=game_invite.subject_,
             expires_at_=datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=5),
             game_state_=GameState.initial()
         )
@@ -142,7 +137,7 @@ class GameInviteAcceptView(GameInviteViewBase, web.View):
             subject_id=game_invite.get_other_player(auth_user).id_,
             data={
                 'game_invite_id': game_invite.id_,
-                'game_id': game.id_,
+                'game': game_to_json(game),
             },
         ))
 

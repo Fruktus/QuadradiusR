@@ -138,6 +138,8 @@ Reject or withdraw a game invite.
     204 No Content
 
 
+.. _rest_game_invite:
+
 ``GET /game_invite/{id}``
 -------------------------
 
@@ -285,6 +287,8 @@ Create a user.
 
     location: /user/{user_id}
 
+
+.. _rest_user:
 
 ``GET /user/{user_id}``
 -----------------------

@@ -1,18 +1,18 @@
 from abc import ABCMeta
 
 from aiohttp import web
-from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPConflict
+from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden
 
 from quadradiusr_server.auth import User, Auth
 from quadradiusr_server.constants import QrwsCloseCode
-from quadradiusr_server.db.base import GameInvite, Game
+from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional, transaction_context
 from quadradiusr_server.game import GameConnection
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
-from quadradiusr_server.rest.mappers import user_to_json
+from quadradiusr_server.rest.mappers import game_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
 
 
@@ -40,12 +40,7 @@ class GameView(GameViewBase, web.View):
         game = await self._get_game(auth_user, repository)
 
         return web.json_response({
-            'id': game.id_,
-            'players': [
-                user_to_json(game.player_a_),
-                user_to_json(game.player_b_),
-            ],
-            'expires_at': game.expires_at_.isoformat(),
+            **game_to_json(game),
             'ws_url': server.get_href('ws') + f'/game/{game.id_}/connect',
         })
 

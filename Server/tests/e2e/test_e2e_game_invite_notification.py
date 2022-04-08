@@ -19,9 +19,11 @@ class E2eGameInviteNotificationTest(IsolatedAsyncioTestCase, TestUserHarness, Re
     async def test_notification_about_game_invite(self):
         # user0 sends invite to user1,
         # user1 should receive notification, but not user0 and user2
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        await self.create_test_user(2)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+            self.create_test_user(2),
+        )
         gateway_ws = self.server_url('/gateway', protocol='ws')
 
         user1 = await self.get_test_user(1)
@@ -30,9 +32,11 @@ class E2eGameInviteNotificationTest(IsolatedAsyncioTestCase, TestUserHarness, Re
             async with session.ws_connect(gateway_ws) as ws0, \
                     session.ws_connect(gateway_ws) as ws1, \
                     session.ws_connect(gateway_ws) as ws2:
-                await self.authorize_ws(0, ws0)
-                await self.authorize_ws(1, ws1)
-                await self.authorize_ws(2, ws2)
+                await asyncio.gather(
+                    self.authorize_ws(0, ws0),
+                    self.authorize_ws(1, ws1),
+                    self.authorize_ws(2, ws2),
+                )
 
                 for ws in [ws0, ws1, ws2]:
                     await ws.send_json({
@@ -71,8 +75,10 @@ class E2eGameInviteNotificationTest(IsolatedAsyncioTestCase, TestUserHarness, Re
         # * user0 sends user1 invite
         # * user1 receives notification
 
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
         lobby_ws = self.server_url('/lobby/@main/connect', protocol='ws')
 
         user1 = await self.get_test_user(1)
@@ -81,8 +87,10 @@ class E2eGameInviteNotificationTest(IsolatedAsyncioTestCase, TestUserHarness, Re
             for i in range(2):
                 async with session.ws_connect(lobby_ws) as ws0, \
                         session.ws_connect(lobby_ws) as ws1:
-                    await self.authorize_ws(0, ws0)
-                    await self.authorize_ws(1, ws1)
+                    await asyncio.gather(
+                        self.authorize_ws(0, ws0),
+                        self.authorize_ws(1, ws1),
+                    )
 
                     for ws in [ws0, ws1]:
                         await ws.send_json({

@@ -1,3 +1,4 @@
+import asyncio
 import re
 from unittest import IsolatedAsyncioTestCase
 
@@ -15,9 +16,11 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         await self.shutdown_server()
 
     async def test_create_invite(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        await self.create_test_user(2)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+            self.create_test_user(2),
+        )
 
         user1 = await self.get_test_user(1)
 
@@ -71,8 +74,10 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     await response.text())
 
     async def test_create_invite_exp_in_past(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
@@ -88,8 +93,10 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     await response.text())
 
     async def test_create_invite_exp_too_late(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
         user1 = await self.get_test_user(1)
 
         async with aiohttp.ClientSession() as session:
@@ -119,9 +126,11 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     await response.text())
 
     async def test_delete_invite(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        await self.create_test_user(2)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+            self.create_test_user(2),
+        )
 
         user1 = await self.get_test_user(1)
 
@@ -169,8 +178,10 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     await response.text())
 
     async def test_self_accept_invite(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
 
         user1 = await self.get_test_user(1)
 
@@ -191,9 +202,11 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual('403: You are not the person being invited', body)
 
     async def test_accept_invite(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        await self.create_test_user(2)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+            self.create_test_user(2),
+        )
 
         user0 = await self.get_test_user(0)
         user1 = await self.get_test_user(1)

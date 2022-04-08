@@ -1,3 +1,4 @@
+import asyncio
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
@@ -20,8 +21,10 @@ class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness
         # * user0 receives notification
         # * both users join the game
 
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
 
         user1 = await self.get_test_user(1)
 
@@ -44,5 +47,7 @@ class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness
 
             async with session.ws_connect(game_ws) as ws0, \
                     session.ws_connect(game_ws) as ws1:
-                await self.authorize_ws(0, ws0)
-                await self.authorize_ws(1, ws1)
+                await asyncio.gather(
+                    self.authorize_ws(0, ws0),
+                    self.authorize_ws(1, ws1),
+                )

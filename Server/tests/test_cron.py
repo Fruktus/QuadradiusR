@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import uuid
 from unittest import IsolatedAsyncioTestCase
@@ -23,8 +24,10 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         await self.shutdown_server()
 
     async def test_purge_game_invites(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
 
         user0 = await self.get_test_user(0)
         user1 = await self.get_test_user(1)

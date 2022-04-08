@@ -1,3 +1,4 @@
+import asyncio
 from unittest import IsolatedAsyncioTestCase
 
 import aiohttp
@@ -32,9 +33,11 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             self.assertEqual(QrwsOpcode.SERVER_READY, data['op'])
 
     async def test_send_message(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        await self.create_test_user(2)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+            self.create_test_user(2),
+        )
 
         user0 = await self.get_test_user(0)
 
@@ -76,8 +79,10 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual('test message', body[0]['content'])
 
     async def test_persist_messages(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
 
         user0 = await self.get_test_user(0)
         user1 = await self.get_test_user(1)
@@ -135,9 +140,11 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 self.assertEqual('test message 1', body[2]['content'])
 
     async def test_lobby_players(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
-        await self.create_test_user(2)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+            self.create_test_user(2),
+        )
 
         user0 = await self.get_test_user(0)
         user1 = await self.get_test_user(1)
@@ -203,8 +210,10 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             self.assertEqual(QrwsOpcode.KICK, data['op'])
 
     async def test_double_connect_after_get(self):
-        await self.create_test_user(0)
-        await self.create_test_user(1)
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
 
         async with timeout(2), \
                 aiohttp.ClientSession() as session:

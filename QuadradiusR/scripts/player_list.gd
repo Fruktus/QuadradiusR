@@ -1,6 +1,5 @@
 extends Node2D
 
-signal challenge_issued(username)
 signal challenge_accepted(challenge_id, opponent_id)
 signal player_hover_start(username)
 signal player_hover_end(username)
@@ -37,7 +36,7 @@ func add_player(username: String, uuid: String, is_current=false):
 
 func remove_player(uuid: String):
 	for child in player_vbox.get_children():
-		if child.username == uuid:
+		if child.uuid == uuid:
 			player_left_sfx.play()
 			child.queue_free()
 
@@ -55,7 +54,6 @@ func _on_player_clicked(uuid: String):
 		emit_signal("challenge_accepted", active_invites[uuid], uuid)
 	else:
 		NetworkHandler.invite_player(uuid)
-		emit_signal("challenge_issued", uuid)
 
 
 # # # # # # # # #
@@ -65,14 +63,9 @@ func _lobby_joined(lobby_id: String, user_id: String, user_username: String):
 	add_player(user_username, user_id, false)
 
 func _lobby_left(lobby_id: String, user_id: String):
+	# TODO remove invites from that player
 	remove_player(user_id)
 
-func _game_invite_received(game_invite_id):
-	NetworkHandler.rest_api.get_game_invite(NetworkHandler.token, game_invite_id, funcref(self, "_cb_game_invite_received"))
-	# TODO the game invite notification will include this at later point
-
-func _cb_game_invite_received(message, args):
-	var from_uuid = message.body['from']['id']
-	active_invites[from_uuid] = message.body['id']
-	receive_challenge(from_uuid)
-	
+func _game_invite_received(game_id, from_id, from_username, subject_id, subject_username):
+	active_invites[from_id] = game_id
+	receive_challenge(from_id)

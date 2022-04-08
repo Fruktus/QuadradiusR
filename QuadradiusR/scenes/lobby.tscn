@@ -24,4 +24,3 @@ position = Vector2( 635, 272 )
 scale = Vector2( 0.365, 0.365 )
 
 [connection signal="challenge_accepted" from="PlayerList" to="." method="_on_challenge_accepted"]
-[connection signal="challenge_issued" from="PlayerList" to="." method="_on_challenge_issued"]

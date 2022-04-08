@@ -7,18 +7,8 @@ onready var player_list = $PlayerList
 func _ready():
 	if not NetworkHandler.lobby_data['players'].empty():
 		for player in NetworkHandler.lobby_data['players']:
-			player_list.add_player(player['username'], player['id'], false) # TODO: Fix username (param 1)
-	player_list.add_player(NetworkHandler.username, "312", true)
-
-
-func _on_challenge_issued(username):
-#	player_list.receive_challenge(username)
-	pass
-#	get_tree().change_scene("res://scenes/match_settings.tscn")
-
-
-func _on_challenge_received(uuid):
-	pass
+			player_list.add_player(player['username'], player['id'], false)
+	player_list.add_player(NetworkHandler.username, "", true)  # TODO add uuid properly
 
 
 func _on_challenge_accepted(game_id, opponent_id):
@@ -26,5 +16,8 @@ func _on_challenge_accepted(game_id, opponent_id):
 	get_tree().change_scene("res://scenes/game.tscn")
 
 
+# # # # # # # # #
+# WS Listeners  #
+# # # # # # # # #
 func _game_invite_accepted(game_invite_id, game_id):
 	get_tree().change_scene("res://scenes/game.tscn")

@@ -24,8 +24,8 @@ func _cb_login_done(is_authorized, user_data, message: Message):
 	else:
 		print('failed to authorize: ', message['result'])
 
-func _dbg_print(message, data):
-	print('me: ', message, ' + ', data)
+func _dbg_print(message, data):  # DEBUG
+	print('me: ', message, ' + ', data)  # DEBUG
 
 func _join_lobby():
 	NetworkHandler.join_lobby(funcref(self, "_cb_lobby_joined"))

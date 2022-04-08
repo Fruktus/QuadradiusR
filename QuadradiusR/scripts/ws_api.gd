@@ -78,12 +78,17 @@ func _handle_kick(data: Dictionary):
 # # # # # # # # # #
 func _handle_game_invite_accepted(data: Dictionary):
 	var game_invite_id = data['game_invite_id']
-	var game_id = data['game_id']
+	var game_id = data['game']['id']
 	get_tree().call_group("ws_lobby", "_game_invite_accepted", game_invite_id, game_id)
 
 func _handle_game_invite_received(data: Dictionary):
-	var game_invite_id = data['game_invite_id']
-	get_tree().call_group("ws_lobby", "_game_invite_received", game_invite_id)
+	var game_id = data['game_invite']['id']
+	var from_id = data['game_invite']['from']['id']
+	var from_username = data['game_invite']['from']['username']
+	var subject_id = data['game_invite']['subject']['id']
+	var subject_username = data['game_invite']['subject']['username']
+	# IDK why but adding "expires" causes it to stop working
+	get_tree().call_group("ws_lobby", "_game_invite_received", game_id, from_id, from_username, subject_id, subject_username)
 
 func _handle_game_invite_removed(data: Dictionary):
 	var game_invite_id = data['game_invite_id']

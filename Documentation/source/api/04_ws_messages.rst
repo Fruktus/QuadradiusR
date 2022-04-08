@@ -105,3 +105,21 @@ Information about forceful session closure.
             "reason": "{reason}"
         }
     }
+
+
+.. _ws_msg_send_message:
+
+``SEND_MESSAGE (8)``
+--------------------
+
+Send a text message.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 8,
+        "d": {
+            "content": "{content}"
+        }
+    }

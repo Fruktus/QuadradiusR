@@ -3,11 +3,11 @@ from unittest import IsolatedAsyncioTestCase
 import aiohttp
 from async_timeout import timeout
 
-from harness import RestTestHarness, TestUserHarness
+from harness import RestTestHarness, TestUserHarness, WebsocketHarness
 from quadradiusr_server.constants import QrwsOpcode
 
 
-class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
+class TestWsLobby(IsolatedAsyncioTestCase, WebsocketHarness, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server()
@@ -50,6 +50,9 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             await self.authorize_ws(1, ws1)
             await self.authorize_ws(2, ws2)
 
+            for ws in [ws0, ws1, ws2]:
+                await self.ws_subscribe(ws, 'lobby.message.received')
+
             await ws0.send_json({
                 'op': QrwsOpcode.SEND_MESSAGE,
                 'd': {
@@ -58,10 +61,10 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             })
 
             for ws in [ws0, ws1, ws2]:
-                data = await ws.receive_json()
-                self.assertEqual(QrwsOpcode.MESSAGE_SENT, data['op'])
-                self.assertEqual(user0['id'], data['d']['user_id'])
-                self.assertEqual('test message', data['d']['content'])
+                n = await self.ws_receive_notification(ws)
+                self.assertEqual('lobby.message.received', n['topic'])
+                self.assertEqual(user0['id'], n['data']['message']['user']['id'])
+                self.assertEqual('test message', n['data']['message']['content'])
 
             async with session.get(self.server_url('/lobby/@main/message'), headers={
                 'authorization': await self.authorize_test_user(0)
@@ -91,6 +94,8 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             await self.authorize_ws(0, ws0)
             await self.authorize_ws(1, ws1)
 
+            await self.ws_subscribe(ws0, 'lobby.message.received')
+
             await ws0.send_json({
                 'op': QrwsOpcode.SEND_MESSAGE,
                 'd': {
@@ -111,6 +116,9 @@ class TestWsLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     'content': 'test message 3',
                 },
             })
+
+            n = await self.ws_receive_notification(ws0)
+            self.assertEqual(n['topic'], 'lobby.message.received')
 
             async with session.get(self.server_url('/lobby/@main/message'), headers={
                 'authorization': await self.authorize_test_user(0)

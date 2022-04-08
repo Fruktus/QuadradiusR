@@ -149,7 +149,7 @@ class QuadradiusRServer:
     def start_lobby(self, lobby: Lobby) -> LiveLobby:
         if lobby.id_ not in self.lobbies.keys():
             self.lobbies[lobby.id_] = LiveLobby(
-                lobby, self.repository,
+                lobby.id_, self.repository,
                 self.notification_service)
         return self.lobbies[lobby.id_]
 

@@ -21,6 +21,7 @@ def clone_db_object(obj, deep=True):
 # noinspection PyAbstractClass
 class DateTimeUTC(TypeDecorator):
     impl = DateTime
+    cache_ok = True
     LOCAL_TIMEZONE = datetime.utcnow().astimezone().tzinfo
 
     def process_bind_param(self, value: datetime, dialect):

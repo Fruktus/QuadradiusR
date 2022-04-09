@@ -1,40 +1,103 @@
+import base64
+import json
 from dataclasses import dataclass
 from typing import Dict, Tuple
 
+import jsondiff as jsondiff
+
 from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Game, clone_db_object
+from quadradiusr_server.db.base import User
+from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
-from quadradiusr_server.qrws_connection import BasicConnection
-from quadradiusr_server.qrws_messages import Message, KickMessage
+from quadradiusr_server.notification import NotificationService
+from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
+from quadradiusr_server.qrws_messages import Message, KickMessage, GameStateMessage
 
 
 @dataclass
-class Square:
+class Tile:
     elevation: int
+
+    def serialize_for(self, user: User):
+        return {
+            'elevation': self.elevation,
+        }
 
 
 @dataclass
 class GameSettings:
-    size_x: int
-    size_y: int
+    board_size: Tuple[int, int]
+
+    def serialize_for(self, user: User):
+        return {
+            'board_size': [
+                self.board_size[0],
+                self.board_size[1],
+            ]
+        }
+
+
+@dataclass
+class GameBoard:
+    tiles: Dict[Tuple[int, int], Tile]
+
+    def serialize_for(self, user: User):
+        return {
+            'tiles': [
+                {
+                    'x': pos[0],
+                    'y': pos[1],
+                    'tile': tile.serialize_for(user),
+                } for pos, tile in self.tiles.items()
+            ],
+        }
 
 
 @dataclass
 class GameState:
     settings: GameSettings
-    squares: Dict[Tuple[int, int], Square]
+    board: GameBoard
+
+    def serialize_for(self, user: User) -> dict:
+        return {
+            'settings': self.settings.serialize_for(user),
+            'board': self.board.serialize_for(user),
+        }
+
+    def serialize_with_etag_for(self, user: User) -> Tuple[dict, str]:
+        serialized = self.serialize_for(user)
+        hash_int = hash(json.dumps(serialized))
+        hash_bytes = hash_int.to_bytes(
+            (hash_int.bit_length() + 7) // 8,
+            byteorder='big', signed=True)
+        hash_str = base64.b85encode(hash_bytes).decode()
+        return serialized, hash_str
+
+    @staticmethod
+    def serialize_diff_with_etag_for(
+            from_: 'GameState',
+            to: 'GameState',
+            user: User) -> Tuple[dict, str, str]:
+        from_serialized, from_etag = from_.serialize_with_etag_for(user)
+        to_serialized, to_etag = to.serialize_with_etag_for(user)
+
+        return jsondiff.diff(from_, to), from_etag, to_etag
 
     @classmethod
     def initial(cls):
+        board_size = (10, 8)
         return GameState(
             settings=GameSettings(
-                size_x=10,
-                size_y=10,
+                board_size=board_size,
             ),
-            squares={
-                (x, y): Square(elevation=0)
-                for x in range(10) for y in range(10)
-            },
+            board=GameBoard(
+                tiles={
+                    (x, y): Tile(elevation=0)
+                    for x in range(board_size[0])
+                    for y in range(board_size[1])
+                },
+            ),
         )
 
 
@@ -81,37 +144,26 @@ class GameInProgress:
         asyncio.create_task(self.save_now())
 
     async def save_now(self):
-        await self.repository.game_repository.save(self.game)
-
-    def serialize_game_state(self, game_state: GameState):
-        return {
-            'settings': self.serialize_game_settings(game_state.settings),
-            'board': self.serialize_board(game_state),
-        }
-
-    def serialize_game_settings(self, settings: GameSettings):
-        return {
-            'size_x': settings.size_x,
-            'size_y': settings.size_y,
-        }
-
-    def serialize_board(self, game_state: GameState):
-        return {
-            'squares': [
-                self.serialize_square(pos, square)
-                for pos, square in game_state.squares.values()
-            ],
-        }
-
-    def serialize_square(self, pos: (int, int), square: Square):
-        return {
-            'x': pos[0],
-            'y': pos[1],
-            'elevation': square.elevation,
-        }
+        await self.repository.game_repository.save(clone_db_object(self.game))
 
 
 class GameConnection(BasicConnection):
+
+    def __init__(
+            self, qrws: QrwsConnection,
+            game_in_progress: GameInProgress,
+            user: User,
+            notification_service: NotificationService,
+            database: DatabaseEngine) -> None:
+        super().__init__(qrws, user, notification_service, database)
+        self.game_in_progress = game_in_progress
+
+    async def on_ready(self):
+        game_state = self.game_in_progress.game_state
+        serialized, etag = game_state.serialize_with_etag_for(self.user)
+        await self.qrws.send_message(
+            GameStateMessage(game_state=serialized, etag=etag))
+
     async def handle_message(self, message: Message) -> bool:
         if await super().handle_message(message):
             return True

@@ -1,6 +1,8 @@
 import asyncio
 import dataclasses
+import uuid
 from abc import ABCMeta
+from datetime import datetime, timedelta, timezone
 from typing import Callable
 
 import aiohttp
@@ -8,6 +10,9 @@ from aiohttp import ClientWebSocketResponse
 
 from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.constants import QrwsOpcode
+from quadradiusr_server.db.base import Game
+from quadradiusr_server.db.transactions import transaction_context
+from quadradiusr_server.game import GameState
 from quadradiusr_server.notification import Handler, Notification
 from quadradiusr_server.server import QuadradiusRServer
 
@@ -99,6 +104,33 @@ class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
         })
         data = await ws.receive_json()
         assert QrwsOpcode.SERVER_READY == data['op']
+
+
+class GameHarness(RestTestHarness, metaclass=ABCMeta):
+    async def create_game(self, player_a_id: str, player_b_id: str) -> str:
+        assert player_a_id != player_b_id
+        async with transaction_context(self.server.database):
+            game_state = GameState.initial()
+            game_id = str(uuid.uuid4())
+            game = Game(
+                id_=game_id,
+                player_a_id_=player_a_id,
+                player_b_id_=player_b_id,
+                expires_at_=datetime.now(timezone.utc) + timedelta(minutes=10),
+                game_state_=game_state,
+            )
+            await self.server.repository.game_repository.add(game)
+            return game_id
+
+    async def get_game_state(self, game_id: str) -> GameState:
+        async with transaction_context(self.server.database):
+            game = await self.server.repository.game_repository.get_by_id(game_id)
+            return game.game_state_
+
+    async def set_game_state(self, game_id: str, game_state: GameState):
+        async with transaction_context(self.server.database):
+            game = await self.server.repository.game_repository.get_by_id(game_id)
+            game.game_state_ = game_state
 
 
 class NotificationHandlerForTests(Handler):

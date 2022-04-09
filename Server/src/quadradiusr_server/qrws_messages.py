@@ -102,6 +102,36 @@ class KickMessage(Message):
         }
 
 
+class GameStateMessage(Message):
+    def __init__(self, *, game_state: dict, etag: str) -> None:
+        super().__init__(QrwsOpcode.GAME_STATE)
+        self.game_state = game_state
+        self.etag = etag
+
+    def _to_json_data(self):
+        return {
+            'game_state': self.game_state,
+            'etag': self.etag,
+        }
+
+
+class GameStateDiffMessage(Message):
+    def __init__(
+            self, *, game_state_diff: dict,
+            etag_from: str, etag_to: str) -> None:
+        super().__init__(QrwsOpcode.GAME_STATE_DIFF)
+        self.game_state_diff = game_state_diff
+        self.etag_from = etag_from
+        self.etag_to = etag_to
+
+    def _to_json_data(self):
+        return {
+            'game_state_diff': self.game_state_diff,
+            'etag_from': self.etag_from,
+            'etag_to': self.etag_to,
+        }
+
+
 def parse_message(*, op: int, data: dict) -> Message:
     if op == QrwsOpcode.HEARTBEAT:
         return HeartbeatMessage()

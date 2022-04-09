@@ -8,12 +8,13 @@ from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional, transaction_context
-from quadradiusr_server.game import GameConnection
+from quadradiusr_server.game import GameConnection, GameState
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.rest.mappers import game_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
+from quadradiusr_server.utils import get_if_none_match_from_request
 
 
 class GameViewBase(web.View, metaclass=ABCMeta):
@@ -73,10 +74,32 @@ class GameConnectView(GameViewBase, web.View):
                 close_code=QrwsCloseCode.CONFLICT)
             return qrws.ws
 
-        conn = GameConnection(qrws, user, ns, repository.database)
+        conn = GameConnection(qrws, game_in_progress, user, ns, repository.database)
         await game_in_progress.connect_player(conn)
         try:
             await conn.handle_connection()
             return qrws.ws
         finally:
             await game_in_progress.disconnect_player(conn)
+
+
+@routes.view('/game/{game_id}/state')
+class GameStateView(GameViewBase, web.View):
+    @transactional
+    @authorized_endpoint
+    async def get(self, *, auth_user: User):
+        repository: Repository = self.request.app['repository']
+        game = await self._get_game(auth_user, repository)
+        game_state: GameState = game.game_state_
+        serialized, etag = game_state.serialize_with_etag_for(auth_user)
+
+        user_etag = get_if_none_match_from_request(self.request)
+        if user_etag and etag == user_etag:
+            return web.Response(status=304)
+
+        return web.json_response({
+            'game_id': game.id_,
+            **serialized,
+        }, headers={
+            'etag': f'W/"{etag}"',
+        })

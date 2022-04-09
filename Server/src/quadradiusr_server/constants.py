@@ -13,6 +13,8 @@ class QrwsOpcode(IntEnum):
     SUBSCRIBED = 6
     KICK = 7
     SEND_MESSAGE = 8
+    GAME_STATE = 9
+    GAME_STATE_DIFF = 10
 
 
 class QrwsCloseCode(IntEnum):

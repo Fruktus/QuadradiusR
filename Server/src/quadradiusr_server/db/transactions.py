@@ -86,6 +86,8 @@ def transaction_context(
                 return
             if exc_type is None:
                 await self.session.commit()
+            else:
+                await self.session.rollback()
             _session_context.reset(self.token)
             await self.session.__aexit__(exc_type, exc_val, exc_tb)
 

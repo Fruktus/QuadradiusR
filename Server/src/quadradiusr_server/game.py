@@ -11,7 +11,6 @@ import jsondiff as jsondiff
 from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.base import User
-from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
@@ -174,10 +173,10 @@ class GameInProgress:
         return self.player_connections.get(player_id) is not None
 
     async def connect_player(self, connection: 'GameConnection'):
-        player_id = connection.user.id_
+        player_id = connection.user_id
         if player_id not in self.player_connections:
             raise ValueError(
-                f'User {connection.user} is not part of the game {self.game_id}')
+                f'User {player_id} is not part of the game {self.game_id}')
 
         old_connection = self.player_connections.get(player_id)
         if old_connection:
@@ -186,7 +185,7 @@ class GameInProgress:
         self.player_connections[player_id] = connection
 
     async def disconnect_player(self, connection: 'GameConnection'):
-        player_id = connection.user.id_
+        player_id = connection.user_id
         if player_id in self.player_connections:
             self.player_connections[player_id] = None
 
@@ -263,28 +262,28 @@ class GameConnection(BasicConnection):
             game_in_progress: GameInProgress,
             user: User,
             notification_service: NotificationService,
-            database: DatabaseEngine) -> None:
-        super().__init__(qrws, user, notification_service, database)
+            repository: Repository) -> None:
+        super().__init__(qrws, user, notification_service, repository)
         self.game_in_progress = game_in_progress
 
-    async def on_ready(self):
+    async def on_ready(self, user: User):
         game = await self.game_in_progress.get_game()
         game_state = game.game_state_
-        serialized, etag = game_state.serialize_with_etag_for(self.user)
+        serialized, etag = game_state.serialize_with_etag_for(user)
         await self.qrws.send_message(
             GameStateMessage(
-                recipient_id=self.user.id_,
+                recipient_id=user.id_,
                 game_state=serialized,
                 etag=etag,
             ))
 
-    async def handle_message(self, message: Message) -> bool:
-        if await super().handle_message(message):
+    async def handle_message(self, user: User, message: Message) -> bool:
+        if await super().handle_message(user, message):
             return True
 
         if isinstance(message, MoveMessage):
             result = await self.game_in_progress.make_move(
-                self.user,
+                user,
                 piece_id=message.piece_id,
                 tile_id=message.tile_id,
             )

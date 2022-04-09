@@ -4,7 +4,6 @@ from typing import Dict, List
 
 from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import User, LobbyMessage
-from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.notification import NotificationService, Notification
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
@@ -23,11 +22,22 @@ class LiveLobby:
         self._players: Dict[str, LobbyConnection] = {}
 
     @property
-    def players(self) -> List[User]:
-        return [conn.user for conn in self._players.values()]
+    def player_ids(self) -> List[str]:
+        return [conn.user_id for conn in self._players.values()]
+
+    async def get_players(self) -> List[User]:
+        # TODO bulk query
+        players = []
+        for player_id in self.player_ids:
+            player = await self.repository.user_repository.get_by_id(player_id)
+            players.append(player)
+        return players
 
     async def join(self, lobby_conn: 'LobbyConnection'):
-        user_id = lobby_conn.user.id_
+        user_repo = self.repository.user_repository
+        user_id = lobby_conn.user_id
+        user = await user_repo.get_by_id(user_id)
+
         if user_id in self._players:
             await self._players[user_id].kick()
         self._players[user_id] = lobby_conn
@@ -40,14 +50,14 @@ class LiveLobby:
                 data={
                     'lobby_id': self.lobby_id,
                     'user': {
-                        'id': user_id,
-                        'username': lobby_conn.user.username_,
+                        'id': user.id_,
+                        'username': user.username_,
                     },
                 },
             ))
 
     async def leave(self, lobby_conn: 'LobbyConnection'):
-        user_id = lobby_conn.user.id_
+        user_id = lobby_conn.user_id
         if lobby_conn in self._players.values():
             del self._players[user_id]
 
@@ -64,9 +74,6 @@ class LiveLobby:
 
     async def send_message(self, user: User, content: str):
         lobby_repo = self.repository.lobby_repository
-        user_repo = self.repository.user_repository
-        # TODO add some sane object and transaction management to WS
-        user = await user_repo.get_by_id(user.id_)
         lobby = await lobby_repo.get_by_id(self.lobby_id)
         lobby_message = LobbyMessage(
             id_=str(uuid.uuid4()),
@@ -98,17 +105,17 @@ class LobbyConnection(BasicConnection):
             qrws: QrwsConnection,
             user: User,
             notification_service: NotificationService,
-            database: DatabaseEngine) -> None:
-        super().__init__(qrws, user, notification_service, database)
+            repository: Repository) -> None:
+        super().__init__(qrws, user, notification_service, repository)
         self.lobby: LiveLobby = lobby
 
-    async def handle_message(self, message: Message) -> bool:
-        if await super().handle_message(message):
+    async def handle_message(self, user: User, message: Message) -> bool:
+        if await super().handle_message(user, message):
             return True
 
         if isinstance(message, SendMessageMessage):
             content = message.content
-            await self.lobby.send_message(self.user, content)
+            await self.lobby.send_message(user, content)
             return True
         else:
             return False

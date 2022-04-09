@@ -28,7 +28,7 @@ class GatewayView(web.View):
         await qrws.prepare(self.request)
         user = await qrws.authorize(auth, repository)
 
-        gateway = GatewayConnection(qrws, user, ns, repository.database)
+        gateway = GatewayConnection(qrws, user, ns, repository)
         server.register_gateway(gateway)
         try:
             await gateway.handle_connection()

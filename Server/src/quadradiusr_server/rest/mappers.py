@@ -1,4 +1,6 @@
-from quadradiusr_server.db.base import User, GameInvite, Game, LobbyMessage
+from typing import Optional, List
+
+from quadradiusr_server.db.base import User, GameInvite, Game, LobbyMessage, Lobby
 
 
 def user_to_json(user: User):
@@ -25,6 +27,21 @@ def game_to_json(game: Game):
             user_to_json(game.player_b_),
         ],
         'expires_at': game.expires_at_.isoformat(),
+    }
+
+
+def lobby_to_json(
+        lobby: Lobby,
+        *,
+        href_ws: str,
+        players: Optional[List[User]] = None):
+    return {
+        'id': lobby.id_,
+        'name': lobby.name_,
+        'ws_url': f'{href_ws}/lobby/{lobby.id_}/connect',
+        'players': [
+            user_to_json(player) for player in players
+        ] if players is not None else None,
     }
 
 

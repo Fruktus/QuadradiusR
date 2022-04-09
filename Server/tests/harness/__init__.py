@@ -61,6 +61,24 @@ class WebsocketHarness(metaclass=ABCMeta):
         assert QrwsOpcode.NOTIFICATION == data['op']
         return data['d']
 
+    async def ws_send_message(
+            self, ws: ClientWebSocketResponse,
+            content: str,
+            wait_for_notification: bool = False):
+        await ws.send_json({
+            'op': QrwsOpcode.SEND_MESSAGE,
+            'd': {
+                'content': content,
+            },
+        })
+
+        if wait_for_notification:
+            while True:
+                n = await self.ws_receive_notification(ws)
+                if n['topic'] == 'lobby.message.received' and \
+                        n['data']['message']['content'] == content:
+                    return
+
 
 class TestUserHarness(RestTestHarness, metaclass=ABCMeta):
 

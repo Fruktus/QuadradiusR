@@ -9,27 +9,13 @@ from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Lobby, User
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional, transaction_context
-from quadradiusr_server.lobby import LobbyConnection, LiveLobby
+from quadradiusr_server.lobby import LobbyConnection
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import QrwsConnection
 from quadradiusr_server.rest.auth import authorized_endpoint
-from quadradiusr_server.rest.mappers import user_to_json, lobby_message_to_json
+from quadradiusr_server.rest.mappers import lobby_message_to_json, lobby_to_json
 from quadradiusr_server.server import routes, QuadradiusRServer
 from quadradiusr_server.utils import parse_iso_datetime_tz
-
-
-def map_lobby_to_json(
-        server: QuadradiusRServer,
-        lobby: Lobby,
-        live_lobby: LiveLobby = None):
-    return {
-        'id': lobby.id_,
-        'name': lobby.name_,
-        'ws_url': server.get_href('ws') + f'/lobby/{lobby.id_}/connect',
-        'players': [
-            user_to_json(player) for player in live_lobby.players
-        ] if live_lobby is not None else None,
-    }
 
 
 class LobbyViewBase(web.View, metaclass=ABCMeta):
@@ -50,8 +36,10 @@ class LobbiesView(web.View):
         repository: Repository = self.request.app['repository']
         lobbies = await repository.lobby_repository.get_all()
 
-        return web.json_response([
-            map_lobby_to_json(server, lobby) for lobby in lobbies])
+        return web.json_response([lobby_to_json(
+            lobby,
+            href_ws=server.get_href('ws'),
+        ) for lobby in lobbies])
 
 
 @routes.view('/lobby/{lobby_id}')
@@ -63,7 +51,12 @@ class LobbyView(LobbyViewBase, web.View):
         repository: Repository = self.request.app['repository']
         lobby = await self._get_lobby(repository)
         live_lobby = server.start_lobby(lobby)
-        return web.json_response(map_lobby_to_json(server, lobby, live_lobby))
+        players = await live_lobby.get_players()
+        return web.json_response(lobby_to_json(
+            lobby,
+            href_ws=server.get_href('ws'),
+            players=players,
+        ))
 
 
 @routes.view('/lobby/{lobby_id}/connect')
@@ -85,19 +78,18 @@ class LobbyConnectView(LobbyViewBase, web.View):
             await qrws.prepare(self.request)
             user = await qrws.authorize(auth, repository)
 
-            await repository.expunge_all()
+            live_lobby = server.start_lobby(lobby)
+            if live_lobby.joined(user) and not force:
+                await qrws.send_error(
+                    'You are already connected to this lobby',
+                    close_code=QrwsCloseCode.CONFLICT)
+                return qrws.ws
 
-        live_lobby = server.start_lobby(lobby)
-        if live_lobby.joined(user) and not force:
-            await qrws.send_error(
-                'You are already connected to this lobby',
-                close_code=QrwsCloseCode.CONFLICT)
-            return qrws.ws
+            lobby_conn = LobbyConnection(
+                live_lobby, qrws, user,
+                ns, repository)
+            await live_lobby.join(lobby_conn)
 
-        lobby_conn = LobbyConnection(
-            live_lobby, qrws, user,
-            ns, repository.database)
-        await live_lobby.join(lobby_conn)
         try:
             await lobby_conn.handle_connection()
             return qrws.ws

@@ -9,7 +9,7 @@ from aiohttp.web_ws import WebSocketResponse
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
-from quadradiusr_server.db.base import User, clone_db_object
+from quadradiusr_server.db.base import User
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import NotificationService, Handler, Notification

@@ -1,6 +1,6 @@
 import dataclasses
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from json import JSONDecodeError
 from typing import Optional, Callable
 
@@ -33,6 +33,12 @@ class CronConfig:
 
 
 @dataclass
+class StaticServerConfig:
+    serve_path: Optional[str] = None
+    redirect_root: Optional[str] = None
+
+
+@dataclass
 class ServerConfig:
     host: str
     port: int
@@ -43,9 +49,10 @@ class ServerConfig:
     shutdown_timeout: float = 60.0
     backlog: int = 128
 
-    auth: AuthConfig = AuthConfig()
-    database: DatabaseConfig = DatabaseConfig()
-    cron: CronConfig = CronConfig()
+    auth: AuthConfig = field(default_factory=AuthConfig)
+    database: DatabaseConfig = field(default_factory=DatabaseConfig)
+    cron: CronConfig = field(default_factory=CronConfig)
+    static: StaticServerConfig = field(default_factory=StaticServerConfig)
 
     def set(self, option: str, value: str):
         option_parts = option.split('.')

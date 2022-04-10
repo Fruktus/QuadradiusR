@@ -110,7 +110,7 @@ class GameHarness(RestTestHarness, metaclass=ABCMeta):
     async def create_game(self, player_a_id: str, player_b_id: str) -> str:
         assert player_a_id != player_b_id
         async with transaction_context(self.server.database):
-            game_state = GameState.initial()
+            game_state = GameState.initial(player_a_id, player_b_id)
             game_id = str(uuid.uuid4())
             game = Game(
                 id_=game_id,

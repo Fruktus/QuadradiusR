@@ -101,5 +101,5 @@ class GameStateView(GameViewBase, web.View):
             'game_id': game.id_,
             **serialized,
         }, headers={
-            'etag': f'W/"{etag}"',
+            'etag': f'"{etag}"',
         })

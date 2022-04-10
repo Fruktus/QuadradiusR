@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Tuple
 
 from quadradiusr_server.constants import QrwsOpcode
 
@@ -103,13 +104,17 @@ class KickMessage(Message):
 
 
 class GameStateMessage(Message):
-    def __init__(self, *, game_state: dict, etag: str) -> None:
+    def __init__(
+            self, *, recipient_id: str,
+            game_state: dict, etag: str) -> None:
         super().__init__(QrwsOpcode.GAME_STATE)
+        self.recipient_id = recipient_id
         self.game_state = game_state
         self.etag = etag
 
     def _to_json_data(self):
         return {
+            'recipient_id': self.recipient_id,
             'game_state': self.game_state,
             'etag': self.etag,
         }
@@ -117,18 +122,50 @@ class GameStateMessage(Message):
 
 class GameStateDiffMessage(Message):
     def __init__(
-            self, *, game_state_diff: dict,
+            self, *, recipient_id: str,
+            game_state_diff: dict,
             etag_from: str, etag_to: str) -> None:
         super().__init__(QrwsOpcode.GAME_STATE_DIFF)
+        self.recipient_id = recipient_id
         self.game_state_diff = game_state_diff
         self.etag_from = etag_from
         self.etag_to = etag_to
 
     def _to_json_data(self):
         return {
+            'recipient_id': self.recipient_id,
             'game_state_diff': self.game_state_diff,
             'etag_from': self.etag_from,
             'etag_to': self.etag_to,
+        }
+
+
+class MoveMessage(Message):
+    def __init__(
+            self, *,
+            piece_id: str,
+            tile_id: str) -> None:
+        super().__init__(QrwsOpcode.MOVE)
+        self.piece_id = piece_id
+        self.tile_id = tile_id
+
+    def _to_json_data(self):
+        return {
+            'piece_id': self.piece_id,
+            'tile_id': self.tile_id,
+        }
+
+
+class MoveResultMessage(Message):
+    def __init__(self, *, is_legal: bool, reason: str) -> None:
+        super().__init__(QrwsOpcode.MOVE_RESULT)
+        self.is_legal = is_legal
+        self.reason = reason
+
+    def _to_json_data(self):
+        return {
+            'is_legal': self.is_legal,
+            'reason': self.reason,
         }
 
 
@@ -151,6 +188,11 @@ def parse_message(*, op: int, data: dict) -> Message:
     elif op == QrwsOpcode.SEND_MESSAGE:
         return SendMessageMessage(
             content=data['content'],
+        )
+    elif op == QrwsOpcode.MOVE:
+        return MoveMessage(
+            piece_id=data['piece_id'],
+            tile_id=data['tile_id'],
         )
     else:
         raise ValueError(f'Unknown opcode: {op}')

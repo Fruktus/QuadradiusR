@@ -3,7 +3,6 @@ from typing import Optional, List
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from quadradiusr_server.db.base import GameInvite
 from quadradiusr_server.db.database_engine import DatabaseEngine

@@ -15,6 +15,8 @@ class QrwsOpcode(IntEnum):
     SEND_MESSAGE = 8
     GAME_STATE = 9
     GAME_STATE_DIFF = 10
+    MOVE = 11
+    MOVE_RESULT = 12
 
 
 class QrwsCloseCode(IntEnum):

@@ -65,11 +65,22 @@ class TestGame(IsolatedAsyncioTestCase, TestUserHarness, GameHarness, RestTestHa
                     body = await response.json()
                     self.assertEqual(game_id, body['game_id'])
                     self.assertEqual({
-                        'board_size': [10, 8],
+                        'board_size': {
+                            'x': 10,
+                            'y': 8,
+                        },
                     }, body['settings'])
-                    self.assertEqual(0, body['board']['tiles'][0]['tile']['elevation'])
-                    self.assertIsInstance(body['board']['tiles'][0]['x'], int)
-                    self.assertIsInstance(body['board']['tiles'][0]['y'], int)
+
+                    tiles = body['board']['tiles']
+                    tile = next(iter(tiles.values()))
+                    self.assertEqual(0, tile['elevation'])
+                    self.assertIsInstance(tile['position']['x'], int)
+                    self.assertIsInstance(tile['position']['y'], int)
+
+                    pieces = body['board']['pieces']
+                    piece = next(iter(pieces.values()))
+                    self.assertIsInstance(piece['owner_id'], str)
+                    self.assertIsInstance(piece['tile_id'], str)
 
             async with session.get(self.server_url(f'/game/{game_id}/state'), headers={
                 'authorization': await self.authorize_test_user(2)

@@ -123,3 +123,89 @@ Send a text message.
             "content": "{content}"
         }
     }
+
+
+.. _ws_msg_game_state:
+
+``GAME_STATE (9)``
+------------------
+
+Inform about current game state.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 9,
+        "d": {
+            "recipient_id": "{user_id}",
+            "game_state": {},
+            "etag": "{etag}"
+        }
+    }
+
+See :ref:`rest_game_state` for data structures.
+
+
+.. _ws_msg_game_state_diff:
+
+``GAME_STATE_DIFF (10)``
+------------------------
+
+Inform about a difference in game state.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 10,
+        "d": {
+            "recipient_id": "{user_id}",
+            "game_state_diff": {},
+            "etag_from": "{etag}",
+            "etag_to": "{etag}"
+        }
+    }
+
+The ``game_state_diff`` property describes difference
+in game state structures described in :ref:`ws_msg_game_state`.
+The special property ``$delete`` describes items which
+were deleted in the diff.
+
+
+.. _ws_msg_move:
+
+``MOVE (11)``
+-------------
+
+Perform a move by the player.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 11,
+        "d": {
+            "piece_id": "{piece_id}",
+            "tile_id": "{tile_id}"
+        }
+    }
+
+
+.. _ws_msg_move_result:
+
+``MOVE_RESULT (12)``
+--------------------
+
+Inform about the result of a player's move.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 12,
+        "d": {
+            "is_legal": true,
+            "reason": "{reason}"
+        }
+    }

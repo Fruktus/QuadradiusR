@@ -88,7 +88,7 @@ class QrwsConnection:
             op = data['op']
             try:
                 return parse_message(op=QrwsOpcode(op), data=data['d'])
-            except ValueError | KeyError as e:
+            except (ValueError, KeyError) as e:
                 await self.send_error(f'Malformed data: {e}')
                 continue
 
@@ -137,8 +137,9 @@ class BasicConnection(ABC):
 
     async def handle_connection(self):
         qrws = self.qrws
-        await qrws.ready()
-        await self.on_ready()
+        async with transaction_context(self._database):
+            await qrws.ready()
+            await self.on_ready()
         try:
             while not qrws.closed:
                 message = await qrws.receive_message()

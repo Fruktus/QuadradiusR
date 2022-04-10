@@ -73,3 +73,41 @@ Available in:
 +================+============================+===========================+
 | Client->Server | :ref:`ws_msg_send_message` | Client sends the message. |
 +----------------+----------------------------+---------------------------+
+
+
+Receiving initial game state
+----------------------------
+
+Available in:
+
+* :ref:`ws_game`
+
++----------------+----------------------------+---------------------------+
+| Direction      | Message                    | Comment                   |
++================+============================+===========================+
+| Server->Client | :ref:`ws_msg_game_state`   | Server informs about the  |
+|                |                            | current game state.       |
++----------------+----------------------------+---------------------------+
+
+
+Performing a move
+-----------------
+
+Available in:
+
+* :ref:`ws_game`
+
++----------------+-------------------------------+------------------------------+
+| Direction      | Message                       | Comment                      |
++================+===============================+==============================+
+| Client->Server | :ref:`ws_msg_move`            | Client performs a move.      |
++----------------+-------------------------------+------------------------------+
+| Server->Client | :ref:`ws_msg_move_result`     | Server informs whether the   |
+|                |                               | move was legal.              |
+|                |                               |                              |
+|                |                               | If the move was illegal,     |
+|                |                               | communication stops.         |
++----------------+-------------------------------+------------------------------+
+| Server->Client | :ref:`ws_msg_game_state_diff` | Server informs about what    |
+|                |                               | changed.                     |
++----------------+-------------------------------+------------------------------+

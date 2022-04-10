@@ -64,6 +64,54 @@ Get information about a game.
     }
 
 
+.. _rest_game_state:
+
+``GET /game/{id}/state``
+------------------------
+
+Get information about a current game's state.
+
+This endpoint support the standard ``ETag``/``If-None-Match`` flow.
+
+.. code-block:: text
+    :caption: Response status
+
+    200 OK
+
+.. code-block:: json
+    :caption: Response body
+
+    {
+        "game_id": "{game_id}",
+        "settings": {
+            "board_size": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "board": {
+            "tiles": {
+                "{tile_id}": {
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    },
+                    "elevation": 0
+                }
+            },
+            "pieces": {
+                "{piece_id}": {
+                    "owner_id": "{owner_id}",
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    }
+                }
+            }
+        }
+    }
+
+
 .. _rest_gateway:
 
 ``GET /gateway``

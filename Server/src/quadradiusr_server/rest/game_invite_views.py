@@ -126,7 +126,7 @@ class GameInviteAcceptView(GameInviteViewBase, web.View):
             player_a_=game_invite.from_,
             player_b_=game_invite.subject_,
             expires_at_=datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=5),
-            game_state_=GameState.initial()
+            game_state_=GameState.initial(game_invite.from_id_, game_invite.subject_id_)
         )
 
         await repository.game_repository.add(game)

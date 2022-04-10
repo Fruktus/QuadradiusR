@@ -8,7 +8,7 @@ from harness import TestUserHarness, RestTestHarness
 from quadradiusr_server.constants import QrwsOpcode
 
 
-class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
+class E2eBasicGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server()
@@ -61,3 +61,19 @@ class E2eStartGameTest(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness
                 self.assertEqual(QrwsOpcode.GAME_STATE, msg1['op'])
                 self.assertIsNotNone(msg1['d']['game_state'])
                 self.assertIsNotNone(msg1['d']['etag'])
+
+                pieces = msg0['d']['game_state']['board']['pieces']
+                tiles = msg0['d']['game_state']['board']['tiles']
+                await ws0.send_json({
+                    'op': 11,
+                    'd': {
+                        'piece_id': next(iter(pieces.keys())),
+                        'tile_id': next(iter(tiles.keys())),
+                    }
+                })
+                move_result_msg = await ws0.receive_json()
+                self.assertEqual(QrwsOpcode.MOVE_RESULT, move_result_msg['op'])
+                self.assertTrue(move_result_msg['d']['is_legal'])
+
+                diff_msg = await ws0.receive_json()
+                self.assertEqual(QrwsOpcode.GAME_STATE_DIFF, diff_msg['op'])

@@ -51,11 +51,9 @@ def is_request_websocket_upgradable(request: Request):
 
 
 def parse_etag_header(header_value):
-    if not header_value.startswith('W/'):
+    if header_value[0] != '"' or header_value[-1] != '"':
         return None
-    if header_value[2] != '"' or header_value[-1] != '"':
-        return None
-    return header_value[3:-1]
+    return header_value[1:-1]
 
 
 def get_if_none_match_from_request(request: Request) -> Optional[str]:

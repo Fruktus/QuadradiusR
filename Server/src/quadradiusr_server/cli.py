@@ -3,7 +3,7 @@ import logging.config
 import os.path
 
 from quadradiusr_server import config, logger
-from quadradiusr_server.config import ConfigGenerator
+from quadradiusr_server.config import ConfigGenerator, ServerConfig
 from quadradiusr_server.server import QuadradiusRServer
 
 
@@ -17,7 +17,6 @@ class ServerCli:
         parser.add_argument(
             '--config',
             type=str,
-            default='config.toml',
             help='specify path of the configuration file')
         parser.add_argument(
             '-v', '--verbose',
@@ -27,6 +26,22 @@ class ServerCli:
             '--generate-config',
             metavar='CONFIG_PATH',
             help='generate server configuration')
+        parser.add_argument(
+            '--q',
+            type=bool,
+            help='use default configuration instead of ')
+        parser.add_argument(
+            '--host',
+            type=str,
+            help='bind address')
+        parser.add_argument(
+            '--port',
+            type=str,
+            help='bind port')
+        parser.add_argument(
+            '--set',
+            action='append',
+            help='set config values, e.g. --set server.database.create_metadata=true')
 
         return parser.parse_args(args)
 
@@ -39,9 +54,28 @@ class ServerCli:
             gen.generate(args.generate_config)
             return 0
 
-        if not os.path.isfile(args.config):
-            logging.error(f'Config file {args.config} not found')
-            return 1
+        if args.config:
+            if not os.path.isfile(args.config):
+                logging.error(f'Config file {args.config} not found')
+                return 1
 
-        server = QuadradiusRServer(config.from_toml(args.config))
+            server_config = config.from_toml(args.config)
+        else:
+            if not args.host or not args.port:
+                logging.error(f'No --host, --port, or --config option, see --help for help')
+                return 1
+
+            server_config = ServerConfig(
+                host=args.host,
+                port=int(args.port),
+            )
+
+        set_options = args.set
+        if set_options:
+            for set_option in set_options:
+                set_option: str
+                option, value = set_option.split('=', 2)
+                server_config.set(option, value)
+
+        server = QuadradiusRServer(server_config)
         return server.run()

@@ -1,5 +1,7 @@
 import dataclasses
+import json
 from dataclasses import dataclass
+from json import JSONDecodeError
 from typing import Optional, Callable
 
 import dacite as dacite
@@ -44,6 +46,22 @@ class ServerConfig:
     auth: AuthConfig = AuthConfig()
     database: DatabaseConfig = DatabaseConfig()
     cron: CronConfig = CronConfig()
+
+    def set(self, option: str, value: str):
+        option_parts = option.split('.')
+        if option_parts[0] == 'server':
+            option_parts = option_parts[1:]
+        obj = self
+        for part in option_parts[0:-1]:
+            obj = getattr(obj, part)
+        attr = option_parts[-1]
+        if not hasattr(obj, attr):
+            raise KeyError(f'Unknown option: {option}')
+
+        try:
+            setattr(obj, attr, json.loads(value))
+        except JSONDecodeError:
+            setattr(obj, attr, value)
 
 
 class ConfigError(Exception):

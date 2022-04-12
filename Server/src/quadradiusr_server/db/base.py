@@ -106,6 +106,11 @@ class Game(Base):
         cascade='expunge',
         foreign_keys=[player_b_id_])
 
+    def get_other_player_id(self, player_id):
+        ids = {self.player_a_id_, self.player_b_id_}
+        ids.remove(player_id)
+        return list(ids)[0]
+
     def __repr__(self):
         return \
             f'{type(self).__name__}(' \

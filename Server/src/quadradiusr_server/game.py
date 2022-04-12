@@ -81,11 +81,13 @@ class GameBoard:
 class GameState:
     settings: GameSettings
     board: GameBoard
+    current_player_id: str
 
     def serialize_for(self, user_id: str) -> dict:
         return {
             'settings': self.settings.serialize_for(user_id),
             'board': self.board.serialize_for(user_id),
+            'current_player_id': self.current_player_id,
         }
 
     def serialize_with_etag_for(self, user_id: str) -> Tuple[dict, str]:
@@ -143,6 +145,7 @@ class GameState:
                 tiles=tiles,
                 pieces=pieces,
             ),
+            current_player_id=player_a_id,
         )
 
 
@@ -193,11 +196,17 @@ class GameInProgress:
             tile_id: str) -> MoveResult:
         # check move
 
-        game = await self.get_game()
-        game_state = game.game_state_
+        game: Game = await self.get_game()
+        game_state: GameState = game.game_state_
         old_game_state = copy.deepcopy(game_state)
         tiles = game_state.board.tiles
         pieces = game_state.board.pieces
+
+        if game_state.current_player_id != player.id_:
+            return MoveResult(
+                is_legal=False,
+                reason='Not your turn',
+            )
 
         if piece_id not in pieces:
             return MoveResult(
@@ -238,6 +247,7 @@ class GameInProgress:
             del pieces[captured_piece]
 
         piece.tile_id = tile_id
+        game_state.current_player_id = game.get_other_player_id(player.id_)
 
         return MoveResult(
             is_legal=True,

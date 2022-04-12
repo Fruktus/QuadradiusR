@@ -108,7 +108,8 @@ This endpoint support the standard ``ETag``/``If-None-Match`` flow.
                     }
                 }
             }
-        }
+        },
+        "current_player_id": "{user_id}"
     }
 
 

@@ -1,6 +1,6 @@
 import inspect
 from contextvars import ContextVar
-from typing import Optional, Union, Callable
+from typing import Optional, Union, Callable, Coroutine, Any
 
 from aiohttp import web
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -76,6 +76,7 @@ def transaction_context(
                 return _session_context.get()
 
             self.session = (database() if callable(database) else database).session()
+            self.session.synchronizations_on_commit = []
             self.new_tx = True
             await self.session.__aenter__()
             self.token = _session_context.set(self.session)
@@ -86,9 +87,19 @@ def transaction_context(
                 return
             if exc_type is None:
                 await self.session.commit()
+                syncs = self.session.synchronizations_on_commit
+                del self.session.synchronizations_on_commit
+                for sync in syncs:
+                    await sync
             else:
                 await self.session.rollback()
             _session_context.reset(self.token)
             await self.session.__aexit__(exc_type, exc_val, exc_tb)
 
     return TxContext()
+
+
+def synchronize_transaction_on_commit(
+        db_session: AsyncSession,
+        sync: Coroutine[Any, Any, Any]):
+    db_session.synchronizations_on_commit.append(sync)

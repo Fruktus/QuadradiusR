@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, ForeignKey, DateTime, String, PickleType, TypeDecorator
+from sqlalchemy import Column, ForeignKey, DateTime, String, PickleType, TypeDecorator, Integer
 from sqlalchemy.orm import declarative_base, relationship, class_mapper
 
 Base = declarative_base()
@@ -90,6 +90,7 @@ class GameInvite(Base):
 class Game(Base):
     __tablename__ = 'game'
     id_ = Column(String, nullable=False, primary_key=True)
+    rev_ = Column(Integer, nullable=False)
     player_a_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     player_b_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
     expires_at_ = Column(DateTimeUTC, nullable=False)
@@ -105,6 +106,10 @@ class Game(Base):
         lazy='joined',
         cascade='expunge',
         foreign_keys=[player_b_id_])
+
+    __mapper_args__ = {
+        'version_id_col': rev_
+    }
 
     def get_other_player_id(self, player_id):
         ids = {self.player_a_id_, self.player_b_id_}

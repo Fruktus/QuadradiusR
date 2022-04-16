@@ -20,6 +20,7 @@ from quadradiusr_server.qrws_messages import Message, KickMessage, GameStateMess
 
 @dataclass
 class Tile:
+    id: str
     position: Tuple[int, int]
     elevation: int
 
@@ -75,6 +76,22 @@ class GameBoard:
             },
         }
 
+    def get_tile_at(self, x: int, y: int) -> Optional[Tile]:
+        for tile in self.tiles.values():
+            if tile.position == (x, y):
+                return tile
+
+    def get_piece_on(self, tile_id: str) -> Optional[Piece]:
+        for piece in self.pieces.values():
+            if piece.tile_id == tile_id:
+                return piece
+
+    def get_piece_at(self, x: int, y: int) -> Optional[Piece]:
+        tile = self.get_tile_at(x, y)
+        if tile is None:
+            return None
+        return self.get_piece_on(tile.id)
+
 
 @dataclass
 class GameState:
@@ -112,30 +129,34 @@ class GameState:
     @classmethod
     def initial(cls, player_a_id: str, player_b_id: str):
         board_size = (10, 8)
-        tiles = {
-            str(uuid.uuid4()): Tile(
-                position=(x, y),
-                elevation=0,
-            )
-            for x in range(board_size[0])
-            for y in range(board_size[1])
-        }
-        pieces = {
-            str(uuid.uuid4()): Piece(
-                owner_id=player_a_id,
-                tile_id=[
-                    tile_id for tile_id, tile in tiles.items()
-                    if tile.position == (0, 0)
-                ][0],
-            ),
-            str(uuid.uuid4()): Piece(
-                owner_id=player_b_id,
-                tile_id=[
-                    tile_id for tile_id, tile in tiles.items()
-                    if tile.position == (1, 1)
-                ][0],
-            ),
-        }
+        tiles = dict()
+        for x in range(board_size[0]):
+            for y in range(board_size[1]):
+                tile = Tile(
+                    id=str(uuid.uuid4()),
+                    position=(x, y),
+                    elevation=0,
+                )
+                tiles[tile.id] = tile
+
+        pieces = dict()
+        for x in range(board_size[0]):
+            for y in range(2):
+                pieces[str(uuid.uuid4())] = Piece(
+                    owner_id=player_a_id,
+                    tile_id=[
+                        tile_id for tile_id, tile in tiles.items()
+                        if tile.position == (x, y)
+                    ][0],
+                )
+                pieces[str(uuid.uuid4())] = Piece(
+                    owner_id=player_b_id,
+                    tile_id=[
+                        tile_id for tile_id, tile in tiles.items()
+                        if tile.position == (x, y + board_size[1] - 2)
+                    ][0],
+                )
+
         return GameState(
             settings=GameSettings(
                 board_size=board_size,
@@ -196,8 +217,12 @@ class GameInProgress:
         # check move
 
         game: Game = await self.get_game()
-        game_state: GameState = game.game_state_
-        old_game_state = copy.deepcopy(game_state)
+        old_game_state = copy.deepcopy(game.game_state_)
+
+        # we need to make sure sqlalchemy will see the change
+        game_state: GameState = copy.deepcopy(game.game_state_)
+        game.game_state_ = game_state
+
         tiles = game_state.board.tiles
         pieces = game_state.board.pieces
 
@@ -239,7 +264,7 @@ class GameInProgress:
 
         captured_pieces = []
         for opid, other_piece in pieces.items():
-            if tiles[other_piece.tile_id].position == src_tile.position:
+            if tiles[other_piece.tile_id].position == dest_tile.position:
                 captured_pieces.append(opid)
 
         for captured_piece in captured_pieces:
@@ -287,26 +312,30 @@ class GameConnection(BasicConnection):
                 piece_id=message.piece_id,
                 tile_id=message.tile_id,
             )
-            await self.qrws.send_message(MoveResultMessage(
-                is_legal=result.is_legal,
-                reason=result.reason,
-            ))
-            if not result.is_legal:
-                return True
-            coroutines = []
-            for player_id, conn in self.game_in_progress.player_connections.items():
-                diff, etag_from, etag_to = GameState.serialize_diff_with_etag_for(
-                    from_=result.old_game_state,
-                    to=result.new_game_state,
-                    user_id=player_id,
-                )
-                coroutines.append(self.qrws.send_message(GameStateDiffMessage(
-                    recipient_id=player_id,
-                    game_state_diff=diff,
-                    etag_from=etag_from,
-                    etag_to=etag_to,
-                )))
-            await asyncio.gather(*coroutines)
+
+            async def on_commit():
+                await self.qrws.send_message(MoveResultMessage(
+                    is_legal=result.is_legal,
+                    reason=result.reason,
+                ))
+                if not result.is_legal:
+                    return True
+                coroutines = []
+                for player_id, conn in self.game_in_progress.player_connections.items():
+                    diff, etag_from, etag_to = GameState.serialize_diff_with_etag_for(
+                        from_=result.old_game_state,
+                        to=result.new_game_state,
+                        user_id=player_id,
+                    )
+                    coroutines.append(self.qrws.send_message(GameStateDiffMessage(
+                        recipient_id=player_id,
+                        game_state_diff=diff,
+                        etag_from=etag_from,
+                        etag_to=etag_to,
+                    )))
+                await asyncio.gather(*coroutines)
+
+            await self.repository.synchronize_transaction_on_commit(on_commit())
             return True
         else:
             return False

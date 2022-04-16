@@ -42,7 +42,9 @@ class TestGame(IsolatedAsyncioTestCase, TestUserHarness, GameHarness, RestTestHa
                 'authorization': await self.authorize_test_user(2)
             }) as response:
                 self.assertEqual(403, response.status)
-                self.assertEqual('403: You are not a part of this game, sorry', await response.text())
+                self.assertEqual(
+                    '403: You are not a part of this game, sorry',
+                    await response.text())
 
     async def test_get_game_state(self):
         await asyncio.gather(
@@ -86,7 +88,9 @@ class TestGame(IsolatedAsyncioTestCase, TestUserHarness, GameHarness, RestTestHa
                 'authorization': await self.authorize_test_user(2)
             }) as response:
                 self.assertEqual(403, response.status)
-                self.assertEqual('403: You are not a part of this game, sorry', await response.text())
+                self.assertEqual(
+                    '403: You are not a part of this game, sorry',
+                    await response.text())
 
     async def test_get_game_state_etag(self):
         await asyncio.gather(

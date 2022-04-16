@@ -96,7 +96,7 @@ class QuadradiusRServer:
         await self.runner.setup()
 
         cfg = self.config
-        logging.info(f'Starting server')
+        logging.info('Starting server')
         self.site = TCPSite(
             runner=self.runner,
             host=cfg.host,
@@ -114,12 +114,12 @@ class QuadradiusRServer:
         logging.info(f'Server started at {cfg.host}:{cfg.port}')
 
     async def shutdown(self):
-        logging.info(f'Server shutdown initiated')
+        logging.info('Server shutdown initiated')
         if self.runner:
             await self.runner.cleanup()
         if self.database:
             await self.database.dispose()
-        logging.info(f'Server shutdown finished')
+        logging.info('Server shutdown finished')
 
     async def _run_async(self):
         await self.start()

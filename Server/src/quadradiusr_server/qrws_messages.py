@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Tuple
 
 from quadradiusr_server.constants import QrwsOpcode
 

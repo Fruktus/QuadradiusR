@@ -62,7 +62,7 @@ class ServerCli:
             server_config = config.from_toml(args.config)
         else:
             if not args.host or not args.port:
-                logging.error(f'No --host, --port, or --config option, see --help for help')
+                logging.error('No --host, --port, or --config option, see --help for help')
                 return 1
 
             server_config = ServerConfig(

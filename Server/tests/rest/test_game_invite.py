@@ -247,4 +247,6 @@ class TestGameInvite(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                 'authorization': await self.authorize_test_user(2)
             }, allow_redirects=False) as response:
                 self.assertEqual(403, response.status)
-                self.assertEqual('403: You are not a part of this game, sorry', await response.text())
+                self.assertEqual(
+                    '403: You are not a part of this game, sorry',
+                    await response.text())

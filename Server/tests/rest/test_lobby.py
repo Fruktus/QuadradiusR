@@ -91,9 +91,11 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     self.assertEqual('2', body[2]['id'])
 
                 before = urllib.parse.quote(dates[2].isoformat())
-                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'), headers={
-                    'authorization': await self.authorize_test_user(0)
-                }) as response:
+                async with session.get(
+                        self.server_url(f'/lobby/@main/message?before={before}'),
+                        headers={
+                            'authorization': await self.authorize_test_user(0)
+                        }) as response:
                     self.assertEqual(200, response.status)
                     body = await response.json()
                     self.assertEqual(2, len(body))
@@ -101,17 +103,19 @@ class TestLobby(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
                     self.assertEqual('4', body[1]['id'])
 
                 before = urllib.parse.quote('2022-01-01T11:00:10+01:00')
-                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'), headers={
-                    'authorization': await self.authorize_test_user(0)
-                }) as response:
+                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'),
+                                       headers={
+                                           'authorization': await self.authorize_test_user(0)
+                                       }) as response:
                     self.assertEqual(200, response.status)
                     body = await response.json()
                     self.assertEqual(2, len(body))
 
                 before = urllib.parse.quote('2022-01-01T10:00:10')
-                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'), headers={
-                    'authorization': await self.authorize_test_user(0)
-                }) as response:
+                async with session.get(self.server_url(f'/lobby/@main/message?before={before}'),
+                                       headers={
+                                           'authorization': await self.authorize_test_user(0)
+                                       }) as response:
                     self.assertEqual(400, response.status)
                     body = await response.text()
                     self.assertEqual('400: Malformed query params', body)

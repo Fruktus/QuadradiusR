@@ -13,8 +13,8 @@ from quadradiusr_server.db.base import User, clone_db_object
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import NotificationService, Handler, Notification
-from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage, ServerReadyMessage, IdentifyMessage, \
-    SubscribeMessage, NotificationMessage, SubscribedMessage
+from quadradiusr_server.qrws_messages import Message, parse_message, ErrorMessage, \
+    ServerReadyMessage, IdentifyMessage, SubscribeMessage, NotificationMessage, SubscribedMessage
 
 
 @dataclass

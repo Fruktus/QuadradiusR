@@ -107,7 +107,7 @@ class ConfigGenerator:
             if mapper:
                 try:
                     return mapper(answer)
-                except:
+                except (ValueError, KeyError):
                     print('Invalid format')
                     continue
             else:

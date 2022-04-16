@@ -14,8 +14,8 @@ from quadradiusr_server.db.base import User
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
-from quadradiusr_server.qrws_messages import Message, KickMessage, GameStateMessage, MoveMessage, MoveResultMessage, \
-    GameStateDiffMessage
+from quadradiusr_server.qrws_messages import Message, KickMessage, GameStateMessage, MoveMessage, \
+    MoveResultMessage, GameStateDiffMessage
 
 
 @dataclass

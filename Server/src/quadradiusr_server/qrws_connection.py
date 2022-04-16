@@ -9,8 +9,7 @@ from aiohttp.web_ws import WebSocketResponse
 
 from quadradiusr_server.auth import Auth
 from quadradiusr_server.constants import QrwsOpcode, QrwsCloseCode
-from quadradiusr_server.db.base import User
-from quadradiusr_server.db.database_engine import DatabaseEngine
+from quadradiusr_server.db.base import User, clone_db_object
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import NotificationService, Handler, Notification
@@ -112,12 +111,12 @@ class BasicConnection(ABC):
     def __init__(
             self, qrws: QrwsConnection, user: User,
             notification_service: NotificationService,
-            database: DatabaseEngine) -> None:
+            repository: Repository) -> None:
         super().__init__()
         self._qrws = qrws
-        self._user = user
+        self._user_id = user.id_
         self._notification_service = notification_service
-        self._database = database
+        self._repository = repository
         self._close_handlers: List[Callable[[], None]] = []
 
     @property
@@ -125,26 +124,37 @@ class BasicConnection(ABC):
         return self._qrws
 
     @property
-    def user(self) -> User:
-        return self._user
+    def user_id(self) -> str:
+        return self._user_id
 
     @property
     def notification_service(self) -> NotificationService:
         return self._notification_service
 
-    async def on_ready(self):
+    @property
+    def repository(self) -> Repository:
+        return self._repository
+
+    async def on_ready(self, user: User):
         pass
 
     async def handle_connection(self):
+        user_repo = self.repository.user_repository
         qrws = self.qrws
-        async with transaction_context(self._database):
+        async with transaction_context(self.repository.database):
+            user = await user_repo.get_by_id(self._user_id)
+
             await qrws.ready()
-            await self.on_ready()
+            await self.on_ready(user)
         try:
             while not qrws.closed:
                 message = await qrws.receive_message()
-                async with transaction_context(self._database):
-                    handled = await self.handle_message(message)
+
+                async with transaction_context(self.repository.database):
+                    user = await user_repo.get_by_id(self._user_id)
+
+                    handled = await self.handle_message(user, message)
+
                 if not handled:
                     await qrws.send_message(ErrorMessage(
                         message='Unexpected opcode', fatal=False))
@@ -159,9 +169,8 @@ class BasicConnection(ABC):
     def add_close_handler(self, handler: Callable[[], None]):
         self._close_handlers.append(handler)
 
-    async def handle_message(self, message: Message) -> bool:
+    async def handle_message(self, user: User, message: Message) -> bool:
         qrws = self.qrws
-        user = self.user
         ns = self.notification_service
 
         if isinstance(message, SubscribeMessage):

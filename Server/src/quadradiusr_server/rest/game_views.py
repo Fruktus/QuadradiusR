@@ -74,7 +74,7 @@ class GameConnectView(GameViewBase, web.View):
                 close_code=QrwsCloseCode.CONFLICT)
             return qrws.ws
 
-        conn = GameConnection(qrws, game_in_progress, user, ns, repository.database)
+        conn = GameConnection(qrws, game_in_progress, user, ns, repository)
         await game_in_progress.connect_player(conn)
         try:
             await conn.handle_connection()

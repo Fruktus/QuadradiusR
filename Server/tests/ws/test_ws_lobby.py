@@ -56,12 +56,7 @@ class TestWsLobby(IsolatedAsyncioTestCase, WebsocketHarness, TestUserHarness, Re
             for ws in [ws0, ws1, ws2]:
                 await self.ws_subscribe(ws, 'lobby.message.received')
 
-            await ws0.send_json({
-                'op': QrwsOpcode.SEND_MESSAGE,
-                'd': {
-                    'content': 'test message',
-                },
-            })
+            await self.ws_send_message(ws0, 'test message')
 
             for ws in [ws0, ws1, ws2]:
                 n = await self.ws_receive_notification(ws)
@@ -98,32 +93,18 @@ class TestWsLobby(IsolatedAsyncioTestCase, WebsocketHarness, TestUserHarness, Re
                     '/lobby/@main/connect', protocol='ws')) as ws1:
             await self.authorize_ws(0, ws0)
             await self.authorize_ws(1, ws1)
-
             await self.ws_subscribe(ws0, 'lobby.message.received')
+            await self.ws_subscribe(ws1, 'lobby.message.received')
 
-            await ws0.send_json({
-                'op': QrwsOpcode.SEND_MESSAGE,
-                'd': {
-                    'content': 'test message 1',
-                },
-            })
-
-            await ws1.send_json({
-                'op': QrwsOpcode.SEND_MESSAGE,
-                'd': {
-                    'content': 'test message 2',
-                },
-            })
-
-            await ws0.send_json({
-                'op': QrwsOpcode.SEND_MESSAGE,
-                'd': {
-                    'content': 'test message 3',
-                },
-            })
-
-            n = await self.ws_receive_notification(ws0)
-            self.assertEqual(n['topic'], 'lobby.message.received')
+            await self.ws_send_message(
+                ws0, 'test message 1',
+                wait_for_notification=True)
+            await self.ws_send_message(
+                ws1, 'test message 2',
+                wait_for_notification=True)
+            await self.ws_send_message(
+                ws0, 'test message 3',
+                wait_for_notification=True)
 
             async with session.get(self.server_url('/lobby/@main/message'), headers={
                 'authorization': await self.authorize_test_user(0)
@@ -231,7 +212,7 @@ class TestWsLobby(IsolatedAsyncioTestCase, WebsocketHarness, TestUserHarness, Re
                 self.assertEqual(200, response.status)
 
             async with session.ws_connect(self.server_url(
-                        '/lobby/@main/connect', protocol='ws')) as ws:
+                    '/lobby/@main/connect', protocol='ws')) as ws:
                 await self.authorize_ws(0, ws)
 
                 async with session.ws_connect(self.server_url(

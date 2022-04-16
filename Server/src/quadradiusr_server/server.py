@@ -139,12 +139,12 @@ class QuadradiusRServer:
             loop.close()
 
     def register_gateway(self, gateway):
-        user = gateway.user
-        self.gateway_connections[user.id_].append(gateway)
+        user_id = gateway.user_id
+        self.gateway_connections[user_id].append(gateway)
 
     def unregister_gateway(self, gateway):
-        user = gateway.user
-        self.gateway_connections[user.id_].remove(gateway)
+        user_id = gateway.user_id
+        self.gateway_connections[user_id].remove(gateway)
 
     def start_lobby(self, lobby: Lobby) -> LiveLobby:
         if lobby.id_ not in self.lobbies.keys():

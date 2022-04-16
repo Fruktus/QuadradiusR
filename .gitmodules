@@ -1,4 +1,4 @@
 [submodule "QuadradiusR/original_assets"]
 	path = QuadradiusR/original_assets
-	url = https://github.com/Fruktus/QuadradiusRAssets.git
+	url = git@github.com:Fruktus/QuadradiusRAssets.git
 	branch = master

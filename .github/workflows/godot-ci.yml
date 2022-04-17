@@ -31,8 +31,30 @@ jobs:
             echo ::set-output name=DEBUG::true
             echo ::set-output name=ARTIFACT_SUFFIX::-${GITHUB_SHA}
           fi
+          
+          if [[ -n "${{ secrets.CHECKOUT_TOKEN }}" ]]; then
+            echo ::set-output name=CHECKOUT_SUBMODULES::true
+          else
+            echo ::set-output name=CHECKOUT_SUBMODULES::false
+          fi
+          
+          if [[ -n "${{ secrets.ARTIFACT_ENCRYPT_KEY }}" ]]; then
+            echo ::set-output name=ENCRYPT_ARTIFACTS::true
+          else
+            echo ::set-output name=ENCRYPT_ARTIFACTS::false
+          fi
 
-      - name: Checkout
+      - name: Checkout with submodules
+        if: ${{ steps.variables.outputs.CHECKOUT_SUBMODULES == 'true' }}
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+          submodules: 'true'
+          token: ${{ secrets.CHECKOUT_TOKEN }}
+
+      - name: Checkout without submodules
+        if: ${{ steps.variables.outputs.CHECKOUT_SUBMODULES == 'false' }}
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -96,9 +118,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload artifacts
+      - name: Compress and encrypt artifacts
+        if: ${{ steps.variables.outputs.ENCRYPT_ARTIFACTS == 'true' }}
+        working-directory: /home/runner/.local/share/godot
+        run: |
+          tar cf - builds/ | xz -z - > builds.tar.xz
+          openssl enc -e -a -aes256 -pbkdf2 -k ${{ secrets.ARTIFACT_ENCRYPT_KEY }} -in builds.tar.xz -out builds.tar.xz.enc
+
+      - name: Upload encrypted artifacts
+        if: ${{ steps.variables.outputs.ENCRYPT_ARTIFACTS == 'true' }}
         uses: actions/upload-artifact@v2
         with:
           name: QuadradiusR${{ steps.variables.outputs.ARTIFACT_SUFFIX }}
           path: |
-            /home/runner/.local/share/godot/builds
+            /home/runner/.local/share/godot/builds.tar.xz.enc

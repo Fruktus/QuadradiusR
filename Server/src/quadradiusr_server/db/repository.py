@@ -1,10 +1,12 @@
+from typing import Coroutine, Any
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.game_invite_repository import GameInviteRepository
 from quadradiusr_server.db.game_repository import GameRepository
 from quadradiusr_server.db.lobby_repository import LobbyRepository
-from quadradiusr_server.db.transactions import transactional
+from quadradiusr_server.db.transactions import transactional, synchronize_transaction_on_commit
 from quadradiusr_server.db.user_repository import UserRepository
 
 
@@ -49,3 +51,9 @@ class Repository:
     @transactional
     async def expunge_all(self, *, db_session: AsyncSession):
         db_session.expunge_all()
+
+    @transactional
+    async def synchronize_transaction_on_commit(
+            self, sync: Coroutine[Any, Any, Any],
+            *, db_session: AsyncSession):
+        synchronize_transaction_on_commit(db_session, sync)

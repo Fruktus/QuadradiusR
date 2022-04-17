@@ -6,7 +6,7 @@ import aiohttp
 from harness import RestTestHarness, TestUserHarness, GameHarness
 
 
-class TestGame(IsolatedAsyncioTestCase, TestUserHarness, GameHarness, RestTestHarness):
+class TestGame(IsolatedAsyncioTestCase, GameHarness, TestUserHarness, RestTestHarness):
 
     async def asyncSetUp(self) -> None:
         await self.setup_server()

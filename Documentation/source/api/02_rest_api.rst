@@ -102,10 +102,7 @@ This endpoint support the standard ``ETag``/``If-None-Match`` flow.
             "pieces": {
                 "{piece_id}": {
                     "owner_id": "{owner_id}",
-                    "position": {
-                        "x": 0,
-                        "y": 0
-                    }
+                    "tile_id": "{tile_id}"
                 }
             }
         },

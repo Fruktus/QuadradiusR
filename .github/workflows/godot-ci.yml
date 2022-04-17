@@ -123,7 +123,7 @@ jobs:
         working-directory: /home/runner/.local/share/godot
         run: |
           tar cf - builds/ | xz -z - > builds.tar.xz
-          openssl enc -e -a -aes256 -pbkdf2 -k ${{ secrets.ARTIFACT_ENCRYPT_KEY }} -in builds.tar.xz -out builds.tar.xz.enc
+          openssl enc -e -a -aes256 -pbkdf2 -k "${{ secrets.ARTIFACT_ENCRYPT_KEY }}" -in builds.tar.xz -out builds.tar.xz.enc
 
       - name: Upload encrypted artifacts
         if: ${{ steps.variables.outputs.ENCRYPT_ARTIFACTS == 'true' }}

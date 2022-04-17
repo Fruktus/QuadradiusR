@@ -36,6 +36,7 @@ class Tile:
 
 @dataclass
 class Piece:
+    id: str
     owner_id: str
     tile_id: str
 
@@ -98,12 +99,16 @@ class GameState:
     settings: GameSettings
     board: GameBoard
     current_player_id: str
+    finished: bool = False
+    winner_id: Optional[str] = None
 
     def serialize_for(self, user_id: str) -> dict:
         return {
             'settings': self.settings.serialize_for(user_id),
             'board': self.board.serialize_for(user_id),
             'current_player_id': self.current_player_id,
+            'finished': self.finished,
+            'winner_id': self.winner_id,
         }
 
     def serialize_with_etag_for(self, user_id: str) -> Tuple[dict, str]:
@@ -142,20 +147,24 @@ class GameState:
         pieces = dict()
         for x in range(board_size[0]):
             for y in range(2):
-                pieces[str(uuid.uuid4())] = Piece(
+                piece = Piece(
+                    id=str(uuid.uuid4()),
                     owner_id=player_a_id,
                     tile_id=[
                         tile_id for tile_id, tile in tiles.items()
                         if tile.position == (x, y)
                     ][0],
                 )
-                pieces[str(uuid.uuid4())] = Piece(
+                pieces[piece.id] = piece
+                piece = Piece(
+                    id=str(uuid.uuid4()),
                     owner_id=player_b_id,
                     tile_id=[
                         tile_id for tile_id, tile in tiles.items()
                         if tile.position == (x, y + board_size[1] - 2)
                     ][0],
                 )
+                pieces[piece.id] = piece
 
         return GameState(
             settings=GameSettings(
@@ -225,6 +234,13 @@ class GameInProgress:
 
         tiles = game_state.board.tiles
         pieces = game_state.board.pieces
+        other_player_id = game.get_other_player_id(player.id_)
+
+        if game_state.finished:
+            return MoveResult(
+                is_legal=False,
+                reason='Game is finished',
+            )
 
         if game_state.current_player_id != player.id_:
             return MoveResult(
@@ -271,7 +287,11 @@ class GameInProgress:
             del pieces[captured_piece]
 
         piece.tile_id = tile_id
-        game_state.current_player_id = game.get_other_player_id(player.id_)
+        game_state.current_player_id = other_player_id
+
+        if not any(piece.owner_id == other_player_id for piece in pieces.values()):
+            game_state.finished = True
+            game_state.winner_id = player.id_
 
         return MoveResult(
             is_legal=True,
@@ -307,27 +327,27 @@ class GameConnection(BasicConnection):
             return True
 
         if isinstance(message, MoveMessage):
-            result = await self.game_in_progress.make_move(
+            r = await self.game_in_progress.make_move(
                 user,
                 piece_id=message.piece_id,
                 tile_id=message.tile_id,
             )
 
-            async def on_commit():
-                await self.qrws.send_message(MoveResultMessage(
+            async def on_commit(conn: GameConnection, result: MoveResult):
+                await conn.qrws.send_message(MoveResultMessage(
                     is_legal=result.is_legal,
                     reason=result.reason,
                 ))
                 if not result.is_legal:
-                    return True
+                    return
                 coroutines = []
-                for player_id, conn in self.game_in_progress.player_connections.items():
+                for player_id, conn in conn.game_in_progress.player_connections.items():
                     diff, etag_from, etag_to = GameState.serialize_diff_with_etag_for(
                         from_=result.old_game_state,
                         to=result.new_game_state,
                         user_id=player_id,
                     )
-                    coroutines.append(self.qrws.send_message(GameStateDiffMessage(
+                    coroutines.append(conn.qrws.send_message(GameStateDiffMessage(
                         recipient_id=player_id,
                         game_state_diff=diff,
                         etag_from=etag_from,
@@ -335,7 +355,8 @@ class GameConnection(BasicConnection):
                     )))
                 await asyncio.gather(*coroutines)
 
-            await self.repository.synchronize_transaction_on_commit(on_commit())
+            await self.repository.synchronize_transaction_on_commit(
+                on_commit(self, r))
             return True
         else:
             return False

@@ -106,7 +106,9 @@ This endpoint support the standard ``ETag``/``If-None-Match`` flow.
                 }
             }
         },
-        "current_player_id": "{user_id}"
+        "current_player_id": "{user_id}",
+        "finished": false,
+        "winner_id": "{winner_id}"
     }
 
 

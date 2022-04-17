@@ -216,12 +216,8 @@ class GameHarness(TestUserHarness, metaclass=ABCMeta):
 
 
 class NotificationHandlerForTests(Handler):
-    def __init__(self, topic: str = '*') -> None:
-        self.topic = topic
+    def __init__(self) -> None:
         self.notifications = []
-
-    def get_topic(self):
-        return self.topic
 
     async def handle(self, notification: Notification):
         self.notifications.append(notification)

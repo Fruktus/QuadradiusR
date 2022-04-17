@@ -1,0 +1,9 @@
+/venv/
+/Documentation/
+/.idea/
+/.github/
+/README.md
+/CONTRIBUTING.md
+/LICENSE
+/Makefile
+/Dockerfile*

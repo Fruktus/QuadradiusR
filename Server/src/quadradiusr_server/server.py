@@ -39,7 +39,16 @@ class QuadradiusRServer:
         self.app['database'] = self.database
         self.app['repository'] = self.repository
         self.app['notification'] = self.notification_service
+
         self.app.add_routes(routes)
+
+        if config.static.redirect_root:
+            async def root_handler(request):
+                raise web.HTTPFound(config.static.redirect_root)
+            self.app.router.add_route('GET', '', root_handler)
+
+        if config.static.serve_path:
+            self.app.router.add_static('/', config.static.serve_path)
 
         self.runner: Optional[AppRunner] = None
         self.site: Optional[TCPSite] = None
@@ -161,4 +170,5 @@ class QuadradiusRServer:
 
 # importing submodules automatically registers endpoints
 import quadradiusr_server.rest
+
 import_submodules(quadradiusr_server.rest)

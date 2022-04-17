@@ -43,4 +43,4 @@ android:
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: _default linux windows html5 macos android
+.PHONY: _default linux windows html5 macos android clean

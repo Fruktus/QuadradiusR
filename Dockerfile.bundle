@@ -1,0 +1,37 @@
+FROM barichello/godot-ci:3.4.4 AS godot-builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /QuadradiusR
+COPY ./QuadradiusR .
+
+RUN make html5
+
+
+FROM python:3.10 AS server-builder
+
+WORKDIR /workspace
+COPY ./Server .
+
+RUN pip install build && \
+    python -m build
+
+RUN mkdir -p /build && \
+    mv dist/*.whl /build && \
+    cp docker/entrypoint.sh /build
+
+
+FROM python:3.10
+
+COPY --from=server-builder /build /build/server
+RUN pip install /build/server/*.whl
+
+COPY --from=godot-builder /QuadradiusR/build/html5 /var/www
+
+ENV QUADRADIUSR_SERVER_OPTS="\
+    --set server.static.serve_path=/var/www \
+    --set server.static.redirect_root=/index.html"
+
+ENTRYPOINT ["/build/server/entrypoint.sh"]

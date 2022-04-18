@@ -104,6 +104,16 @@ This endpoint support the standard ``ETag``/``If-None-Match`` flow.
                     "owner_id": "{owner_id}",
                     "tile_id": "{tile_id}"
                 }
+            },
+            "powers": {
+                "{power_id}": {
+                    "power_definition_id": "{power_definition_id}",
+                    "tile_id": "{tile_id}",
+                    "piece_id": "{piece_id}",
+                    "authorized_player_ids": [
+                        "{player_id}"
+                    ]
+                }
             }
         },
         "current_player_id": "{user_id}",
@@ -312,6 +322,42 @@ Query parameters:
         "content": "{content}",
         "created_at": "{iso_date_time_created_at}"
     }]
+
+
+``GET /power-definition``
+-------------------------
+
+List all power definitions.
+
+.. code-block:: text
+    :caption: Response status
+
+    200 OK
+
+Response body is an array of lobbies.
+See :ref:`rest_power-definition` for data structure.
+
+
+.. _rest_power-definition:
+
+``GET /power-definition/{power_definition_id}``
+-----------------------------------------------
+
+Det information about a power definition.
+
+.. code-block:: text
+    :caption: Response status
+
+    200 OK
+
+.. code-block:: json
+    :caption: Response body
+
+    {
+        "id": "{power_definition_id}",
+        "name": "{name}",
+        "description": "{description}"
+    }
 
 
 ``POST /user``

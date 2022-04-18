@@ -119,6 +119,15 @@ class BasicConnection(ABC):
         self._repository = repository
         self._close_handlers: List[Callable[[], None]] = []
 
+        class SubscribeHandler(Handler):
+            async def handle(self, notification: Notification):
+                await qrws.send_message(NotificationMessage(
+                    topic=notification.topic,
+                    data=notification.data,
+                ))
+
+        self._sub_handler = SubscribeHandler()
+
     @property
     def qrws(self) -> QrwsConnection:
         return self._qrws
@@ -175,21 +184,9 @@ class BasicConnection(ABC):
 
         if isinstance(message, SubscribeMessage):
             topic = message.topic
-
-            class SubscribeHandler(Handler):
-                def get_topic(self):
-                    return topic
-
-                async def handle(self, notification: Notification):
-                    await qrws.send_message(NotificationMessage(
-                        topic=notification.topic,
-                        data=notification.data,
-                    ))
-
-            sub_handler = SubscribeHandler()
-            ns.register_handler(
-                user.id_, sub_handler)
-            self.add_close_handler(lambda: ns.unregister_handler(sub_handler))
+            ns.register_handler(user.id_, topic, self._sub_handler)
+            self.add_close_handler(
+                lambda: ns.unregister_handler(user.id_, topic, self._sub_handler))
             await qrws.send_message(SubscribedMessage())
             return True
         else:

@@ -34,8 +34,8 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
         nh0 = NotificationHandlerForTests()
         nh1 = NotificationHandlerForTests()
-        self.server.notification_service.register_handler(user0['id'], nh0)
-        self.server.notification_service.register_handler(user1['id'], nh1)
+        self.server.notification_service.register_handler(user0['id'], '*', nh0)
+        self.server.notification_service.register_handler(user1['id'], '*', nh1)
 
         game_invite_id = str(uuid.uuid4())
         async with transaction_context(self.server.database):

@@ -34,14 +34,15 @@ class Cron:
             for invite in old_invites:
                 await gi_repo.remove(invite)
                 for subject_id in [invite.from_id_, invite.subject_id_]:
-                    self.ns.notify(Notification(
-                        topic='game.invite.removed',
-                        subject_id=subject_id,
-                        data={
-                            'game_invite_id': invite.id_,
-                            'reason': 'expired',
-                        },
-                    ))
+                    await self.repository.synchronize_transaction_on_commit(
+                        self.ns.notify_now(Notification(
+                            topic='game.invite.removed',
+                            subject_id=subject_id,
+                            data={
+                                'game_invite_id': invite.id_,
+                                'reason': 'expired',
+                            },
+                        )))
 
 
 class SetupService:

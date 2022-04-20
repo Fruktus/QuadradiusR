@@ -63,7 +63,6 @@ func _lobby_joined(lobby_id: String, user_id: String, user_username: String):
 	add_player(user_username, user_id, false)
 
 func _lobby_left(lobby_id: String, user_id: String):
-	# TODO remove invites from that player
 	uuid_to_active_invites.erase(user_id)
 	remove_player(user_id)
 

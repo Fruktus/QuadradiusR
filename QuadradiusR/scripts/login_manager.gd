@@ -11,8 +11,11 @@ func _on_login(is_guest, remember_pw, username, password):
 		"username": username,
 		"password": password
 	}
-	NetworkHandler.create_user('asd', '', null, {})
-	NetworkHandler.create_user('test', '', null, {})
+	if is_guest:
+		print('GUEST LOGIN NOT SUPPORTED YET')
+		return
+#	NetworkHandler.create_user('asd', '', null, {}) # DEBUG
+#	NetworkHandler.create_user('test', '', null, {}) # DEBUG
 	NetworkHandler.authorize_user(username, password, funcref(self, "_cb_login_done"), user_data)
 
 
@@ -23,6 +26,11 @@ func _cb_login_done(is_authorized, user_data, message: Message):
 		_join_lobby()
 	else:
 		print('failed to authorize: ', message['result'])
+		print('AUTO-REGISTERING USER')  # DEBUG
+		NetworkHandler.create_user(user_data['username'], user_data['password'], null, {})  # DEBUG
+		NetworkHandler.authorize_user(user_data['username'], user_data['password'], funcref(self, "_cb_login_done"), user_data)  # DEBUG
+
+
 
 func _dbg_print(message, data):  # DEBUG
 	print('me: ', message, ' + ', data)  # DEBUG

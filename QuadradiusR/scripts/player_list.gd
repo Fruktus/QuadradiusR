@@ -1,6 +1,6 @@
 extends Node2D
 
-signal challenge_accepted(challenge_id, opponent_id)
+signal challenge_accepted(game_invite_id, opponent_id)
 signal player_hover_start(username)
 signal player_hover_end(username)
 
@@ -66,6 +66,6 @@ func _lobby_left(lobby_id: String, user_id: String):
 	uuid_to_active_invites.erase(user_id)
 	remove_player(user_id)
 
-func _game_invite_received(game_id, from_id, from_username, subject_id, subject_username):
-	uuid_to_active_invites[from_id] = game_id
+func _game_invite_received(game_invite_id, from_id, from_username, subject_id, subject_username):
+	uuid_to_active_invites[from_id] = game_invite_id
 	receive_challenge(from_id)

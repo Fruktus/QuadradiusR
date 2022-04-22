@@ -9,12 +9,11 @@ var active_torus: Node
 
 
 
-func _ready():  # TMP, used to test initialisation
-	init()
-
-
-func init(board_size: Vector2 = Vector2(10, 8), player_pieces: int = 20):
-	self.board_size = board_size
+func _ready():
+	var board_size = NetworkHandler.game_state.get_board_size()
+	var player_pieces = NetworkHandler.game_state.get_pieces()
+	
+	self.board_size = Vector2(board_size['x'], board_size['y'])
 	board.columns = board_size.x
 	
 	_init_tiles()
@@ -33,21 +32,28 @@ func _init_tiles():
 	for i in range(board_size.x * board_size.y):
 		var new_tile = tile_template.instance().init(Vector3(i % int(board_size.x), int(i / board_size.x), 0))
 		board.add_child(new_tile)
+	
+	var tiles = NetworkHandler.game_state.get_tiles()
+	for key in tiles.keys():
+		var pos = tiles[key]['position']
+		var tile = _get_child_at_pos(pos['x'], pos['y'])
+		tile.tile_id = key
+		tile.tile_pos.z = tiles[key]['elevation']
 
 
-func _init_toruses(player_pieces: int):
-	for i in range(player_pieces):
-		var player1_torus = torus_template.instance().init(self, _get_child_at_idx(i), 0, Torus.COLORS.RED)
-		var player2_torus = torus_template.instance().init(self, _get_child_at_idx(board_size.x * board_size.y - 1 - i), 1, Torus.COLORS.BLUE)
-		
-		_get_child_at_idx(i).set_slot(player1_torus)
-		_get_child_at_idx(board_size.x * board_size.y - 1 - i).set_slot(player2_torus)
+func _init_toruses(player_pieces: Dictionary):
+	for piece_id in player_pieces.keys():
+		var piece_data = player_pieces[piece_id]
+		var tile = NetworkHandler.game_state.get_tile_by_id(piece_data['tile_id'], self)
+		var color = Torus.COLORS.RED if piece_data['owner_id'] == NetworkHandler.user_id else Torus.COLORS.BLUE
+		var torus = torus_template.instance().init(self, tile, piece_data['owner_id'], piece_id, color)
+		_get_child_at_pos(tile.tile_pos.x, tile.tile_pos.y).set_slot(torus)
 
 
-# After picking up torus, move it to top of the tree, so it won't get covered
-# by other sprites. After putting down, place back on original position, unless
-# it was a new tile, in this case move to it
 func _torus_pickup(torus: Node):
+	# After picking up torus, move it to top of the tree, so it won't get covered
+	# by other sprites. After putting down, place back on original position, unless
+	# it was a new tile, in this case move to it
 	self.active_torus = torus
 	torus.current_tile.del_piece()
 	add_child(torus)
@@ -69,6 +75,7 @@ func _torus_putdown(torus: Node):
 		var is_colliding = target_tile.has_piece()
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)
 		torus.make_move(self.active_torus.current_tile, target_tile, is_colliding)
+		NetworkHandler.ws_api.make_move(torus.piece_id, target_tile.tile_id)
 		return
 	
 	self.active_torus.current_tile.set_slot(self.active_torus)

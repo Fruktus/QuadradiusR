@@ -7,12 +7,20 @@ const NOTIFICATION = 4
 const SUBSCRIBE = 5
 const SUBSCRIBED = 6
 const KICK = 7
+const SEND_MESSAGE = 8
+const GAME_STATE = 9
+const GAME_STATE_DIFF = 10
+const MOVE = 11
+const MOVE_RESULT = 12
 
 var op_handlers = {
 	SERVER_READY: funcref(self, "_handle_server_ready"),
 	NOTIFICATION: funcref(self, "_handle_notification"),
 	SUBSCRIBED: funcref(self, "_handle_subscribed"),
 	KICK: funcref(self, "_handle_kick"),
+	GAME_STATE: funcref(self, "_handle_game_state"),
+	GAME_STATE_DIFF: funcref(self, "_handle_game_state_diff"),
+	MOVE_RESULT: funcref(self, "_handle_move_result")
 }
 var topic_handlers = {
 	"game.invite.accepted": funcref(self, "_handle_game_invite_accepted"),
@@ -22,7 +30,7 @@ var topic_handlers = {
 	"lobby.left": funcref(self, "_handle_lobby_left"),
 }
 var ws: WebSocketClient = WebSocketClient.new()
-var token
+var token: String
 
 
 
@@ -79,6 +87,15 @@ func _handle_subscribed(data: Dictionary):
 func _handle_kick(data: Dictionary):
 	pass
 
+func _handle_game_state(data: Dictionary):
+	pass
+
+func _handle_game_state_diff(data: Dictionary):
+	pass
+
+func _handle_move_result(data: Dictionary):
+	pass
+
 
 # # # # # # # # # #
 # Topic Handlers  #
@@ -90,13 +107,13 @@ func _handle_game_invite_accepted(data: Dictionary):
 	get_tree().call_group("ws_lobby", "_game_invite_accepted", game_invite_id, game_id)
 
 func _handle_game_invite_received(data: Dictionary):
-	var game_id = data['game_invite']['id']
+	var game_invite_id = data['game_invite']['id']
 	var from_id = data['game_invite']['from']['id']
 	var from_username = data['game_invite']['from']['username']
 	var subject_id = data['game_invite']['subject']['id']
 	var subject_username = data['game_invite']['subject']['username']
 	# IDK why but adding "expires" causes it to stop working
-	get_tree().call_group("ws_lobby", "_game_invite_received", game_id, from_id, from_username, subject_id, subject_username)
+	get_tree().call_group("ws_lobby", "_game_invite_received", game_invite_id, from_id, from_username, subject_id, subject_username)
 
 func _handle_game_invite_removed(data: Dictionary):
 	var game_invite_id = data['game_invite_id']
@@ -125,10 +142,18 @@ func connect_to(url: String, token):
 	set_process(true)
 
 
+func close(reason: String = ""):
+	ws.disconnect_from_host(1000, reason)
+
+
 func subscribe_to(topic: String):
 	var query = {"op": SUBSCRIBE, "d": {"topic": topic}}
 	_send_data(query)
 
+
+func make_move(piece_id, tile_id):
+	var query = {"op": MOVE, "d": {"piece_id": piece_id, "tile_id": tile_id}}
+	_send_data(query)
 
 # # # # # # #
 # Utilities #

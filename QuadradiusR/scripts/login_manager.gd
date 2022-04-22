@@ -35,9 +35,9 @@ func _cb_login_done(is_authorized, user_data, message: Message):
 func _dbg_print(message, data):  # DEBUG
 	print('me: ', message, ' + ', data)  # DEBUG
 
+
 func _join_lobby():
 	NetworkHandler.join_lobby(funcref(self, "_cb_lobby_joined"))
-
 
 func _cb_lobby_joined():
 	get_tree().change_scene_to(LOBBY_SCENE)

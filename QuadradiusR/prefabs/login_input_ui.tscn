@@ -8,7 +8,7 @@
 
 [sub_resource type="StyleBoxEmpty" id=3]
 
-[sub_resource type="StyleBoxEmpty" id=1]
+[sub_resource type="StyleBoxEmpty" id=4]
 
 [sub_resource type="Theme" id=2]
 LineEdit/colors/clear_button_color = Color( 0, 0, 0, 1 )
@@ -22,7 +22,7 @@ LineEdit/constants/minimum_spaces = 0
 LineEdit/fonts/font = null
 LineEdit/icons/clear = null
 LineEdit/styles/focus = SubResource( 3 )
-LineEdit/styles/normal = SubResource( 1 )
+LineEdit/styles/normal = SubResource( 4 )
 LineEdit/styles/read_only = null
 
 [node name="LoginInputUI" type="Node2D"]

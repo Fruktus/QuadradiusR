@@ -27,10 +27,6 @@ class ServerCli:
             metavar='CONFIG_PATH',
             help='generate server configuration')
         parser.add_argument(
-            '--q',
-            type=bool,
-            help='use default configuration instead of ')
-        parser.add_argument(
             '--host',
             type=str,
             help='bind address')

@@ -3,8 +3,8 @@ import base64
 import copy
 import json
 import uuid
-from dataclasses import dataclass
-from typing import Dict, Tuple, Optional
+from dataclasses import dataclass, field
+from typing import Dict, Tuple, Optional, List
 
 import jsondiff as jsondiff
 
@@ -48,6 +48,24 @@ class Piece:
 
 
 @dataclass
+class Power:
+    id: str
+    power_definition_id: str
+    tile_id: str
+    piece_id: str = None
+    authorized_player_ids: List[str] = field(default_factory=list)
+
+    def serialize_for(self, user_id: str):
+        authorized = user_id in self.authorized_player_ids
+        return {
+            'power_definition_id': self.power_definition_id if authorized else None,
+            'tile_id': self.tile_id,
+            'piece_id': self.piece_id,
+            'authorized_player_ids': self.authorized_player_ids,
+        }
+
+
+@dataclass
 class GameSettings:
     board_size: Tuple[int, int]
 
@@ -64,6 +82,7 @@ class GameSettings:
 class GameBoard:
     tiles: Dict[str, Tile]
     pieces: Dict[str, Piece]
+    powers: Dict[str, Power] = field(default_factory=dict)
 
     def serialize_for(self, user_id: str):
         return {
@@ -74,6 +93,10 @@ class GameBoard:
             'pieces': {
                 piece_id: piece.serialize_for(user_id)
                 for piece_id, piece in self.pieces.items()
+            },
+            'powers': {
+                power_id: power.serialize_for(user_id)
+                for power_id, power in self.powers.items()
             },
         }
 

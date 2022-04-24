@@ -70,6 +70,7 @@ config/icon="res://icon.png"
 [autoload]
 
 NetworkHandler="*res://prefabs/network_handler.tscn"
+Context="*res://prefabs/context.tscn"
 
 [debug]
 

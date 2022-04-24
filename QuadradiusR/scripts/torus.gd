@@ -52,7 +52,7 @@ func init(board: Control, tile: Tile, player_id: String, piece_id: String, color
 
 
 func _on_mouse_event(viewport: Node, event: InputEvent, shape_idx: int):
-	if can_interact:
+	if can_interact and Context.user_id == player_id:
 		if event is InputEventMouseButton:
 			if event.get_button_index() == BUTTON_LEFT and event.is_pressed():
 				_begin_drag()
@@ -119,7 +119,7 @@ func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 	# check if move will cause collision with piece
 	if target_tile.has_piece():
 		var target_piece = target_tile.get_piece()
-		if target_piece.player == self.player:
+		if target_piece.player_id == self.player_id:
 			return false
 		# TODO check if can step on opponent
 			# 	if there is other piece, check if can collide with it

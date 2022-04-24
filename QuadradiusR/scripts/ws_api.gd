@@ -88,13 +88,13 @@ func _handle_kick(data: Dictionary):
 	pass
 
 func _handle_game_state(data: Dictionary):
-	pass
+	get_tree().call_group("ws_game", "_game_state", data)
 
 func _handle_game_state_diff(data: Dictionary):
-	pass
+	get_tree().call_group("ws_game", "_game_state_diff", data)
 
 func _handle_move_result(data: Dictionary):
-	pass
+	get_tree().call_group("ws_game", "_move_result", data)
 
 
 # # # # # # # # # #
@@ -151,7 +151,7 @@ func subscribe_to(topic: String):
 	_send_data(query)
 
 
-func make_move(piece_id, tile_id):
+func make_move(piece_id: String, tile_id: String):
 	var query = {"op": MOVE, "d": {"piece_id": piece_id, "tile_id": tile_id}}
 	_send_data(query)
 

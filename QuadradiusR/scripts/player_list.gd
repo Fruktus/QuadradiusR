@@ -66,6 +66,7 @@ func _lobby_left(lobby_id: String, user_id: String):
 	uuid_to_active_invites.erase(user_id)
 	remove_player(user_id)
 
-func _game_invite_received(game_invite_id, from_id, from_username, subject_id, subject_username):
+func _game_invite_received(game_invite_id: String, from_id: String,
+		from_username: String, subject_id: String, subject_username: String):
 	uuid_to_active_invites[from_id] = game_invite_id
 	receive_challenge(from_id)

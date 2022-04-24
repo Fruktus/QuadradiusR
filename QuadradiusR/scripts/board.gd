@@ -10,8 +10,8 @@ var active_torus: Node
 
 
 func _ready():
-	var board_size = NetworkHandler.game_state.get_board_size()
-	var player_pieces = NetworkHandler.game_state.get_pieces()
+	var board_size = Context.game_state.get_board_size()
+	var player_pieces = Context.game_state.get_pieces()
 	
 	self.board_size = Vector2(board_size['x'], board_size['y'])
 	board.columns = board_size.x
@@ -20,6 +20,34 @@ func _ready():
 	_init_toruses(player_pieces)
 
 
+# # # # #
+# INIT  #
+# # # # #
+func _init_tiles():
+	for i in range(board_size.x * board_size.y):
+		var new_tile = tile_template.instance().init(Vector3(i % int(board_size.x), int(i / board_size.x), 0))
+		board.add_child(new_tile)
+	
+	var tiles = Context.game_state.get_tiles()
+	for tile_id in tiles.keys():
+		var pos = tiles[tile_id]['position']
+		var tile = _get_child_at_pos(pos['x'], pos['y'])
+		tile.tile_id = tile_id
+		tile.tile_pos.z = tiles[tile_id]['elevation']
+
+
+func _init_toruses(player_pieces: Dictionary):
+	for piece_id in player_pieces.keys():
+		var piece_data = player_pieces[piece_id]
+		var tile = Context.game_state.get_tile_by_id(piece_data['tile_id'], self)
+		var color = Torus.COLORS.RED if piece_data['owner_id'] == Context.user_id else Torus.COLORS.BLUE
+		var torus = torus_template.instance().init(self, tile, piece_data['owner_id'], piece_id, color)
+		_get_child_at_pos(tile.tile_pos.x, tile.tile_pos.y).set_slot(torus)
+
+
+# # # # #
+# UTILS #
+# # # # #
 func _get_child_at_pos(x: int, y: int):
 	return board.get_child(y * board_size.x + x)
 
@@ -28,28 +56,18 @@ func _get_child_at_idx(idx: int):
 	return board.get_child(idx)
 
 
-func _init_tiles():
-	for i in range(board_size.x * board_size.y):
-		var new_tile = tile_template.instance().init(Vector3(i % int(board_size.x), int(i / board_size.x), 0))
-		board.add_child(new_tile)
-	
-	var tiles = NetworkHandler.game_state.get_tiles()
-	for key in tiles.keys():
-		var pos = tiles[key]['position']
-		var tile = _get_child_at_pos(pos['x'], pos['y'])
-		tile.tile_id = key
-		tile.tile_pos.z = tiles[key]['elevation']
+func move_torus_by_tiles(source_pos: Vector2, dest_pos: Vector2):
+	var src_tile = _get_child_at_pos(source_pos.x, source_pos.y)
+	var dest_tile = _get_child_at_pos(dest_pos.x, dest_pos.y)
+	var moved_torus = src_tile.get_piece()
+	var is_colliding = dest_tile.has_piece()
+	src_tile.del_piece()
+	dest_tile.set_slot(moved_torus)
+	moved_torus.make_move(src_tile, dest_tile, is_colliding)
 
-
-func _init_toruses(player_pieces: Dictionary):
-	for piece_id in player_pieces.keys():
-		var piece_data = player_pieces[piece_id]
-		var tile = NetworkHandler.game_state.get_tile_by_id(piece_data['tile_id'], self)
-		var color = Torus.COLORS.RED if piece_data['owner_id'] == NetworkHandler.user_id else Torus.COLORS.BLUE
-		var torus = torus_template.instance().init(self, tile, piece_data['owner_id'], piece_id, color)
-		_get_child_at_pos(tile.tile_pos.x, tile.tile_pos.y).set_slot(torus)
-
-
+# # # # # # # # # # # # #
+# BOARD GROUP HANDLERS  #
+# # # # # # # # # # # # #
 func _torus_pickup(torus: Node):
 	# After picking up torus, move it to top of the tree, so it won't get covered
 	# by other sprites. After putting down, place back on original position, unless
@@ -71,6 +89,9 @@ func _torus_putdown(torus: Node):
 		return
 	
 	var target_tile: Tile = _get_child_at_pos(x, y)
+	if self.active_torus.current_tile == target_tile:
+		self._get_child_at_pos(x, y).set_slot(self.active_torus)
+		return
 	if torus.should_move_torus(self.active_torus.current_tile, target_tile):
 		var is_colliding = target_tile.has_piece()
 		self._get_child_at_pos(x, y).set_slot(self.active_torus)

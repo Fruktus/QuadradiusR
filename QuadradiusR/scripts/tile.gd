@@ -19,6 +19,7 @@ const MAX_ELEVATION = 2
 const MIN_ELEVATION = -2
 const ELEVATION_OFFSET = -50
 
+var tile_id: String
 var is_steppable = true
 var tile_pos: Vector3  # Z - elevation, from -2 to +2, total 5 levels
 

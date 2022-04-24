@@ -82,6 +82,9 @@ rect_min_size = Vector2( 502, 502 )
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/HighlightOff = SubResource( 2 )

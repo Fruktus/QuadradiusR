@@ -22,9 +22,10 @@ const color_textures = {COLORS.RED: "DefineSprite_412_Decoration0",
 
 var movement_powerup_manager = preload("res://scripts/movement_powerup_manager.gd").new()
 var board: Control
+var piece_id: String
 var current_tile: Tile
 var color = COLORS.RED
-var player = 0
+var player_id: String
 var is_held = false
 var can_interact = true
 
@@ -41,16 +42,17 @@ func _process(delta: float):
 	self.rect_global_position = get_global_mouse_position() - rect_min_size/2 * board.rect_scale
 
 
-func init(board: Control, tile: Tile, player=0, color=COLORS.RED):
-	self.player = player
+func init(board: Control, tile: Tile, player_id: String, piece_id: String, color: int = COLORS.RED):
+	self.player_id = player_id
 	self.board = board
 	self.color = color
 	self.current_tile = tile
+	self.piece_id = piece_id
 	return self
 
 
 func _on_mouse_event(viewport: Node, event: InputEvent, shape_idx: int):
-	if can_interact:
+	if can_interact and Context.user_id == player_id:
 		if event is InputEventMouseButton:
 			if event.get_button_index() == BUTTON_LEFT and event.is_pressed():
 				_begin_drag()
@@ -117,7 +119,7 @@ func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 	# check if move will cause collision with piece
 	if target_tile.has_piece():
 		var target_piece = target_tile.get_piece()
-		if target_piece.player == self.player:
+		if target_piece.player_id == self.player_id:
 			return false
 		# TODO check if can step on opponent
 			# 	if there is other piece, check if can collide with it

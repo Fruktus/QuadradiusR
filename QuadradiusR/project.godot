@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
+"class": "GameState",
+"language": "GDScript",
+"path": "res://scripts/game_state.gd"
+}, {
+"base": "Reference",
 "class": "Message",
 "language": "GDScript",
 "path": "res://scripts/message_template.gd"
@@ -45,6 +50,7 @@ _global_script_classes=[ {
 "path": "res://scripts/ws_api.gd"
 } ]
 _global_script_class_icons={
+"GameState": "",
 "Message": "",
 "MovementPowerupManager": "",
 "PowerupRule": "",
@@ -64,10 +70,14 @@ config/icon="res://icon.png"
 [autoload]
 
 NetworkHandler="*res://prefabs/network_handler.tscn"
+Context="*res://prefabs/context.tscn"
 
 [debug]
 
+gdscript/warnings/shadowed_variable=false
 gdscript/warnings/unused_class_variable=true
+gdscript/warnings/unused_signal=false
+gdscript/warnings/return_value_discarded=false
 gdscript/warnings/unsafe_property_access=true
 gdscript/warnings/unsafe_method_access=true
 gdscript/warnings/unsafe_cast=true
@@ -85,6 +95,7 @@ window/stretch/aspect="expand"
 [global]
 
 cursor=false
+war=false
 
 [physics]
 

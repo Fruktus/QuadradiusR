@@ -1,7 +1,7 @@
 class_name RestApi
 extends HTTPRequest
 
-var url
+var url: String
 var use_ssl = false
 var request_running = false
 var request_callback: FuncRef
@@ -21,12 +21,15 @@ func _process_requests():
 
 func _on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray):
 	var data = null
-	if 'application/json' in headers[0]:  # VERY hacky, need to check all items
-		data = JSON.parse(body.get_string_from_utf8()).result
-	else:
-		data = body.get_string_from_utf8()
+	for header in headers:
+		if 'application/json' in header:
+			data = JSON.parse(body.get_string_from_utf8()).result
+			break
+		elif 'text/plain' in header:
+			data = body.get_string_from_utf8()
+			break
 
-	var message = Message.new().init(response_code, str(result), data)
+	var message = Message.new().init(response_code, str(result), data, headers)
 	
 	print('rq cpl:', response_code, ', headers:', headers, ', data:', data) # DEBUG
 	
@@ -89,3 +92,13 @@ func get_game_invite(token: String, game_id: String, cb: FuncRef = null, cb_args
 func accept_game_invite(token: String, game_id: String, cb: FuncRef = null, cb_args: Dictionary = {}):
 	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
 	return _build_request(["{url}/game_invite/{id}/accept".format({"url": url, "id": game_id}), headers, use_ssl, HTTPClient.METHOD_POST, ""], cb, cb_args)
+
+
+func get_game(token: String, game_id: String, cb: FuncRef = null, cb_args: Dictionary = {}):
+	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
+	return _build_request(["{url}/game/{id}".format({"url": url, "id": game_id}), headers, use_ssl, HTTPClient.METHOD_GET, ""], cb, cb_args)
+
+
+func get_game_state(token: String, game_id: String, cb: FuncRef = null, cb_args: Dictionary = {}):
+	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
+	return _build_request(["{url}/game/{id}/state".format({"url": url, "id": game_id}), headers, use_ssl, HTTPClient.METHOD_GET, ""], cb, cb_args)

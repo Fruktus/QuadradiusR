@@ -5,15 +5,15 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_277_LeftOfBoardArt/1.png" type="Texture" id=3]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_265_BottomOfBoardArt/1.png" type="Texture" id=4]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_271_TopOfBoardArt/1.png" type="Texture" id=5]
-[ext_resource path="res://original_assets/game/sprites/DefineSprite_399_RightSidePanel/1.png" type="Texture" id=6]
+[ext_resource path="res://prefabs/right_side_panel.tscn" type="PackedScene" id=6]
 [ext_resource path="res://prefabs/board.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scripts/game_manager.gd" type="Script" id=8]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
-[sub_resource type="StyleBoxEmpty" id=2]
-
-[node name="Game" type="Control"]
+[node name="Game" type="Control" groups=["ws_game"]]
 mouse_filter = 2
+script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -110,18 +110,7 @@ scale = Vector2( 2.82036, 2.1497 )
 texture = ExtResource( 1 )
 centered = false
 
-[node name="RightSidePanel" type="PanelContainer" parent="MarginContainer/ScreenHBox"]
+[node name="RightSidePanel" parent="MarginContainer/ScreenHBox" instance=ExtResource( 6 )]
 margin_left = 1415.0
 margin_right = 1920.41
 margin_bottom = 1080.0
-mouse_filter = 2
-custom_styles/panel = SubResource( 2 )
-
-[node name="RightSidePanelPlaceholder" type="TextureRect" parent="MarginContainer/ScreenHBox/RightSidePanel"]
-margin_right = 505.41
-margin_bottom = 1080.0
-rect_min_size = Vector2( 505.41, 1056.38 )
-mouse_filter = 2
-texture = ExtResource( 6 )
-expand = true
-stretch_mode = 5

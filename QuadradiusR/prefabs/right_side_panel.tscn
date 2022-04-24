@@ -1,0 +1,101 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/1.png" type="Texture" id=1]
+[ext_resource path="res://resources/fonts/72_DotMatrix.tres" type="DynamicFont" id=2]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_415_Decoration1/1.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_399_RightSidePanel/1.png" type="Texture" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="Theme" id=4]
+LineEdit/colors/clear_button_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/clear_button_color_pressed = Color( 0, 0, 0, 1 )
+LineEdit/colors/cursor_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_uneditable = Color( 0, 0, 0, 1 )
+LineEdit/colors/selection_color = Color( 0, 0, 0, 1 )
+LineEdit/constants/minimum_spaces = 0
+LineEdit/fonts/font = null
+LineEdit/icons/clear = null
+LineEdit/styles/focus = SubResource( 3 )
+LineEdit/styles/normal = SubResource( 1 )
+LineEdit/styles/read_only = null
+
+[node name="RightSidePanel" type="PanelContainer"]
+margin_right = 505.41
+margin_bottom = 1056.38
+rect_min_size = Vector2( 505.41, 1056.38 )
+rect_pivot_offset = Vector2( -338, 203 )
+mouse_filter = 2
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RightSidePanelPlaceholder" type="TextureRect" parent="."]
+margin_right = 505.41
+margin_bottom = 1056.38
+rect_min_size = Vector2( 505.41, 1056.38 )
+mouse_filter = 2
+texture = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="."]
+margin_right = 505.41
+margin_bottom = 1056.38
+
+[node name="User1Input" type="Label" parent="Control"]
+margin_left = 183.0
+margin_top = 36.0
+margin_right = 404.0
+margin_bottom = 65.0
+rect_pivot_offset = Vector2( -464, 92 )
+theme = SubResource( 4 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "User1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="User2Input" type="Label" parent="Control"]
+margin_left = 183.0
+margin_top = 87.0
+margin_right = 404.0
+margin_bottom = 116.0
+rect_pivot_offset = Vector2( -464, 92 )
+theme = SubResource( 4 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "User2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="User1Decoration" type="TextureRect" parent="Control"]
+margin_left = 413.0
+margin_top = 25.0
+margin_right = 700.0
+margin_bottom = 319.0
+rect_scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="User2Decoration" type="TextureRect" parent="Control"]
+margin_left = 414.0
+margin_top = 79.0
+margin_right = 701.0
+margin_bottom = 373.0
+rect_scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

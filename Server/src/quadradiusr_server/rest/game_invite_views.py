@@ -11,7 +11,7 @@ from quadradiusr_server.auth import User
 from quadradiusr_server.db.base import GameInvite, Game
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
-from quadradiusr_server.game import GameState
+from quadradiusr_server.game_state import GameState
 from quadradiusr_server.notification import Notification, NotificationService
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.rest.mappers import game_invite_to_json, game_to_json

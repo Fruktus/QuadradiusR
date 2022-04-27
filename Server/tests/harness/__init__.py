@@ -3,7 +3,7 @@ import dataclasses
 import uuid
 from abc import ABCMeta
 from datetime import datetime, timedelta, timezone
-from typing import Callable, Tuple
+from typing import Callable, Tuple, List, Optional
 from unittest import TestCase
 
 import aiohttp
@@ -13,8 +13,9 @@ from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.constants import QrwsOpcode
 from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.transactions import transaction_context
-from quadradiusr_server.game import GameState
+from quadradiusr_server.game_state import GameState, Power
 from quadradiusr_server.notification import Handler, Notification
+from quadradiusr_server.powers import PowerRandomizer, PowerDefinition
 from quadradiusr_server.server import QuadradiusRServer
 
 
@@ -33,6 +34,7 @@ class RestTestHarness(metaclass=ABCMeta):
         self.config.auth.scrypt_n = 8
         self.config.auth.scrypt_r = 8
         self.config.auth.scrypt_p = 1
+        self.config.game.power_randomizer_class = 'harness.PowerRandomizerForTests'
         self.server = QuadradiusRServer(self.config)
         if server_configurator:
             server_configurator(self.server)
@@ -225,3 +227,19 @@ class NotificationHandlerForTests(Handler):
     @staticmethod
     async def receive_now():
         await asyncio.sleep(0)
+
+
+class PowerRandomizerForTests(PowerRandomizer):
+    power_to_spawn: Optional[Power] = None
+
+    def after_move(
+            self,
+            game_state: GameState,
+            power_definitions: List[PowerDefinition]) -> None:
+        if self.power_to_spawn:
+            game_state.board.powers[self.power_to_spawn.id] = self.power_to_spawn
+            self.power_to_spawn = None
+
+    @classmethod
+    def spawn_next_power(cls, power_to_spawn: Power):
+        cls.power_to_spawn = power_to_spawn

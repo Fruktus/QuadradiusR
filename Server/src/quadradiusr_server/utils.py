@@ -2,10 +2,11 @@ import importlib
 import inspect
 import pkgutil
 from inspect import Parameter
-from typing import Optional
+from typing import Optional, Type
 
 from aiohttp.abc import Request
 from isodate import parse_datetime
+from jsondiff import CompactJsonDiffSyntax, symbols
 
 
 def import_submodules(package, recursive=True):
@@ -18,6 +19,17 @@ def import_submodules(package, recursive=True):
         if recursive and is_pkg:
             results.update(import_submodules(full_name))
     return results
+
+
+def import_class(full_name: str, *, subtype_of: Type = None) -> Type:
+    if '.' not in full_name:
+        raise ValueError(f'Class {full_name} cannot be imported because there is no module')
+    module_name, class_name = full_name.rsplit('.', 1)
+    module = importlib.import_module(module_name)
+    clazz = getattr(module, class_name)
+    if subtype_of and not issubclass(clazz, subtype_of):
+        raise ValueError(f'{clazz} should be a subclass of {subtype_of}')
+    return clazz
 
 
 def can_pass_argument(f, name: str):
@@ -67,3 +79,14 @@ def parse_iso_datetime_tz(string: str):
     if dt.tzinfo is None:
         raise ValueError('datetime lacks timezone')
     return dt
+
+
+class SimpleJsonDiffSyntax(CompactJsonDiffSyntax):
+    def emit_dict_diff(self, a, b, s, added, changed, removed):
+        if s == 1.0:
+            return {}
+        else:
+            changed.update(added)
+            if removed:
+                changed[symbols.delete] = list(removed.keys())
+            return changed

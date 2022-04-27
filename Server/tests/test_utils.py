@@ -1,6 +1,7 @@
 from unittest import TestCase
+from unittest.mock import MagicMock
 
-from quadradiusr_server.utils import can_pass_argument
+from quadradiusr_server.utils import can_pass_argument, import_class
 
 
 class UtilsTest(TestCase):
@@ -37,3 +38,10 @@ class UtilsTest(TestCase):
         self.assertTrue(can_pass_argument(test5, 'b'))
         self.assertTrue(can_pass_argument(test5, 'c'))
         self.assertFalse(can_pass_argument(test5, 'd'))
+
+    def test_import_class(self):
+        self.assertEqual(TestCase, import_class('unittest.TestCase'))
+        self.assertEqual(TestCase, import_class('unittest.TestCase', subtype_of=TestCase))
+        self.assertEqual(MagicMock, import_class('unittest.mock.MagicMock'))
+        with self.assertRaises(ValueError):
+            import_class('unittest.TestCase', subtype_of=str)

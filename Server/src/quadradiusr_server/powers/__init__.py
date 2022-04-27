@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import List
 
-from quadradiusr_server.game import GameState
-from quadradiusr_server.utils import import_submodules
+from quadradiusr_server.game_state import GameState
 
 
 class PowerDefinition(ABC):
@@ -23,28 +22,9 @@ class PowerDefinition(ABC):
         ...
 
 
-class PowerDefinitionList:
-    def __init__(self) -> None:
-        self._definitions = dict()
-
-    def declare(self, clazz):
-        if not issubclass(clazz, PowerDefinition):
-            raise ValueError(f'Class {clazz} is not a subclass of {PowerDefinition}')
-
-        power_def = clazz()
-        self._definitions[power_def.get_id()] = power_def
-
-        return clazz
-
-    def get_by_id(self, power_definition_id: str) -> Optional[PowerDefinition]:
-        if power_definition_id in self._definitions:
-            return self._definitions[power_definition_id]
-        return None
-
-    def get_all(self) -> List[PowerDefinition]:
-        return list(self._definitions.values())
-
-
-power_definitions = PowerDefinitionList()
-
-import_submodules(__name__)
+class PowerRandomizer(ABC):
+    @abstractmethod
+    def after_move(
+            self, game_state: GameState,
+            power_definitions: List[PowerDefinition]) -> None:
+        ...

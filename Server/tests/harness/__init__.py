@@ -75,6 +75,16 @@ class WebsocketHarness(TestCase, metaclass=ABCMeta):
             }
         })
 
+    async def ws_apply_power(
+            self, ws: ClientWebSocketResponse,
+            power_id: str):
+        await ws.send_json({
+            'op': 13,
+            'd': {
+                'power_id': power_id,
+            }
+        })
+
     async def ws_send_message(
             self, ws: ClientWebSocketResponse,
             content: str,

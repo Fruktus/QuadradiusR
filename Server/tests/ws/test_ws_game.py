@@ -88,7 +88,7 @@ class TestWsGame(
                     ws1,
                     self.get_game_piece_id_at(game_state, (0, 1)),
                     self.get_game_tile_id_at(game_state, (0, 2)))
-                move_result_msg = await self.ws_receive(ws1, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws1, QrwsOpcode.ACTION_RESULT)
                 self.assertFalse(move_result_msg['d']['is_legal'])
                 self.assertEqual('Not your turn', move_result_msg['d']['reason'])
 
@@ -97,7 +97,7 @@ class TestWsGame(
                     ws0,
                     self.get_game_piece_id_at(game_state, (0, 1)),
                     self.get_game_tile_id_at(game_state, (0, 2)))
-                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
                 gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
@@ -116,7 +116,7 @@ class TestWsGame(
                     ws0,
                     self.get_game_piece_id_at(game_state, (0, 2)),
                     self.get_game_tile_id_at(game_state, (0, 3)))
-                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
                 self.assertFalse(move_result_msg['d']['is_legal'])
                 self.assertEqual('Not your turn', move_result_msg['d']['reason'])
 
@@ -125,7 +125,7 @@ class TestWsGame(
                     ws1,
                     self.get_game_piece_id_at(game_state, (1, 6)),
                     self.get_game_tile_id_at(game_state, (1, 5)))
-                move_result_msg = await self.ws_receive(ws1, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws1, QrwsOpcode.ACTION_RESULT)
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
     async def test_victory(self):
@@ -171,7 +171,7 @@ class TestWsGame(
                     ws0,
                     self.get_game_piece_id_at(game_state, (0, 0)),
                     self.get_game_tile_id_at(game_state, (0, 1)))
-                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
                 diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
@@ -220,7 +220,7 @@ class TestWsGame(
                     ws0,
                     self.get_game_piece_id_at(game_state, (0, 1)),
                     self.get_game_tile_id_at(game_state, (0, 2)))
-                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
                 gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
@@ -280,7 +280,7 @@ class TestWsGame(
                     ws0,
                     piece_id,
                     self.get_game_tile_id_at(game_state, (0, 2)))
-                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.MOVE_RESULT)
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
                 gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
@@ -301,4 +301,80 @@ class TestWsGame(
                         },
                     },
                     'current_player_id': user1['id'],
+                }, gs_diff_msg['d']['game_state_diff'])
+
+    async def test_power_apply(self):
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
+
+        user0 = await self.get_test_user(0)
+        user1 = await self.get_test_user(1)
+
+        game_id = await self.create_game(user0['id'], user1['id'])
+        game_ws = self.server_url(f'/game/{game_id}/connect', protocol='ws')
+
+        gs = await self.get_game_state(game_id)
+        gs.board.powers['power0'] = Power(
+            id='power0',
+            tile_id=None,
+            piece_id=gs.board.get_piece_at(0, 0).id,
+            power_definition_id='raise_tile',
+            authorized_player_ids=[user0['id']],
+        )
+        gs.board.powers['power1'] = Power(
+            id='power1',
+            tile_id=None,
+            piece_id=gs.board.get_piece_at(0, 7).id,
+            power_definition_id='raise_tile',
+            authorized_player_ids=[user1['id']],
+        )
+        gs.board.powers['power2'] = Power(
+            id='power2',
+            tile_id=gs.board.get_tile_at(5, 5).id,
+            power_definition_id='raise_tile',
+        )
+        await self.set_game_state(game_id, gs)
+
+        async with timeout(2), aiohttp.ClientSession() as session:
+            async with session.ws_connect(game_ws) as ws0, \
+                    session.ws_connect(game_ws) as ws1:
+                await asyncio.gather(
+                    self.authorize_ws(0, ws0),
+                    self.authorize_ws(1, ws1),
+                )
+
+                # user1 cannot apply a power
+                await self.ws_apply_power(ws1, 'power1')
+                result_msg = await self.ws_receive(ws1, QrwsOpcode.ACTION_RESULT)
+                self.assertFalse(result_msg['d']['is_legal'])
+                self.assertEqual('Not your turn', result_msg['d']['reason'])
+
+                # user0 cannot apply someone's else power
+                await self.ws_apply_power(ws0, 'power1')
+                result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
+                self.assertFalse(result_msg['d']['is_legal'])
+                self.assertEqual('You do not own the power', result_msg['d']['reason'])
+
+                # user0 cannot apply a power which is not captured
+                await self.ws_apply_power(ws0, 'power2')
+                result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
+                self.assertFalse(result_msg['d']['is_legal'])
+                self.assertEqual('Power has not been captured', result_msg['d']['reason'])
+
+                # user0 applies its own power
+                await self.ws_apply_power(ws0, 'power0')
+                result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
+                self.assertTrue(result_msg['d']['is_legal'])
+
+                gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
+                self.assertEqual({
+                    'board': {
+                        'tiles': {
+                            gs.board.get_tile_at(0, 0).id: {
+                                'elevation': 1,
+                            }
+                        }
+                    },
                 }, gs_diff_msg['d']['game_state_diff'])

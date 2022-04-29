@@ -192,10 +192,10 @@ Perform a move by the player.
     }
 
 
-.. _ws_msg_move_result:
+.. _ws_msg_action_result:
 
-``MOVE_RESULT (12)``
---------------------
+``ACTION_RESULT (12)``
+----------------------
 
 Inform about the result of a player's move.
 
@@ -207,5 +207,23 @@ Inform about the result of a player's move.
         "d": {
             "is_legal": true,
             "reason": "{reason}"
+        }
+    }
+
+
+.. _ws_msg_apply_power:
+
+``APPLY_POWER (13)``
+--------------------
+
+Apply a power.
+
+.. code-block:: json
+    :caption: Message format
+
+    {
+        "op": 11,
+        "d": {
+            "power_id": "{power_id}"
         }
     }

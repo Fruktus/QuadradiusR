@@ -155,9 +155,9 @@ class MoveMessage(Message):
         }
 
 
-class MoveResultMessage(Message):
+class ActionResultMessage(Message):
     def __init__(self, *, is_legal: bool, reason: str) -> None:
-        super().__init__(QrwsOpcode.MOVE_RESULT)
+        super().__init__(QrwsOpcode.ACTION_RESULT)
         self.is_legal = is_legal
         self.reason = reason
 
@@ -165,6 +165,19 @@ class MoveResultMessage(Message):
         return {
             'is_legal': self.is_legal,
             'reason': self.reason,
+        }
+
+
+class ApplyPowerMessage(Message):
+    def __init__(
+            self, *,
+            power_id: str) -> None:
+        super().__init__(QrwsOpcode.MOVE)
+        self.power_id = power_id
+
+    def _to_json_data(self):
+        return {
+            'power_id': self.power_id,
         }
 
 
@@ -192,6 +205,10 @@ def parse_message(*, op: int, data: dict) -> Message:
         return MoveMessage(
             piece_id=data['piece_id'],
             tile_id=data['tile_id'],
+        )
+    elif op == QrwsOpcode.APPLY_POWER:
+        return ApplyPowerMessage(
+            power_id=data['power_id'],
         )
     else:
         raise ValueError(f'Unknown opcode: {op}')

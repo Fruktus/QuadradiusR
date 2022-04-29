@@ -8,7 +8,7 @@ from quadradiusr_server.constants import QrwsCloseCode
 from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.base import User
 from quadradiusr_server.db.repository import Repository
-from quadradiusr_server.game_state import GameState, Piece, Tile
+from quadradiusr_server.game_state import GameState, Piece, Tile, GameBoard
 from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.powers import PowerDefinition, PowerRandomizer
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
@@ -120,13 +120,8 @@ class GameInProgress:
 
         # perform move
 
-        captured_pieces = []
-        for opid, other_piece in pieces.items():
-            if tiles[other_piece.tile_id].position == dest_tile.position:
-                captured_pieces.append(opid)
-
-        for captured_piece in captured_pieces:
-            del pieces[captured_piece]
+        await self._capture_pieces(dest_tile, game_state.board)
+        await self._capture_powers(dest_tile, piece, game_state.board)
 
         piece.tile_id = tile_id
         game_state.current_player_id = other_player_id
@@ -143,6 +138,28 @@ class GameInProgress:
             old_game_state=old_game_state,
             new_game_state=game_state,
         )
+
+    async def _capture_pieces(
+            self, dest_tile: Tile,
+            board: GameBoard):
+        captured_pieces = []
+        for opid, other_piece in board.pieces.items():
+            if board.tiles[other_piece.tile_id].position == dest_tile.position:
+                captured_pieces.append(opid)
+        for captured_piece in captured_pieces:
+            del board.pieces[captured_piece]
+
+    async def _capture_powers(
+            self, dest_tile: Tile,
+            piece: Piece,
+            board: GameBoard):
+        for power_id, power in board.powers.items():
+            if power.tile_id is None:
+                continue
+            if board.tiles[power.tile_id].position == dest_tile.position:
+                power.tile_id = None
+                power.piece_id = piece.id
+                power.authorized_player_ids.append(piece.owner_id)
 
 
 class GameConnection(BasicConnection):

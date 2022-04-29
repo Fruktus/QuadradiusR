@@ -42,8 +42,8 @@ class Piece:
 class Power:
     id: str
     power_definition_id: str
-    tile_id: str
-    piece_id: str = None
+    tile_id: Optional[str]
+    piece_id: Optional[str] = None
     authorized_player_ids: List[str] = field(default_factory=list)
 
     def serialize_for(self, user_id: str):

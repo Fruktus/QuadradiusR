@@ -14,6 +14,9 @@ var token: String
 
 func _ready():
 	rest_api.url = url
+	# use_threads=true does not work for HTML5
+	rest_api.use_threads = false
+	rest_api.max_redirects = 0
 
 
 func set_url(url: String):
@@ -104,9 +107,15 @@ func accept_and_join_game(game_invite_id: String, cb: FuncRef):
 func _accept_and_join_game_1(message: Message, args: Dictionary):
 	# After accept_game_invite
 	var game_id = ""
-	for header in message.headers:
-		if 'location' in header:
-			game_id = header.substr(16, len(message.headers[0]))
+	# FIXME: clean up this mess, HTML5 and executables
+	#   have different behaviors when it comes to redirects
+	if message.result == 200:
+		game_id = message.body['id']
+	elif message.result == 303:
+		for header in message.headers:
+			if 'location' in header:
+				game_id = header.substr(16, len(message.headers[0]))
+				break
 	join_game(game_id, args['cb'])
 
 

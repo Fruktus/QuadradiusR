@@ -2,10 +2,13 @@ import dataclasses
 import json
 from dataclasses import dataclass, field
 from json import JSONDecodeError
-from typing import Optional, Callable
+from typing import Optional, Callable, List, Dict
 
 import dacite as dacite
 import toml as toml
+
+from quadradiusr_server.powers import PowerRandomizer, PowerDefinition
+from quadradiusr_server.utils import import_class
 
 
 @dataclass
@@ -39,6 +42,29 @@ class StaticServerConfig:
 
 
 @dataclass
+class GameConfig:
+    power_randomizer_class: str = 'quadradiusr_server.powers.randomizers.DefaultPowerRandomizer'
+    power_definition_classes: List[str] = field(default_factory=lambda: [
+        'quadradiusr_server.powers.power_raise_tile.RaiseTilePowerDefinition',
+    ])
+
+    def get_power_randomizer(self) -> PowerRandomizer:
+        if not hasattr(self, '_power_randomizer'):
+            clazz = import_class(self.power_randomizer_class, subtype_of=PowerRandomizer)
+            self._power_randomizer = clazz()
+        return self._power_randomizer
+
+    def get_power_definitions(self) -> Dict[str, PowerDefinition]:
+        if not hasattr(self, '_power_definitions'):
+            self._power_definitions = dict()
+            for class_name in self.power_definition_classes:
+                clazz = import_class(class_name)
+                power_definition = clazz()
+                self._power_definitions[power_definition.get_id()] = power_definition
+        return self._power_definitions
+
+
+@dataclass
 class ServerConfig:
     host: str
     port: int
@@ -53,6 +79,7 @@ class ServerConfig:
     database: DatabaseConfig = field(default_factory=DatabaseConfig)
     cron: CronConfig = field(default_factory=CronConfig)
     static: StaticServerConfig = field(default_factory=StaticServerConfig)
+    game: GameConfig = field(default_factory=GameConfig)
 
     def set(self, option: str, value: str):
         option_parts = option.split('.')

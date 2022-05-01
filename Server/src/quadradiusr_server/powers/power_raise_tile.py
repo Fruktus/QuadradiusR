@@ -1,8 +1,7 @@
-from quadradiusr_server.game import GameState
-from quadradiusr_server.powers import PowerDefinition, power_definitions
+from quadradiusr_server.game_state import GameState
+from quadradiusr_server.powers import PowerDefinition
 
 
-@power_definitions.declare
 class RaiseTilePowerDefinition(PowerDefinition):
     def get_id(self) -> str:
         return 'raise_tile'

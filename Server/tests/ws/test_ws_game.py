@@ -4,9 +4,10 @@ from unittest import IsolatedAsyncioTestCase
 import aiohttp
 from async_timeout import timeout
 
-from harness import RestTestHarness, TestUserHarness, WebsocketHarness, GameHarness
+from harness import RestTestHarness, TestUserHarness, WebsocketHarness, GameHarness, \
+    PowerRandomizerForTests
 from quadradiusr_server.constants import QrwsOpcode
-from quadradiusr_server.game import Piece
+from quadradiusr_server.game_state import Piece, Power
 
 
 class TestWsGame(
@@ -100,16 +101,13 @@ class TestWsGame(
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
                 gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
+                gs_diff = gs_diff_msg['d']['game_state_diff']
                 self.assertEqual({
-                    'board': {
-                        'pieces': {
-                            self.get_game_piece_id_at(game_state, (0, 1)): {
-                                'tile_id': self.get_game_tile_id_at(game_state, (0, 2)),
-                            },
-                        },
+                    self.get_game_piece_id_at(game_state, (0, 1)): {
+                        'tile_id': self.get_game_tile_id_at(game_state, (0, 2)),
                     },
-                    'current_player_id': user1['id'],
-                }, gs_diff_msg['d']['game_state_diff'])
+                }, gs_diff['board']['pieces'])
+                self.assertEqual(user1['id'], gs_diff['current_player_id'])
 
                 game_state = await self.query_game_state(1, game_id)
 
@@ -187,3 +185,60 @@ class TestWsGame(
                 self.assertEqual(['1'], diff['board']['pieces']['$delete'])
                 self.assertEqual(True, diff['finished'])
                 self.assertEqual(user0['id'], diff['winner_id'])
+
+    async def test_power_spawn(self):
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
+
+        user0 = await self.get_test_user(0)
+        user1 = await self.get_test_user(1)
+
+        game_id = await self.create_game(user0['id'], user1['id'])
+        game_ws = self.server_url(f'/game/{game_id}/connect', protocol='ws')
+
+        async with timeout(2), aiohttp.ClientSession() as session:
+            async with session.ws_connect(game_ws) as ws0, \
+                    session.ws_connect(game_ws) as ws1:
+                await asyncio.gather(
+                    self.authorize_ws(0, ws0),
+                    self.authorize_ws(1, ws1),
+                )
+
+                PowerRandomizerForTests.spawn_next_power(Power(
+                    id='power_id',
+                    power_definition_id='raise_tile',
+                    tile_id='tile_id',
+                ))
+
+                msg0 = await ws0.receive_json()
+                game_state = msg0['d']['game_state']
+
+                # user0 makes a move
+                await self.ws_move(
+                    ws0,
+                    self.get_game_piece_id_at(game_state, (0, 1)),
+                    self.get_game_tile_id_at(game_state, (0, 2)))
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.MOVE_RESULT)
+                self.assertTrue(move_result_msg['d']['is_legal'])
+
+                gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
+                self.assertEqual({
+                    'board': {
+                        'pieces': {
+                            self.get_game_piece_id_at(game_state, (0, 1)): {
+                                'tile_id': self.get_game_tile_id_at(game_state, (0, 2)),
+                            },
+                        },
+                        'powers': {
+                            'power_id': {
+                                'authorized_player_ids': [],
+                                'power_definition_id': None,
+                                'tile_id': 'tile_id',
+                                'piece_id': None,
+                            },
+                        },
+                    },
+                    'current_player_id': user1['id'],
+                }, gs_diff_msg['d']['game_state_diff'])

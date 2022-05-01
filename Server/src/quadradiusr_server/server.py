@@ -164,7 +164,8 @@ class QuadradiusRServer:
 
     def start_game(self, game: Game) -> GameInProgress:
         if game.id_ not in self.games.keys():
-            self.games[game.id_] = GameInProgress(game, self.repository)
+            self.games[game.id_] = GameInProgress(
+                game, self.repository, self.config.game)
         return self.games[game.id_]
 
 

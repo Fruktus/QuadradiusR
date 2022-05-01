@@ -13,15 +13,45 @@ from quadradiusr_server.notification import NotificationService
 from quadradiusr_server.powers import PowerDefinition, PowerRandomizer
 from quadradiusr_server.qrws_connection import BasicConnection, QrwsConnection
 from quadradiusr_server.qrws_messages import Message, KickMessage, GameStateMessage, MoveMessage, \
-    MoveResultMessage, GameStateDiffMessage
+    ActionResultMessage, GameStateDiffMessage, ApplyPowerMessage
 
 
 @dataclass
-class MoveResult:
+class ActionResult:
     is_legal: bool
     reason: Optional[str] = None
     old_game_state: Optional[GameState] = None
     new_game_state: Optional[GameState] = None
+
+
+class ActionApplicationContext:
+    def __init__(self, game: Game) -> None:
+        self._game = game
+        self._old_game_state = copy.deepcopy(self._game.game_state_)
+
+        # we need to make sure sqlalchemy will see the change
+        game_state: GameState = copy.deepcopy(self._game.game_state_)
+        self._game.game_state_ = game_state
+        self._new_game_state = game_state
+
+    @property
+    def old_game_state(self):
+        return self._old_game_state
+
+    @property
+    def new_game_state(self):
+        return self._new_game_state
+
+    @property
+    def game_state(self):
+        return self.new_game_state
+
+    def legal_result(self):
+        return ActionResult(
+            is_legal=True,
+            old_game_state=self.old_game_state,
+            new_game_state=self.game_state,
+        )
 
 
 class GameInProgress:
@@ -61,42 +91,84 @@ class GameInProgress:
         if player_id in self.player_connections:
             self.player_connections[player_id] = None
 
+    async def apply_power(
+            self, player: User,
+            power_id: str) -> ActionResult:
+        ctx = ActionApplicationContext(await self.get_game())
+        game_state: GameState = ctx.game_state
+
+        if game_state.finished:
+            return ActionResult(
+                is_legal=False,
+                reason='Game is finished',
+            )
+
+        if game_state.current_player_id != player.id_:
+            return ActionResult(
+                is_legal=False,
+                reason='Not your turn',
+            )
+
+        if power_id not in game_state.board.powers:
+            return ActionResult(
+                is_legal=False,
+                reason='Power does not exist',
+            )
+
+        power = game_state.board.powers[power_id]
+
+        if power.tile_id is not None:
+            return ActionResult(
+                is_legal=False,
+                reason='Power has not been captured',
+            )
+
+        if player.id_ not in power.authorized_player_ids:
+            return ActionResult(
+                is_legal=False,
+                reason='You do not own the power',
+            )
+
+        pd_id = power.power_definition_id
+        pd = self.power_definitions[pd_id]
+
+        pd.apply(game_state, power_id)
+
+        return ctx.legal_result()
+
     async def make_move(
             self, player: User,
             piece_id: str,
-            tile_id: str) -> MoveResult:
+            tile_id: str) -> ActionResult:
+        game = await self.get_game()
+        ctx = ActionApplicationContext(game)
         # check move
 
-        game: Game = await self.get_game()
-        old_game_state = copy.deepcopy(game.game_state_)
-
-        # we need to make sure sqlalchemy will see the change
-        game_state: GameState = copy.deepcopy(game.game_state_)
-        game.game_state_ = game_state
+        game_state: GameState = ctx.game_state
 
         tiles = game_state.board.tiles
         pieces = game_state.board.pieces
         other_player_id = game.get_other_player_id(player.id_)
 
         if game_state.finished:
-            return MoveResult(
+            return ActionResult(
                 is_legal=False,
                 reason='Game is finished',
             )
 
         if game_state.current_player_id != player.id_:
-            return MoveResult(
+            return ActionResult(
                 is_legal=False,
                 reason='Not your turn',
             )
 
         if piece_id not in pieces:
-            return MoveResult(
+            return ActionResult(
                 is_legal=False,
                 reason='Piece does not exist',
             )
         if tile_id not in tiles:
-            return MoveResult(
+            return ActionResult(
                 is_legal=False,
                 reason='Destination tile does not exist',
             )
@@ -104,7 +176,7 @@ class GameInProgress:
         piece: Piece = pieces[piece_id]
 
         if piece.owner_id != player.id_:
-            return MoveResult(
+            return ActionResult(
                 is_legal=False,
                 reason='Cannot move opponent\'s piece',
             )
@@ -113,7 +185,7 @@ class GameInProgress:
         dest_tile: Tile = tiles[tile_id]
 
         if dest_tile.elevation > src_tile.elevation + 1:
-            return MoveResult(
+            return ActionResult(
                 is_legal=False,
                 reason='Destination tile too high',
             )
@@ -133,11 +205,7 @@ class GameInProgress:
             self.power_randomizer.after_move(
                 game_state, list(self.power_definitions.values()))
 
-        return MoveResult(
-            is_legal=True,
-            old_game_state=old_game_state,
-            new_game_state=game_state,
-        )
+        return ctx.legal_result()
 
     async def _capture_pieces(
             self, dest_tile: Tile,
@@ -189,39 +257,50 @@ class GameConnection(BasicConnection):
             return True
 
         if isinstance(message, MoveMessage):
-            r = await self.game_in_progress.make_move(
+            result = await self.game_in_progress.make_move(
                 user,
                 piece_id=message.piece_id,
                 tile_id=message.tile_id,
             )
 
-            async def on_commit(conn: GameConnection, result: MoveResult):
-                await conn.qrws.send_message(MoveResultMessage(
-                    is_legal=result.is_legal,
-                    reason=result.reason,
-                ))
-                if not result.is_legal:
-                    return
-                coroutines = []
-                for player_id, conn in conn.game_in_progress.player_connections.items():
-                    diff, etag_from, etag_to = GameState.serialize_diff_with_etag_for(
-                        from_=result.old_game_state,
-                        to=result.new_game_state,
-                        user_id=player_id,
-                    )
-                    coroutines.append(conn.qrws.send_message(GameStateDiffMessage(
-                        recipient_id=player_id,
-                        game_state_diff=diff,
-                        etag_from=etag_from,
-                        etag_to=etag_to,
-                    )))
-                await asyncio.gather(*coroutines)
+            await self._post_action(result)
+            return True
+        elif isinstance(message, ApplyPowerMessage):
+            result = await self.game_in_progress.apply_power(
+                user,
+                power_id=message.power_id,
+            )
 
-            await self.repository.synchronize_transaction_on_commit(
-                on_commit(self, r))
+            await self._post_action(result)
             return True
         else:
             return False
+
+    async def _post_action(self, action_result: ActionResult):
+        async def on_commit(conn: GameConnection, result: ActionResult):
+            await conn.qrws.send_message(ActionResultMessage(
+                is_legal=result.is_legal,
+                reason=result.reason,
+            ))
+            if not result.is_legal:
+                return
+            coroutines = []
+            for player_id, conn in conn.game_in_progress.player_connections.items():
+                diff, etag_from, etag_to = GameState.serialize_diff_with_etag_for(
+                    from_=result.old_game_state,
+                    to=result.new_game_state,
+                    user_id=player_id,
+                )
+                coroutines.append(conn.qrws.send_message(GameStateDiffMessage(
+                    recipient_id=player_id,
+                    game_state_diff=diff,
+                    etag_from=etag_from,
+                    etag_to=etag_to,
+                )))
+            await asyncio.gather(*coroutines)
+
+        await self.repository.synchronize_transaction_on_commit(
+            on_commit(self, action_result))
 
     async def kick(self):
         await self.qrws.send_message(KickMessage(

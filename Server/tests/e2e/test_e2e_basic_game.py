@@ -71,7 +71,7 @@ class E2eBasicGameTest(
                 tiles = msg0['d']['game_state']['board']['tiles']
                 await self.ws_move(ws0, next(iter(pieces.keys())), next(iter(tiles.keys())))
                 move_result_msg = await ws0.receive_json()
-                self.assertEqual(QrwsOpcode.MOVE_RESULT, move_result_msg['op'])
+                self.assertEqual(QrwsOpcode.ACTION_RESULT, move_result_msg['op'])
                 self.assertTrue(move_result_msg['d']['is_legal'])
 
                 diff_msg = await ws0.receive_json()

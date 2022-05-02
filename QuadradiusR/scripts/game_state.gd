@@ -52,6 +52,8 @@ func _apply_diff(original: Dictionary, diff: Dictionary):
 			for del_key in diff[key]:
 				original.erase(del_key)
 		elif typeof(diff[key]) == TYPE_DICTIONARY:
+			if not original.has(key):
+				original[key] = {}
 			_apply_diff(original[key], diff[key])
 		else:
 			original[key] = diff[key]

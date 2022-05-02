@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /QuadradiusR
 COPY ./QuadradiusR .
 
-RUN make html5
+RUN make RELEASE=true html5
 
 
 FROM python:3.10 AS server-builder

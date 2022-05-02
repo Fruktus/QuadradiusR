@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/generic_button.gd" type="Script" id=1]
-[ext_resource path="res://original_assets/game/sprites/DefineSprite_1139/7.png" type="Texture" id=2]
-[ext_resource path="res://original_assets/game/sprites/DefineSprite_1139/11.png" type="Texture" id=3]
-[ext_resource path="res://original_assets/game/sprites/DefineSprite_1139/1.png" type="Texture" id=4]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_1139/7_optimized.png" type="Texture" id=2]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_1139/11_optimized.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_1139/1_optimized.png" type="Texture" id=4]
 [ext_resource path="res://original_assets/lobby/sounds/95_keyboard_01.wav" type="AudioStream" id=7]
 
 [sub_resource type="Animation" id=1]
@@ -153,13 +153,16 @@ stream = ExtResource( 7 )
 
 [node name="ClickedSprite" type="Sprite" parent="."]
 visible = false
+scale = Vector2( 3, 3 )
 texture = ExtResource( 3 )
 
 [node name="HoverSprite" type="Sprite" parent="."]
 visible = false
+scale = Vector2( 3, 3 )
 texture = ExtResource( 2 )
 
 [node name="IdleSprite" type="Sprite" parent="."]
+scale = Vector2( 3, 3 )
 texture = ExtResource( 4 )
 
 [node name="Button" type="Button" parent="."]
@@ -168,9 +171,6 @@ margin_left = -911.0
 margin_top = -256.0
 margin_right = 917.0
 margin_bottom = 205.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [connection signal="button_down" from="Button" to="." method="_on_button_down"]
 [connection signal="button_up" from="Button" to="." method="_on_button_up"]

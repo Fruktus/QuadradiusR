@@ -183,10 +183,11 @@ class BasicConnection(ABC):
         ns = self.notification_service
 
         if isinstance(message, SubscribeMessage):
+            user_id = user.id_
             topic = message.topic
-            ns.register_handler(user.id_, topic, self._sub_handler)
+            ns.register_handler(user_id, topic, self._sub_handler)
             self.add_close_handler(
-                lambda: ns.unregister_handler(user.id_, topic, self._sub_handler))
+                lambda: ns.unregister_handler(user_id, topic, self._sub_handler))
             await qrws.send_message(SubscribedMessage())
             return True
         else:

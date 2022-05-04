@@ -129,7 +129,7 @@ script = ExtResource( 4 )
 anims/DestroyOpponent = SubResource( 3 )
 anims/RESET = SubResource( 4 )
 
-[node name="SFXGroup" type="Node" parent="."]
+[node name="SFXGroup" type="Node2D" parent="."]
 
 [node name="PickupSFX2D" type="AudioStreamPlayer2D" parent="SFXGroup"]
 position = Vector2( 200, 200 )

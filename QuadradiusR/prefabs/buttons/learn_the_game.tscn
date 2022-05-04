@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/generic_button.gd" type="Script" id=1]
-[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_487/1.png" type="Texture" id=2]
-[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_487/2.png" type="Texture" id=3]
-[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_487/3.png" type="Texture" id=4]
+[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_487/3_optimized.png" type="Texture" id=2]
+[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_487/2_optimized.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_487/1_optimized.png" type="Texture" id=4]
 [ext_resource path="res://original_assets/lobby/sounds/95_keyboard_01.wav" type="AudioStream" id=7]
 
 [sub_resource type="Animation" id=1]
@@ -154,14 +154,17 @@ stream = ExtResource( 7 )
 
 [node name="ClickedSprite" type="Sprite" parent="."]
 visible = false
-texture = ExtResource( 4 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 2 )
 
 [node name="HoverSprite" type="Sprite" parent="."]
 visible = false
+scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 
 [node name="IdleSprite" type="Sprite" parent="."]
-texture = ExtResource( 2 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 4 )
 
 [node name="Button" type="Button" parent="."]
 self_modulate = Color( 1, 1, 1, 0 )

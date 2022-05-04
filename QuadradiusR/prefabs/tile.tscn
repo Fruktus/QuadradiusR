@@ -1,6 +1,6 @@
 [gd_scene load_steps=21 format=2]
 
-[ext_resource path="res://original_assets/game/shapes/246.png" type="Texture" id=1]
+[ext_resource path="res://original_assets/game/shapes/246_optimized.png" type="Texture" id=1]
 [ext_resource path="res://scripts/tile.gd" type="Script" id=2]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/2.png" type="Texture" id=3]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/4.png" type="Texture" id=4]
@@ -109,6 +109,7 @@ frames = SubResource( 5 )
 
 [node name="TileBase" type="Sprite" parent="TileContent"]
 show_behind_parent = true
+scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 1 )
 centered = false
 

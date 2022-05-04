@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/toggle_button.gd" type="Script" id=1]
-[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_504/1.png" type="Texture" id=2]
-[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_504/2.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_504/2_optimized.png" type="Texture" id=2]
+[ext_resource path="res://original_assets/lobby/sprites/DefineSprite_504/1_optimized.png" type="Texture" id=3]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Depressed"
@@ -67,11 +67,13 @@ anims/Depressed = SubResource( 1 )
 anims/Pressed = SubResource( 2 )
 
 [node name="PressedSprite" type="Sprite" parent="."]
-visible = false
-texture = ExtResource( 3 )
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 2 )
 
 [node name="DepressedSprite" type="Sprite" parent="."]
-texture = ExtResource( 2 )
+visible = false
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 3 )
 
 [node name="Button" type="Button" parent="."]
 self_modulate = Color( 1, 1, 1, 0 )
@@ -80,8 +82,5 @@ margin_top = -89.0
 margin_right = 61.0
 margin_bottom = 79.0
 toggle_mode = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [connection signal="toggled" from="Button" to="." method="_on_toggled"]

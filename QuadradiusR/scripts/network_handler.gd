@@ -13,6 +13,10 @@ var url = "http://127.0.0.1:8888"
 var token: String
 
 func _ready():
+	if OS.has_feature('JavaScript'):
+		url = JavaScript.eval('window.location.href')
+		if not url.ends_with('/'):
+			url = url.rsplit('/', true, 1)[0]
 	rest_api.url = url
 	# use_threads=true does not work for HTML5
 	rest_api.use_threads = false

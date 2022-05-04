@@ -20,15 +20,23 @@ func _on_login(is_guest, remember_pw, username, password):
 
 
 func _cb_login_done(is_authorized, user_data, message: Message):
-	print('login done ', is_authorized, ' ', user_data)
+	print('Login done is_authorized=', is_authorized, ' user_data=', user_data)
 	NetworkHandler.rest_api.get_user_me(NetworkHandler.token, funcref(self, "_dbg_print"))  # DEBUG
 	if is_authorized:
 		_join_lobby()
 	else:
-		print('failed to authorize: ', message['result'])
-		print('AUTO-REGISTERING USER')  # DEBUG
+		print('Failed to authorize: ', message['result'])
+		print('Auto-registering user')
 		NetworkHandler.create_user(user_data['username'], user_data['password'], null, {})  # DEBUG
-		NetworkHandler.authorize_user(user_data['username'], user_data['password'], funcref(self, "_cb_login_done"), user_data)  # DEBUG
+		NetworkHandler.authorize_user(user_data['username'], user_data['password'], funcref(self, "_cb_second_login_done"), user_data)  # DEBUG
+
+
+func _cb_second_login_done(is_authorized, user_data, message: Message):
+	if is_authorized:
+		_cb_login_done(true, user_data, message)
+	else:
+		print('Failed to auto register: ', message['result'])
+
 
 
 

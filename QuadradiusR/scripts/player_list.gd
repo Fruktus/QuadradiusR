@@ -13,13 +13,20 @@ const player_template = preload("res://prefabs/player_list_row.tscn")
 var uuid_to_active_invites = {}  # uuid -> game invite
 
 
-func receive_challenge(uuid: String):
+func get_player_by_id(id: String):
 	for child in player_vbox.get_children():
-		if child.uuid == uuid:
-			child.receive_challenge()
+		if child.uuid == id:
+			return child
+	return null
+
+
+func receive_challenge(uuid: String):
+	get_player_by_id(uuid).receive_challenge()
 
 
 func add_player(username: String, uuid: String, is_current=false):
+	if get_player_by_id(uuid) != null:
+		return
 	var new_player = player_template.instance().init(username, uuid, is_current)
 
 	new_player.connect("player_hover_start", self, "_on_hover_start")

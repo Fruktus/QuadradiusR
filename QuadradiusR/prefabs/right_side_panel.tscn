@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/1.png" type="Texture" id=1]
-[ext_resource path="res://resources/fonts/72_DotMatrix.tres" type="DynamicFont" id=2]
+[ext_resource path="res://resources/fonts/72_DotMatrix_size28.tres" type="DynamicFont" id=2]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_415_Decoration1/1.png" type="Texture" id=3]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_399_RightSidePanel/1.png" type="Texture" id=4]
 
@@ -33,9 +33,6 @@ rect_min_size = Vector2( 505.41, 1056.38 )
 rect_pivot_offset = Vector2( -338, 203 )
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="RightSidePanelPlaceholder" type="TextureRect" parent="."]
 margin_right = 505.41
@@ -60,9 +57,6 @@ theme = SubResource( 4 )
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "User1"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="User2Input" type="Label" parent="Control"]
 margin_left = 183.0

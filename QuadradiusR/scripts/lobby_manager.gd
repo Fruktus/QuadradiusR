@@ -9,8 +9,7 @@ const MATCH_SETTINGS_SCENE = preload("res://scenes/match_settings.tscn")
 func _ready():
 	if not Context.lobby_data['players'].empty():
 		for player in Context.lobby_data['players']:
-			player_list.add_player(player['username'], player['id'], false)
-	player_list.add_player(Context.username, "", true)  # TODO add uuid properly
+			player_list.add_player(player['username'], player['id'], player['id'] == Context.user_id)
 
 
 func _on_challenge_accepted(game_invite_id: String, opponent_id: String):

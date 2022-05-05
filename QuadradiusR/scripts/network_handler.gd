@@ -92,6 +92,12 @@ func _join_lobby_1(message: Message, args: Dictionary):
 		var test = "ws://127.0.0.1:8888/lobby/@main/connect"
 		ws_api.connect_to(test, token)
 
+	rest_api.get_lobby(token, funcref(self, "_join_lobby_2"), args)
+
+func _join_lobby_2(message: Message, args: Dictionary):
+	if message.result == 200:
+		Context.lobby_data = message.body
+
 	args['cb'].call_func()
 
 

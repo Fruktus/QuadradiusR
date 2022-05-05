@@ -1,0 +1,7 @@
+Game
+====
+
+.. toctree::
+   :glob:
+
+   game/*

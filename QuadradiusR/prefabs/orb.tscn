@@ -1,0 +1,312 @@
+[gd_scene load_steps=233 format=2]
+
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/73.png" type="Texture" id=1]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/76.png" type="Texture" id=2]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/75.png" type="Texture" id=3]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/74.png" type="Texture" id=4]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/63.png" type="Texture" id=5]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/15.png" type="Texture" id=6]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/61.png" type="Texture" id=7]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/59.png" type="Texture" id=8]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/102.png" type="Texture" id=9]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/43.png" type="Texture" id=10]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/49.png" type="Texture" id=11]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/24.png" type="Texture" id=12]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/18.png" type="Texture" id=13]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/11.png" type="Texture" id=14]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/40.png" type="Texture" id=15]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/12.png" type="Texture" id=16]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/2.png" type="Texture" id=17]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/50.png" type="Texture" id=18]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/4.png" type="Texture" id=19]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/16.png" type="Texture" id=20]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/192.png" type="Texture" id=21]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/193.png" type="Texture" id=22]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/79.png" type="Texture" id=23]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/5.png" type="Texture" id=24]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/7.png" type="Texture" id=25]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/53.png" type="Texture" id=26]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/20.png" type="Texture" id=27]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/71.png" type="Texture" id=28]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/28.png" type="Texture" id=29]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/10.png" type="Texture" id=30]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/36.png" type="Texture" id=31]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/30.png" type="Texture" id=32]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/9.png" type="Texture" id=33]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/47.png" type="Texture" id=34]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/14.png" type="Texture" id=35]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/115.png" type="Texture" id=36]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/220.png" type="Texture" id=37]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/221.png" type="Texture" id=38]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/222.png" type="Texture" id=39]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/56.png" type="Texture" id=40]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/64.png" type="Texture" id=41]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/3.png" type="Texture" id=42]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/6.png" type="Texture" id=43]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/72.png" type="Texture" id=44]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/110.png" type="Texture" id=45]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/176.png" type="Texture" id=46]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/177.png" type="Texture" id=47]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/178.png" type="Texture" id=48]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/52.png" type="Texture" id=49]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/168.png" type="Texture" id=50]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/167.png" type="Texture" id=51]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/35.png" type="Texture" id=52]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/19.png" type="Texture" id=53]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/39.png" type="Texture" id=54]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/117.png" type="Texture" id=55]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/187.png" type="Texture" id=56]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/179.png" type="Texture" id=57]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/84.png" type="Texture" id=58]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/114.png" type="Texture" id=59]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/213.png" type="Texture" id=60]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/212.png" type="Texture" id=61]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/211.png" type="Texture" id=62]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/206.png" type="Texture" id=63]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/210.png" type="Texture" id=64]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/99.png" type="Texture" id=65]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/132.png" type="Texture" id=66]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/205.png" type="Texture" id=67]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/204.png" type="Texture" id=68]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/87.png" type="Texture" id=69]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/155.png" type="Texture" id=70]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/157.png" type="Texture" id=71]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/96.png" type="Texture" id=72]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/124.png" type="Texture" id=73]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/125.png" type="Texture" id=74]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/44.png" type="Texture" id=75]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/85.png" type="Texture" id=76]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/183.png" type="Texture" id=77]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/92.png" type="Texture" id=78]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/93.png" type="Texture" id=79]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/118.png" type="Texture" id=80]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/23.png" type="Texture" id=81]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/58.png" type="Texture" id=82]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/29.png" type="Texture" id=83]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/70.png" type="Texture" id=84]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/45.png" type="Texture" id=85]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/86.png" type="Texture" id=86]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/163.png" type="Texture" id=87]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/165.png" type="Texture" id=88]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/55.png" type="Texture" id=89]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/100.png" type="Texture" id=90]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/22.png" type="Texture" id=91]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/108.png" type="Texture" id=92]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/143.png" type="Texture" id=93]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/144.png" type="Texture" id=94]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/148.png" type="Texture" id=95]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/149.png" type="Texture" id=96]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/227.png" type="Texture" id=97]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/122.png" type="Texture" id=98]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/164.png" type="Texture" id=99]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/97.png" type="Texture" id=100]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/105.png" type="Texture" id=101]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/57.png" type="Texture" id=102]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/116.png" type="Texture" id=103]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/123.png" type="Texture" id=104]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/171.png" type="Texture" id=105]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/172.png" type="Texture" id=106]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/150.png" type="Texture" id=107]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/225.png" type="Texture" id=108]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/226.png" type="Texture" id=109]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/169.png" type="Texture" id=110]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/170.png" type="Texture" id=111]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/175.png" type="Texture" id=112]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/166.png" type="Texture" id=113]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/133.png" type="Texture" id=114]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/131.png" type="Texture" id=115]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/223.png" type="Texture" id=116]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/224.png" type="Texture" id=117]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/41.png" type="Texture" id=118]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/101.png" type="Texture" id=119]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/68.png" type="Texture" id=120]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/54.png" type="Texture" id=121]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/104.png" type="Texture" id=122]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/139.png" type="Texture" id=123]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/137.png" type="Texture" id=124]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/180.png" type="Texture" id=125]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/182.png" type="Texture" id=126]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/181.png" type="Texture" id=127]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/25.png" type="Texture" id=128]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/141.png" type="Texture" id=129]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/142.png" type="Texture" id=130]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/188.png" type="Texture" id=131]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/189.png" type="Texture" id=132]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/62.png" type="Texture" id=133]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/219.png" type="Texture" id=134]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/218.png" type="Texture" id=135]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/217.png" type="Texture" id=136]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/140.png" type="Texture" id=137]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/138.png" type="Texture" id=138]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/103.png" type="Texture" id=139]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/98.png" type="Texture" id=140]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/34.png" type="Texture" id=141]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/67.png" type="Texture" id=142]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/106.png" type="Texture" id=143]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/160.png" type="Texture" id=144]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/190.png" type="Texture" id=145]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/191.png" type="Texture" id=146]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/119.png" type="Texture" id=147]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/120.png" type="Texture" id=148]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/113.png" type="Texture" id=149]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/60.png" type="Texture" id=150]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/184.png" type="Texture" id=151]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/185.png" type="Texture" id=152]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/186.png" type="Texture" id=153]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/82.png" type="Texture" id=154]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/112.png" type="Texture" id=155]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/27.png" type="Texture" id=156]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/95.png" type="Texture" id=157]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/13.png" type="Texture" id=158]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/42.png" type="Texture" id=159]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/153.png" type="Texture" id=160]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/77.png" type="Texture" id=161]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/90.png" type="Texture" id=162]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/201.png" type="Texture" id=163]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/202.png" type="Texture" id=164]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/203.png" type="Texture" id=165]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/80.png" type="Texture" id=166]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/81.png" type="Texture" id=167]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/78.png" type="Texture" id=168]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/94.png" type="Texture" id=169]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/48.png" type="Texture" id=170]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/146.png" type="Texture" id=171]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/145.png" type="Texture" id=172]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/128.png" type="Texture" id=173]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/129.png" type="Texture" id=174]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/109.png" type="Texture" id=175]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/32.png" type="Texture" id=176]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/194.png" type="Texture" id=177]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/195.png" type="Texture" id=178]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/127.png" type="Texture" id=179]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/65.png" type="Texture" id=180]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/88.png" type="Texture" id=181]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/126.png" type="Texture" id=182]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/121.png" type="Texture" id=183]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/26.png" type="Texture" id=184]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/46.png" type="Texture" id=185]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/107.png" type="Texture" id=186]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/89.png" type="Texture" id=187]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/51.png" type="Texture" id=188]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/111.png" type="Texture" id=189]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/83.png" type="Texture" id=190]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/147.png" type="Texture" id=191]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/21.png" type="Texture" id=192]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/162.png" type="Texture" id=193]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/161.png" type="Texture" id=194]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/134.png" type="Texture" id=195]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/135.png" type="Texture" id=196]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/136.png" type="Texture" id=197]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/156.png" type="Texture" id=198]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/154.png" type="Texture" id=199]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/33.png" type="Texture" id=200]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/31.png" type="Texture" id=201]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/38.png" type="Texture" id=202]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/37.png" type="Texture" id=203]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/69.png" type="Texture" id=204]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/159.png" type="Texture" id=205]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/158.png" type="Texture" id=206]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/214.png" type="Texture" id=207]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/215.png" type="Texture" id=208]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/216.png" type="Texture" id=209]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/174.png" type="Texture" id=210]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/173.png" type="Texture" id=211]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/209.png" type="Texture" id=212]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/208.png" type="Texture" id=213]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/207.png" type="Texture" id=214]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/17.png" type="Texture" id=215]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/8.png" type="Texture" id=216]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/151.png" type="Texture" id=217]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/152.png" type="Texture" id=218]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/91.png" type="Texture" id=219]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/196.png" type="Texture" id=220]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/197.png" type="Texture" id=221]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/198.png" type="Texture" id=222]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/199.png" type="Texture" id=223]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/200.png" type="Texture" id=224]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/66.png" type="Texture" id=225]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/130.png" type="Texture" id=226]
+[ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/1.png" type="Texture" id=227]
+
+[sub_resource type="Animation" id=1]
+resource_name = "OrbAppear"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedOrb:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0, 74 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "OrbDestroy"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedOrb:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 175, 226 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "OrbRehash"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedOrb:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 75, 174 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedOrb:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="SpriteFrames" id=5]
+animations = [ {
+"frames": [ ExtResource( 227 ), ExtResource( 17 ), ExtResource( 42 ), ExtResource( 19 ), ExtResource( 24 ), ExtResource( 43 ), ExtResource( 25 ), ExtResource( 216 ), ExtResource( 33 ), ExtResource( 30 ), ExtResource( 14 ), ExtResource( 16 ), ExtResource( 158 ), ExtResource( 35 ), ExtResource( 6 ), ExtResource( 20 ), ExtResource( 215 ), ExtResource( 13 ), ExtResource( 53 ), ExtResource( 27 ), ExtResource( 192 ), ExtResource( 91 ), ExtResource( 81 ), ExtResource( 12 ), ExtResource( 128 ), ExtResource( 184 ), ExtResource( 156 ), ExtResource( 29 ), ExtResource( 83 ), ExtResource( 32 ), ExtResource( 201 ), ExtResource( 176 ), ExtResource( 200 ), ExtResource( 141 ), ExtResource( 52 ), ExtResource( 31 ), ExtResource( 203 ), ExtResource( 202 ), ExtResource( 54 ), ExtResource( 15 ), ExtResource( 118 ), ExtResource( 159 ), ExtResource( 10 ), ExtResource( 75 ), ExtResource( 85 ), ExtResource( 185 ), ExtResource( 34 ), ExtResource( 170 ), ExtResource( 11 ), ExtResource( 18 ), ExtResource( 188 ), ExtResource( 49 ), ExtResource( 26 ), ExtResource( 121 ), ExtResource( 89 ), ExtResource( 40 ), ExtResource( 102 ), ExtResource( 82 ), ExtResource( 8 ), ExtResource( 150 ), ExtResource( 7 ), ExtResource( 133 ), ExtResource( 5 ), ExtResource( 41 ), ExtResource( 180 ), ExtResource( 225 ), ExtResource( 142 ), ExtResource( 120 ), ExtResource( 204 ), ExtResource( 84 ), ExtResource( 28 ), ExtResource( 44 ), ExtResource( 1 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ), ExtResource( 161 ), ExtResource( 168 ), ExtResource( 23 ), ExtResource( 166 ), ExtResource( 167 ), ExtResource( 154 ), ExtResource( 190 ), ExtResource( 58 ), ExtResource( 76 ), ExtResource( 86 ), ExtResource( 69 ), ExtResource( 181 ), ExtResource( 187 ), ExtResource( 162 ), ExtResource( 219 ), ExtResource( 78 ), ExtResource( 79 ), ExtResource( 169 ), ExtResource( 157 ), ExtResource( 72 ), ExtResource( 100 ), ExtResource( 140 ), ExtResource( 65 ), ExtResource( 90 ), ExtResource( 119 ), ExtResource( 9 ), ExtResource( 139 ), ExtResource( 122 ), ExtResource( 101 ), ExtResource( 143 ), ExtResource( 186 ), ExtResource( 92 ), ExtResource( 175 ), ExtResource( 45 ), ExtResource( 189 ), ExtResource( 155 ), ExtResource( 149 ), ExtResource( 59 ), ExtResource( 36 ), ExtResource( 103 ), ExtResource( 55 ), ExtResource( 80 ), ExtResource( 147 ), ExtResource( 148 ), ExtResource( 183 ), ExtResource( 98 ), ExtResource( 104 ), ExtResource( 73 ), ExtResource( 74 ), ExtResource( 182 ), ExtResource( 179 ), ExtResource( 173 ), ExtResource( 174 ), ExtResource( 226 ), ExtResource( 115 ), ExtResource( 66 ), ExtResource( 114 ), ExtResource( 195 ), ExtResource( 196 ), ExtResource( 197 ), ExtResource( 124 ), ExtResource( 138 ), ExtResource( 123 ), ExtResource( 137 ), ExtResource( 129 ), ExtResource( 130 ), ExtResource( 93 ), ExtResource( 94 ), ExtResource( 172 ), ExtResource( 171 ), ExtResource( 191 ), ExtResource( 95 ), ExtResource( 96 ), ExtResource( 107 ), ExtResource( 217 ), ExtResource( 218 ), ExtResource( 160 ), ExtResource( 199 ), ExtResource( 70 ), ExtResource( 198 ), ExtResource( 71 ), ExtResource( 206 ), ExtResource( 205 ), ExtResource( 144 ), ExtResource( 194 ), ExtResource( 193 ), ExtResource( 87 ), ExtResource( 99 ), ExtResource( 88 ), ExtResource( 113 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 110 ), ExtResource( 111 ), ExtResource( 105 ), ExtResource( 106 ), ExtResource( 211 ), ExtResource( 210 ), ExtResource( 112 ), ExtResource( 46 ), ExtResource( 47 ), ExtResource( 48 ), ExtResource( 57 ), ExtResource( 125 ), ExtResource( 127 ), ExtResource( 126 ), ExtResource( 77 ), ExtResource( 151 ), ExtResource( 152 ), ExtResource( 153 ), ExtResource( 56 ), ExtResource( 131 ), ExtResource( 132 ), ExtResource( 145 ), ExtResource( 146 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 177 ), ExtResource( 178 ), ExtResource( 220 ), ExtResource( 221 ), ExtResource( 222 ), ExtResource( 223 ), ExtResource( 224 ), ExtResource( 163 ), ExtResource( 164 ), ExtResource( 165 ), ExtResource( 68 ), ExtResource( 67 ), ExtResource( 63 ), ExtResource( 214 ), ExtResource( 213 ), ExtResource( 212 ), ExtResource( 64 ), ExtResource( 62 ), ExtResource( 61 ), ExtResource( 60 ), ExtResource( 207 ), ExtResource( 208 ), ExtResource( 209 ), ExtResource( 136 ), ExtResource( 135 ), ExtResource( 134 ), ExtResource( 37 ), ExtResource( 38 ), ExtResource( 39 ), ExtResource( 116 ), ExtResource( 117 ), ExtResource( 108 ), ExtResource( 109 ), ExtResource( 97 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Orb" type="Node2D"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/OrbAppear = SubResource( 1 )
+anims/OrbDestroy = SubResource( 2 )
+anims/OrbRehash = SubResource( 3 )
+anims/RESET = SubResource( 4 )
+
+[node name="AnimatedOrb" type="AnimatedSprite" parent="."]
+frames = SubResource( 5 )

@@ -6,6 +6,7 @@ onready var slot = $TileContent/TorusSlot
 onready var dirt_a = $TileContent/DirtA
 onready var dirt_b = $TileContent/DirtB
 onready var anim = $AnimationPlayer
+onready var orb = $Orb
 
 const square_dirts_asset_path = "res://original_assets/game/sprites/{dirt}/1.png"
 const square_dirts = {0: "DefineSprite_283_SquareDirt1",

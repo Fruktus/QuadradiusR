@@ -2,13 +2,11 @@ import base64
 import hashlib
 import os
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 
-import jwt
-
 from quadradiusr_server.config import AuthConfig
-from quadradiusr_server.db.base import User
+from quadradiusr_server.db.base import User, AccessToken
 from quadradiusr_server.db.repository import Repository
 
 
@@ -16,8 +14,6 @@ class Auth:
     def __init__(self, config: AuthConfig, repository: Repository) -> None:
         self.config = config
         self.repository = repository
-        self.__secret = str(uuid.uuid4())
-        self.__algorithm = 'HS256'
 
     async def login(self, username: str, password: bytes) -> Optional[User]:
         user_repository = self.repository.user_repository
@@ -30,35 +26,43 @@ class Auth:
         else:
             return None
 
-    def issue_token(self, user: User) -> str:
+    async def issue_token(self, user: User) -> str:
+        repo = self.repository.access_token_repository
         now = datetime.now(tz=timezone.utc)
-        exp = now + timedelta(seconds=self.config.token_exp)
-        token_data = {
-            'exp': exp,
-            'iat': now,
-            'nbf': now,
-            'usr': {
-                'id': user.id_,
-            },
-        }
-        return jwt.encode(
-            token_data,
-            self.__secret,
-            algorithm=self.__algorithm,
+        token = AccessToken(
+            id_=str(uuid.uuid4()),
+            user_=user,
+            token_=self._random_token(),
+            created_at_=now,
+            accessed_at_=now,
         )
+        await repo.add(token)
+        return token.token_
 
-    def authenticate(self, token: str) -> Optional[str]:
-        try:
-            decoded = jwt.decode(
-                token,
-                self.__secret,
-                algorithms=[self.__algorithm],
-                leeway=self.config.token_leeway,
-                options={'require': ['exp', 'iat', 'nbf', 'usr']},
-            )
-            return decoded['usr'].get('id')
-        except jwt.InvalidTokenError:
+    def _random_token(self):
+        return str(uuid.uuid4())
+
+    async def authenticate(self, token: str) -> Optional[User]:
+        repo = self.repository.access_token_repository
+        access_token: AccessToken = await repo.get(
+            token,
+            created_later_than=self._get_token_created_later_than(),
+            accessed_later_than=self._get_token_accessed_later_than(),
+        )
+        if access_token:
+            return access_token.user_
+
+    def _get_token_created_later_than(self):
+        if self.config.token_exp <= 0:
             return None
+        exp_delta = timedelta(seconds=self.config.token_exp)
+        return datetime.now(tz=timezone.utc) - exp_delta
+
+    def _get_token_accessed_later_than(self):
+        if self.config.token_access_exp <= 0:
+            return None
+        access_exp_delta = timedelta(seconds=self.config.token_access_exp)
+        return datetime.now(tz=timezone.utc) - access_exp_delta
 
     def __scrypt(self, password, salt):
         return hashlib.scrypt(

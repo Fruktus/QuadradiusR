@@ -26,7 +26,7 @@ class AuthorizeView(web.View):
         if user is None:
             return web.Response(status=401)
 
-        token = auth.issue_token(user)
+        token = await auth.issue_token(user)
         return web.json_response({
             'token': token,
         })

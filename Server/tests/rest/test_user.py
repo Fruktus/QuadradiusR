@@ -30,7 +30,7 @@ class TestUser(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             )
 
             await self.server.repository.user_repository.add(user)
-            token = self.server.auth.issue_token(user)
+            token = await self.server.auth.issue_token(user)
 
         async with aiohttp.ClientSession() as session:
             async with session.get(
@@ -58,7 +58,7 @@ class TestUser(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
 
             async with transaction_context(self.server.database):
                 user = await self.server.repository.user_repository.get_by_id(user_id)
-                token = self.server.auth.issue_token(user)
+                token = await self.server.auth.issue_token(user)
 
             async with session.get(self.server_url(loc), headers={
                 'authorization': token,

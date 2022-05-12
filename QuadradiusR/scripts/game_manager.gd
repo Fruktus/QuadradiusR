@@ -2,7 +2,7 @@ extends Control
 
 
 onready var board = $MarginContainer/ScreenHBox/GameBoardPanel/VBoxContainer/BoardMiddle/GameBoardPlaceholder/Board
-
+onready var right_panel = $MarginContainer/ScreenHBox/RightSidePanel
 
 func _ready():
 	get_tree().call_group("torus", "set_interaction", Context.is_my_turn())

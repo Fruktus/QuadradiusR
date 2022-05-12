@@ -138,6 +138,7 @@ func join_game(game_id: String, cb: FuncRef):
 func _join_game_1(message: Message, args: Dictionary):
 	# After get_game
 	if message.result == 200:
+		Context.game_data = message.body
 		ws_api.close("Moving from lobby to game")
 		ws_api.connect_to(message.body["ws_url"], self.token)
 		rest_api.get_game_state(self.token, message.body['id'], funcref(self, "_join_game_2"), args)

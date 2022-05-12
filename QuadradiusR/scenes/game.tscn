@@ -14,9 +14,6 @@
 [node name="Game" type="Control" groups=["ws_game"]]
 mouse_filter = 2
 script = ExtResource( 8 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 margin_right = 1920.0

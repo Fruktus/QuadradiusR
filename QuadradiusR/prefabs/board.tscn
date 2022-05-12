@@ -13,9 +13,6 @@ rect_scale = Vector2( 0.2, 0.2 )
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="BoardContainer" type="GridContainer" parent="."]
 margin_right = 6115.0

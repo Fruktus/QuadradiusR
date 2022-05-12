@@ -26,12 +26,8 @@ class LiveLobby:
         return [conn.user_id for conn in self._players.values()]
 
     async def get_players(self) -> List[User]:
-        # TODO bulk query
-        players = []
-        for player_id in self.player_ids:
-            player = await self.repository.user_repository.get_by_id(player_id)
-            players.append(player)
-        return players
+        user_repo = self.repository.user_repository
+        return await user_repo.get_by_ids(self.player_ids)
 
     async def join(self, lobby_conn: 'LobbyConnection'):
         user_repo = self.repository.user_repository

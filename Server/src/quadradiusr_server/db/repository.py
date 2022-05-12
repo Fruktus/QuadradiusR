@@ -2,6 +2,7 @@ from typing import Coroutine, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from quadradiusr_server.db.access_token_repository import AccessTokenRepository
 from quadradiusr_server.db.database_engine import DatabaseEngine
 from quadradiusr_server.db.game_invite_repository import GameInviteRepository
 from quadradiusr_server.db.game_repository import GameRepository
@@ -17,6 +18,7 @@ class Repository:
         self._game_invite_repository = GameInviteRepository(database)
         self._game_repository = GameRepository(database)
         self._lobby_repository = LobbyRepository(database)
+        self._access_token_repository = AccessTokenRepository(database)
 
     @property
     def database(self) -> DatabaseEngine:
@@ -37,6 +39,10 @@ class Repository:
     @property
     def lobby_repository(self) -> LobbyRepository:
         return self._lobby_repository
+
+    @property
+    def access_token_repository(self) -> AccessTokenRepository:
+        return self._access_token_repository
 
     @transactional
     async def add(self, *args, db_session: AsyncSession):

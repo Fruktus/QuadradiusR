@@ -47,13 +47,12 @@ class QrwsConnection:
                 close_code=QrwsCloseCode.UNAUTHORIZED)
             raise HTTPUnauthorized()
 
-        user_id = auth.authenticate(identify_msg.token)
-        if user_id is None:
+        user = await auth.authenticate(identify_msg.token)
+        if user is None:
             await self.send_error(
                 'Auth failed',
                 close_code=QrwsCloseCode.UNAUTHORIZED)
             raise HTTPUnauthorized()
-        user = await repository.user_repository.get_by_id(user_id)
 
         return user
 

@@ -166,3 +166,28 @@ class LobbyMessage(Base):
             f'content_={self.content_!r}' \
             f'created_at_={self.created_at_!r}' \
             f')'
+
+
+class AccessToken(Base):
+    __tablename__ = 'access_token'
+    id_ = Column(String, nullable=False, primary_key=True)
+    user_id_ = Column(String, ForeignKey('user.id_'), nullable=False)
+    token_ = Column(String, nullable=False)
+    created_at_ = Column(DateTimeUTC, nullable=False)
+    accessed_at_ = Column(DateTimeUTC, nullable=False)
+
+    user_ = relationship(
+        'User',
+        lazy='joined',
+        cascade='expunge',
+        foreign_keys=[user_id_])
+
+    def __repr__(self):
+        return \
+            f'{type(self).__name__}(' \
+            f'id_={self.id_!r}, ' \
+            f'user_id_={self.user_id_!r}' \
+            f'token_id_={self.token_!r}' \
+            f'created_at_={self.created_at_!r}' \
+            f'accessed_at_={self.accessed_at_!r}' \
+            f')'

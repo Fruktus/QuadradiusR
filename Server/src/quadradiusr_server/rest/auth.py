@@ -10,10 +10,7 @@ async def require_authorization(request) -> User:
     token = request.headers.get('authorization') \
         if 'authorization' in request.headers else None
 
-    user_id = server.auth.authenticate(token)
-    if not user_id:
-        raise HTTPUnauthorized()
-    user = await server.repository.user_repository.get_by_id(user_id)
+    user = await server.auth.authenticate(token)
     if not user:
         raise HTTPUnauthorized()
     return user

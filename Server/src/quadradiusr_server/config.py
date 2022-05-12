@@ -13,8 +13,8 @@ from quadradiusr_server.utils import import_class
 
 @dataclass
 class AuthConfig:
-    token_exp: int = 60
-    token_leeway: int = 10
+    token_exp: int = 0
+    token_access_exp: int = 7 * 24 * 60 * 60
     scrypt_n: int = 16 * 1024
     scrypt_r: int = 8
     scrypt_p: int = 1

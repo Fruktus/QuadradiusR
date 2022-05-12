@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,3 +32,12 @@ class UserRepository:
             self, id_: str,
             *, db_session: AsyncSession) -> Optional[User]:
         return await db_session.get(User, id_)
+
+    @transactional
+    async def get_by_ids(
+            self, ids: List[str],
+            *, db_session: AsyncSession) -> List[User]:
+        result = await db_session.execute(
+            select(User).where(User.id_.in_(ids)))
+        users = result.all()
+        return [user.User for user in users]

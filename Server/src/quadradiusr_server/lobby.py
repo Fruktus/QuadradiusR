@@ -1,4 +1,5 @@
 import datetime
+import logging
 import uuid
 from typing import Dict, List
 
@@ -55,6 +56,7 @@ class LiveLobby:
                     },
                 },
             ))
+        logging.info(f'User {user.friendly_name} joined lobby {lobby_conn.lobby.lobby_id}')
 
     async def leave(self, lobby_conn: 'LobbyConnection'):
         user_id = lobby_conn.user_id
@@ -71,6 +73,7 @@ class LiveLobby:
                     'user_id': user_id,
                 },
             ))
+        logging.info(f'User {user_id} left lobby {lobby_conn.lobby.lobby_id}')
 
     async def send_message(self, user: User, content: str):
         lobby_repo = self.repository.lobby_repository
@@ -93,6 +96,7 @@ class LiveLobby:
                     'message': lobby_message_to_json(lobby_message),
                 },
             ))
+        logging.info(f'Message by {user.friendly_name} in {lobby.id_}: {content}')
 
     def joined(self, user: User):
         return user.id_ in self._players.keys()

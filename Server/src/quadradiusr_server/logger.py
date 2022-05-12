@@ -32,31 +32,24 @@ def configure_logger(verbosity: int):
                 'level': 'DEBUG',
             },
             'aiohttp.access': {
-                'handlers': ['default'],
                 'level': 'DEBUG',
             },
             'aiosqlite': {
-                'handlers': ['default'],
                 'level': 'DEBUG' if verbosity > 1 else 'INFO',
             },
             'aiohttp.client': {
-                'handlers': ['default'],
                 'level': 'DEBUG',
             },
             'aiohttp.internal': {
-                'handlers': ['default'],
                 'level': 'DEBUG',
             },
             'aiohttp.server': {
-                'handlers': ['default'],
                 'level': 'DEBUG',
             },
             'aiohttp.web': {
-                'handlers': ['default'],
                 'level': 'DEBUG',
             },
             'aiohttp.websocket': {
-                'handlers': ['default'],
                 'level': 'DEBUG',
             },
         },

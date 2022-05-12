@@ -37,7 +37,7 @@ class UsersView(web.View):
             password_=auth.hash_password(password.encode('utf-8')),
         )
         await repository.user_repository.add(user)
-        logging.info(f'New user created: {user.username_} ({user.id_})')
+        logging.info(f'New user created: {user.friendly_name}')
 
         return web.Response(status=201, headers={
             'location': f'/user/{user.id_}',

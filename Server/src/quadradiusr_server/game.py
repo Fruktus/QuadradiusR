@@ -1,5 +1,6 @@
 import asyncio
 import copy
+import logging
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -86,10 +87,14 @@ class GameInProgress:
 
         self.player_connections[player_id] = connection
 
+        logging.info(f'User {connection.user_id} connected to game {self.game_id}')
+
     async def disconnect_player(self, connection: 'GameConnection'):
         player_id = connection.user_id
         if player_id in self.player_connections:
             self.player_connections[player_id] = None
+
+        logging.info(f'User {connection.user_id} disconnected from game {self.game_id}')
 
     async def apply_power(
             self, player: User,
@@ -263,6 +268,16 @@ class GameConnection(BasicConnection):
                 tile_id=message.tile_id,
             )
 
+            if result.is_legal:
+                logging.debug(
+                    f'User {user.friendly_name} in game {self.game_in_progress.game_id} '
+                    f'made a move {message.piece_id}->{message.tile_id}')
+            else:
+                logging.debug(
+                    f'User {user.friendly_name} in game {self.game_in_progress.game_id} '
+                    f'has tried to make an illegal move {message.piece_id}->{message.tile_id}, '
+                    f'reason: {result.reason}')
+
             await self._post_action(result)
             return True
         elif isinstance(message, ApplyPowerMessage):
@@ -270,6 +285,16 @@ class GameConnection(BasicConnection):
                 user,
                 power_id=message.power_id,
             )
+
+            if result.is_legal:
+                logging.debug(
+                    f'User {user.friendly_name} in game {self.game_in_progress.game_id} '
+                    f'applied power {message.power_id}')
+            else:
+                logging.debug(
+                    f'User {user.friendly_name} in game {self.game_in_progress.game_id} '
+                    f'has illegally tried to apply a power {message.power_id}, '
+                    f'reason: {result.reason}')
 
             await self._post_action(result)
             return True

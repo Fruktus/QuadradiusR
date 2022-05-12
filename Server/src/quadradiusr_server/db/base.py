@@ -50,6 +50,10 @@ class User(Base):
             f'username_={self.username_!r}' \
             f')'
 
+    @property
+    def friendly_name(self):
+        return f'{self.username_} ({self.id_})'
+
 
 class GameInvite(Base):
     __tablename__ = 'game_invite'

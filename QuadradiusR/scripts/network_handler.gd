@@ -116,20 +116,21 @@ func accept_and_join_game(game_invite_id: String, cb: FuncRef):
 
 func _accept_and_join_game_1(message: Message, args: Dictionary):
 	# After accept_game_invite
-	var game_id = ""
+#	var game_id = ""
 	# FIXME: clean up this mess, HTML5 and executables
 	#   have different behaviors when it comes to redirects
-	if message.result == 200:
-		game_id = message.body['id']
-	elif message.result == 303:
-		for header in message.headers:
-			if 'location' in header:
-				game_id = header.substr(16, len(message.headers[0]))
-				break
-	join_game(game_id, args['cb'])
+	assert(message.result == 200)
+#	game_id = message.body['id']
+#	elif message.result == 303:
+#		for header in message.headers:
+#			if 'location' in header:
+#				game_id = header.substr(16, len(message.headers[0]))
+#				break
+	join_game(message.body['id'], args['cb'])
 
 
 # # # # # # #
+
 # JOIN GAME #
 # # # # # # #
 func join_game(game_id: String, cb: FuncRef):

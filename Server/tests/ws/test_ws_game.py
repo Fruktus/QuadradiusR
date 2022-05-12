@@ -378,3 +378,39 @@ class TestWsGame(
                         }
                     },
                 }, gs_diff_msg['d']['game_state_diff'])
+
+    async def test_turn_with_second_player_disconnected(self):
+        await asyncio.gather(
+            self.create_test_user(0),
+            self.create_test_user(1),
+        )
+
+        user0 = await self.get_test_user(0)
+        user1 = await self.get_test_user(1)
+
+        game_id = await self.create_game(user0['id'], user1['id'])
+        game_ws = self.server_url(f'/game/{game_id}/connect', protocol='ws')
+
+        async with timeout(2), aiohttp.ClientSession() as session:
+            async with session.ws_connect(game_ws) as ws0:
+                await asyncio.gather(
+                    self.authorize_ws(0, ws0),
+                )
+
+                msg0 = await ws0.receive_json()
+                self.assertEqual(QrwsOpcode.GAME_STATE, msg0['op'])
+                game_state = msg0['d']['game_state']
+
+                self.assertEqual(user0['id'], game_state['current_player_id'])
+
+                # user0 makes a move
+                await self.ws_move(
+                    ws0,
+                    self.get_game_piece_id_at(game_state, (0, 1)),
+                    self.get_game_tile_id_at(game_state, (0, 2)))
+                move_result_msg = await self.ws_receive(ws0, QrwsOpcode.ACTION_RESULT)
+                self.assertTrue(move_result_msg['d']['is_legal'])
+
+                gs_diff_msg = await self.ws_receive(ws0, QrwsOpcode.GAME_STATE_DIFF)
+                gs_diff = gs_diff_msg['d']['game_state_diff']
+                self.assertEqual(user1['id'], gs_diff['current_player_id'])

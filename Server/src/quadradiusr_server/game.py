@@ -286,6 +286,8 @@ class GameConnection(BasicConnection):
                 return
             coroutines = []
             for player_id, conn in conn.game_in_progress.player_connections.items():
+                if conn is None:
+                    continue
                 diff, etag_from, etag_to = GameState.serialize_diff_with_etag_for(
                     from_=result.old_game_state,
                     to=result.new_game_state,

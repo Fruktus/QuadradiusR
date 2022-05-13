@@ -49,10 +49,10 @@ func _redirect_if_needed(status_code: int, response_headers: PoolStringArray) ->
 	if not status_code in [301, 302, 303, 307, 308]:
 		return false	# TODO: No other redirects are currently supported
 	
-	var new_location = ""
+	var new_location = url
 	for header in response_headers:
 		if header.to_lower().begins_with('location:'):
-			new_location = header.substr(len('location:'), len(header)).lstrip(' ')
+			new_location += header.substr(len('location:'), len(header)).lstrip(' ')
 			break
 			
 	var redirect_headers = current_request['args'][1]
@@ -66,6 +66,7 @@ func _redirect_if_needed(status_code: int, response_headers: PoolStringArray) ->
 	if status_code != 303 and len(current_request['args']) > 3:
 		args.append_array(current_request['args'].slice(3, len(current_request['args'] - 1)))
 	
+	# Due to flow interruption clearing state occurs here
 	_clear_state()
 	_build_request(args, cb, cb_args)
 	return true

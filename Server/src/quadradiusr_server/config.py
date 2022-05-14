@@ -32,7 +32,8 @@ class DatabaseConfig:
 
 @dataclass
 class CronConfig:
-    purge_game_invites_delay: float = 10
+    purge_game_invites_delay: float = 60
+    purge_tokens_delay: float = 60
 
 
 @dataclass

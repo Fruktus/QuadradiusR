@@ -4,8 +4,10 @@ import uuid
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock
 
+from sqlalchemy import select
+
 from harness import RestTestHarness, TestUserHarness, NotificationHandlerForTests
-from quadradiusr_server.db.base import GameInvite
+from quadradiusr_server.db.base import GameInvite, AccessToken
 from quadradiusr_server.db.transactions import transaction_context
 from quadradiusr_server.notification import Notification
 from quadradiusr_server.server import QuadradiusRServer
@@ -18,6 +20,7 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
             # prevent automatic execution
             server.cron.register = AsyncMock()
             server.setup_service.run_setup_jobs = AsyncMock()
+
         await self.setup_server(server_configurator=sc)
 
     async def asyncTearDown(self) -> None:
@@ -94,3 +97,58 @@ class TestCron(IsolatedAsyncioTestCase, TestUserHarness, RestTestHarness):
         async with transaction_context(self.server.database):
             main_lobby = await lobby_repo.get_by_id('@main')
             self.assertIsNotNone(main_lobby)
+
+    async def test_purge_tokens(self):
+        now = datetime.datetime.now(tz=datetime.timezone.utc)
+        past = now - datetime.timedelta(seconds=100)
+        future = now + datetime.timedelta(seconds=100)
+
+        async with transaction_context(self.server.database):
+            token = AccessToken(
+                id_='id1',
+                user_id_='user',
+                token_='token1',
+                created_at_=past,
+                accessed_at_=past,
+                expires_at_=future,
+                access_expires_at_=future,
+            )
+            await self.server.repository.access_token_repository.add(token)
+            token = AccessToken(
+                id_='id2',
+                user_id_='user',
+                token_='token2',
+                created_at_=past,
+                accessed_at_=past,
+                expires_at_=past,
+                access_expires_at_=future,
+            )
+            await self.server.repository.access_token_repository.add(token)
+            token = AccessToken(
+                id_='id3',
+                user_id_='user',
+                token_='token3',
+                created_at_=past,
+                accessed_at_=past,
+                expires_at_=future,
+                access_expires_at_=past,
+            )
+            await self.server.repository.access_token_repository.add(token)
+            token = AccessToken(
+                id_='id4',
+                user_id_='user',
+                token_='token4',
+                created_at_=past,
+                accessed_at_=past,
+                expires_at_=past,
+                access_expires_at_=past,
+            )
+            await self.server.repository.access_token_repository.add(token)
+
+        await self.server.cron._purge_tokens()
+
+        async with transaction_context(self.server.database) as session:
+            result = await session.execute(select(AccessToken))
+            tokens = list(result.scalars())
+            self.assertEqual(1, len(tokens))
+            self.assertEqual('token1', tokens[0].token_)

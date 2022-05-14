@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, or_, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from quadradiusr_server.db.base import User, AccessToken
@@ -22,19 +22,22 @@ class AccessTokenRepository:
     @transactional
     async def get(
             self, token: str, *,
-            created_later_than: datetime = None,
-            accessed_later_than: datetime = None,
             db_session: AsyncSession) -> Optional[AccessToken]:
+        now = datetime.now(tz=timezone.utc)
         result = await db_session.execute(
             select(AccessToken).where(and_(
                 AccessToken.token_ == token,
-                AccessToken.created_at_ > created_later_than if created_later_than else True,
-                AccessToken.accessed_at_ > accessed_later_than if accessed_later_than else True,
+                or_(AccessToken.expires_at_ is None, AccessToken.expires_at_ > now),
+                or_(AccessToken.access_expires_at_ is None, AccessToken.access_expires_at_ > now),
             )))
-        access_token = result.one_or_none()
-        if access_token:
-            at: AccessToken = access_token.AccessToken
-            at.accessed_at_ = datetime.now(timezone.utc)
-            return at
-        else:
-            return None
+        return result.scalar_one_or_none()
+
+    @transactional
+    async def remove_old_tokens(
+            self, *, db_session: AsyncSession):
+        now = datetime.now(tz=timezone.utc)
+        await db_session.execute(
+            delete(AccessToken).where(or_(
+                AccessToken.expires_at_ <= now,
+                AccessToken.access_expires_at_ <= now,
+                )))

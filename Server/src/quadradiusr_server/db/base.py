@@ -179,6 +179,8 @@ class AccessToken(Base):
     token_ = Column(String, nullable=False)
     created_at_ = Column(DateTimeUTC, nullable=False)
     accessed_at_ = Column(DateTimeUTC, nullable=False)
+    expires_at_ = Column(DateTimeUTC, nullable=False)
+    access_expires_at_ = Column(DateTimeUTC, nullable=False)
 
     user_ = relationship(
         'User',
@@ -190,8 +192,10 @@ class AccessToken(Base):
         return \
             f'{type(self).__name__}(' \
             f'id_={self.id_!r}, ' \
-            f'user_id_={self.user_id_!r}' \
-            f'token_id_={self.token_!r}' \
-            f'created_at_={self.created_at_!r}' \
-            f'accessed_at_={self.accessed_at_!r}' \
+            f'user_id_={self.user_id_!r}, ' \
+            f'token_id_={self.token_!r}, ' \
+            f'created_at_={self.created_at_!r}, ' \
+            f'accessed_at_={self.accessed_at_!r}, ' \
+            f'expires_at_={self.expires_at_!r}, ' \
+            f'access_expires_at_={self.access_expires_at_!r}' \
             f')'

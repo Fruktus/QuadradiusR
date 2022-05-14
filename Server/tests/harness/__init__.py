@@ -13,7 +13,7 @@ from quadradiusr_server.config import ServerConfig
 from quadradiusr_server.constants import QrwsOpcode
 from quadradiusr_server.db.base import Game
 from quadradiusr_server.db.transactions import transaction_context
-from quadradiusr_server.game_state import GameState, Power
+from quadradiusr_server.game_state import GameState, Power, NextPowerSpawnInfo
 from quadradiusr_server.notification import Handler, Notification
 from quadradiusr_server.powers import PowerRandomizer, PowerDefinition
 from quadradiusr_server.server import QuadradiusRServer
@@ -242,6 +242,13 @@ class NotificationHandlerForTests(Handler):
 
 class PowerRandomizerForTests(PowerRandomizer):
     power_to_spawn: Optional[Power] = None
+    next_spawn_info: Optional[NextPowerSpawnInfo] = None
+
+    def initial_spawn_info(self) -> NextPowerSpawnInfo:
+        return NextPowerSpawnInfo(
+            rounds=0,
+            count=0,
+        )
 
     def after_move(
             self,
@@ -250,7 +257,14 @@ class PowerRandomizerForTests(PowerRandomizer):
         if self.power_to_spawn:
             game_state.board.powers[self.power_to_spawn.id] = self.power_to_spawn
             self.power_to_spawn = None
+        if self.next_spawn_info:
+            game_state.next_power_spawn = self.next_spawn_info
+            self.next_spawn_info = None
 
     @classmethod
     def spawn_next_power(cls, power_to_spawn: Power):
         cls.power_to_spawn = power_to_spawn
+
+    @classmethod
+    def set_next_spawn_info(cls, next_spawn_info: NextPowerSpawnInfo):
+        cls.next_spawn_info = next_spawn_info

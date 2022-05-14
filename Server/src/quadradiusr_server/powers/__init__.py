@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from quadradiusr_server.game_state import GameState
+from quadradiusr_server.game_state import GameState, NextPowerSpawnInfo
 
 
 class PowerDefinition(ABC):
@@ -23,6 +23,10 @@ class PowerDefinition(ABC):
 
 
 class PowerRandomizer(ABC):
+    @abstractmethod
+    def initial_spawn_info(self) -> NextPowerSpawnInfo:
+        ...
+
     @abstractmethod
     def after_move(
             self, game_state: GameState,

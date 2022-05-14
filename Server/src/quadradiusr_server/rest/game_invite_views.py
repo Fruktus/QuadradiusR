@@ -8,6 +8,7 @@ from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 
 from quadradiusr_server.auth import User
+from quadradiusr_server.config import GameConfig
 from quadradiusr_server.db.base import GameInvite, Game
 from quadradiusr_server.db.repository import Repository
 from quadradiusr_server.db.transactions import transactional
@@ -15,7 +16,7 @@ from quadradiusr_server.game_state import GameState
 from quadradiusr_server.notification import Notification, NotificationService
 from quadradiusr_server.rest.auth import authorized_endpoint
 from quadradiusr_server.rest.mappers import game_invite_to_json, game_to_json
-from quadradiusr_server.server import routes
+from quadradiusr_server.server import routes, QuadradiusRServer
 
 
 class GameInviteViewBase(web.View, metaclass=ABCMeta):
@@ -116,17 +117,22 @@ class GameInviteAcceptView(GameInviteViewBase, web.View):
     async def post(self, *, auth_user: User):
         repository: Repository = self.request.app['repository']
         ns: NotificationService = self.request.app['notification']
+        server: QuadradiusRServer = self.request.app['server']
+        game_config: GameConfig = server.config.game
 
         game_invite = await self._get_game_invite(auth_user, repository)
         if auth_user.id_ != game_invite.subject_id_:
             raise HTTPForbidden(reason='You are not the person being invited')
+
+        game_state: GameState = GameState.initial(game_invite.from_id_, game_invite.subject_id_)
+        game_state.next_power_spawn = game_config.get_power_randomizer().initial_spawn_info()
 
         game = Game(
             id_=str(uuid.uuid4()),
             player_a_=game_invite.from_,
             player_b_=game_invite.subject_,
             expires_at_=datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=5),
-            game_state_=GameState.initial(game_invite.from_id_, game_invite.subject_id_)
+            game_state_=game_state
         )
 
         await repository.game_repository.add(game)

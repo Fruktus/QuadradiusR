@@ -31,6 +31,7 @@ class RestTestHarness(metaclass=ABCMeta):
         self.config.port = 0
         self.config.href = 'example.com'
         self.config.database.create_metadata = True
+        self.config.database.hide_parameters = False
         self.config.auth.scrypt_n = 8
         self.config.auth.scrypt_r = 8
         self.config.auth.scrypt_p = 1

@@ -19,6 +19,7 @@ class Cron:
     async def register(self):
         logging.info('Registering cron jobs')
         asyncio.create_task(self._cron_purge_game_invites())
+        asyncio.create_task(self._cron_purge_tokens())
         logging.info('Cron jobs registered')
 
     async def _cron_purge_game_invites(self):
@@ -43,6 +44,18 @@ class Cron:
                                 'reason': 'expired',
                             },
                         )))
+
+    async def _cron_purge_tokens(self):
+        logging.debug('Purging game invites')
+        while True:
+            await asyncio.sleep(self.config.purge_tokens_delay)
+            await self._purge_tokens()
+
+    async def _purge_tokens(self):
+        async with transaction_context(self.repository.database):
+            at_repo = self.repository.access_token_repository
+            await at_repo.remove_old_tokens()
+        logging.debug('Tokens purged')
 
 
 class SetupService:

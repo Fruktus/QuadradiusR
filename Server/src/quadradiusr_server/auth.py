@@ -29,12 +29,22 @@ class Auth:
     async def issue_token(self, user: User) -> str:
         repo = self.repository.access_token_repository
         now = datetime.now(tz=timezone.utc)
+        expires_at = now + (
+            timedelta(seconds=self.config.token_exp)
+            if self.config.token_exp > 0
+            else timedelta(days=500))
+        access_expires_at = now + (
+            timedelta(seconds=self.config.token_access_exp)
+            if self.config.token_access_exp > 0
+            else timedelta(days=500))
         token = AccessToken(
             id_=str(uuid.uuid4()),
             user_=user,
             token_=self._random_token(),
             created_at_=now,
             accessed_at_=now,
+            expires_at_=expires_at,
+            access_expires_at_=access_expires_at,
         )
         await repo.add(token)
         return token.token_
@@ -43,13 +53,12 @@ class Auth:
         return str(uuid.uuid4())
 
     async def authenticate(self, token: str) -> Optional[User]:
+        now = datetime.now(tz=timezone.utc)
         repo = self.repository.access_token_repository
-        access_token: AccessToken = await repo.get(
-            token,
-            created_later_than=self._get_token_created_later_than(),
-            accessed_later_than=self._get_token_accessed_later_than(),
-        )
+        access_token: AccessToken = await repo.get(token)
         if access_token:
+            access_token.accessed_at_ = now
+            access_token.access_expires_at_ = now + timedelta(seconds=self.config.token_access_exp)
             return access_token.user_
 
     def _get_token_created_later_than(self):

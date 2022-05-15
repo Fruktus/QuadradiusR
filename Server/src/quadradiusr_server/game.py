@@ -196,6 +196,7 @@ class GameInProgress:
             )
 
         # perform move
+        game_state.moves_played += 1
 
         await self._capture_pieces(dest_tile, game_state.board)
         await self._capture_powers(dest_tile, piece, game_state.board)

@@ -128,6 +128,7 @@ class GameState:
     current_player_id: str
     finished: bool = False
     winner_id: Optional[str] = None
+    moves_played: int = 0
 
     def serialize_for(self, user_id: str) -> dict:
         return {
@@ -136,6 +137,7 @@ class GameState:
             'current_player_id': self.current_player_id,
             'finished': self.finished,
             'winner_id': self.winner_id,
+            'moves_played': self.moves_played,
         }
 
     def serialize_with_etag_for(self, user_id: str) -> Tuple[dict, str]:

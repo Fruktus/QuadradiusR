@@ -73,6 +73,19 @@ custom_colors/font_color = Color( 1, 0, 0, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "User2"
 
+[node name="MovesPlayedCounter" type="Label" parent="Control"]
+margin_left = 385.0
+margin_top = 446.0
+margin_right = 455.0
+margin_bottom = 478.0
+rect_scale = Vector2( 0.7, 0.7 )
+rect_pivot_offset = Vector2( -464, 92 )
+theme = SubResource( 4 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+
 [node name="User1Decoration" type="TextureRect" parent="Control"]
 margin_left = 413.0
 margin_top = 25.0

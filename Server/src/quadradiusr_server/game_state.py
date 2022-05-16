@@ -122,10 +122,23 @@ class GameBoard:
 
 
 @dataclass
+class NextPowerSpawnInfo:
+    rounds: int
+    count: int
+
+    def serialize_for(self, user_id: str) -> dict:
+        return {
+            'rounds': self.rounds,
+            'count': self.count,
+        }
+
+
+@dataclass
 class GameState:
     settings: GameSettings
     board: GameBoard
     current_player_id: str
+    next_power_spawn: NextPowerSpawnInfo
     finished: bool = False
     winner_id: Optional[str] = None
 
@@ -134,6 +147,7 @@ class GameState:
             'settings': self.settings.serialize_for(user_id),
             'board': self.board.serialize_for(user_id),
             'current_player_id': self.current_player_id,
+            'next_power_spawn': self.next_power_spawn.serialize_for(user_id),
             'finished': self.finished,
             'winner_id': self.winner_id,
         }
@@ -203,4 +217,8 @@ class GameState:
                 pieces=pieces,
             ),
             current_player_id=player_a_id,
+            next_power_spawn=NextPowerSpawnInfo(
+                rounds=0,
+                count=0,
+            )
         )

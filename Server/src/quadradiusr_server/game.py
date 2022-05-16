@@ -207,8 +207,7 @@ class GameInProgress:
             game_state.finished = True
             game_state.winner_id = player.id_
         else:
-            self.power_randomizer.after_move(
-                game_state, list(self.power_definitions.values()))
+            self._handle_power_spawning(game_state)
 
         return ctx.legal_result()
 
@@ -233,6 +232,10 @@ class GameInProgress:
                 power.tile_id = None
                 power.piece_id = piece.id
                 power.authorized_player_ids.append(piece.owner_id)
+
+    def _handle_power_spawning(self, game_state: GameState):
+        self.power_randomizer.after_move(
+            game_state, list(self.power_definitions.values()))
 
 
 class GameConnection(BasicConnection):

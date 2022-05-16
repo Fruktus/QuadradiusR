@@ -117,6 +117,10 @@ This endpoint support the standard ``ETag``/``If-None-Match`` flow.
             }
         },
         "current_player_id": "{user_id}",
+        "next_power_spawn": {
+            "rounds": 0,
+            "count": 0,
+        },
         "finished": false,
         "winner_id": "{winner_id}"
     }

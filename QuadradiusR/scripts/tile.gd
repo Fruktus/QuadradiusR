@@ -23,8 +23,8 @@ const ELEVATION_OFFSET = -50
 var tile_id: String
 var is_steppable = true
 var tile_pos: Vector3  # Z - elevation, from -2 to +2, total 5 levels
-var orb_id: String
-var has_orb = false
+var orb_id: String = ""
+
 
 
 func _ready():
@@ -108,5 +108,13 @@ func _torus_putdown(current_tile: Tile):
 
 
 func spawn_orb():
-	has_orb = true
 	orb.spawn()
+
+
+func collect_orb():
+	orb_id = ""
+	orb.collect()
+
+
+func has_orb() -> bool:
+	return orb_id != ""

@@ -4,6 +4,9 @@ onready var board = $BoardContainer
 const tile_template = preload("res://prefabs/tile.tscn")
 const torus_template = preload("res://prefabs/torus.tscn")
 
+var toruses_by_id = {}
+var tiles_by_id = {}
+var orb_tiles_by_id = {}
 var board_size: Vector2
 var active_torus: Node
 
@@ -34,15 +37,17 @@ func _init_tiles():
 		var tile = _get_child_at_pos(pos['x'], pos['y'])
 		tile.tile_id = tile_id
 		tile.tile_pos.z = tiles[tile_id]['elevation']
+		tiles_by_id[tile_id] = tile
 
 
 func _init_toruses(player_pieces: Dictionary):
 	for piece_id in player_pieces.keys():
 		var piece_data = player_pieces[piece_id]
-		var tile = Context.game_state.get_tile_by_id(piece_data['tile_id'], self)
+		var tile = get_tile_by_id(piece_data['tile_id'])
 		var color = Torus.COLORS.RED if piece_data['owner_id'] == Context.user_id else Torus.COLORS.BLUE
 		var torus = torus_template.instance().init(self, tile, piece_data['owner_id'], piece_id, color)
 		_get_child_at_pos(tile.tile_pos.x, tile.tile_pos.y).set_slot(torus)
+		toruses_by_id[piece_id] = torus
 
 
 # # # # #
@@ -56,6 +61,18 @@ func _get_child_at_idx(idx: int):
 	return board.get_child(idx)
 
 
+func get_torus_by_id(piece_id: String) -> Torus:
+	return toruses_by_id[piece_id]
+
+
+func get_tile_by_id(tile_id: String) -> Tile:
+	return tiles_by_id[tile_id]
+
+
+func get_tile_by_orb_id(orb_id: String) -> Tile:
+	return orb_tiles_by_id[orb_id]
+
+
 func move_torus_by_tiles(source_pos: Vector2, dest_pos: Vector2):
 	var src_tile = _get_child_at_pos(source_pos.x, source_pos.y)
 	var dest_tile = _get_child_at_pos(dest_pos.x, dest_pos.y)
@@ -64,6 +81,13 @@ func move_torus_by_tiles(source_pos: Vector2, dest_pos: Vector2):
 	src_tile.del_piece()
 	dest_tile.set_slot(moved_torus)
 	moved_torus.make_move(src_tile, dest_tile, is_colliding)
+
+
+func spawn_orb_on_tile_id(orb_id: String, tile_id: String):
+	var tile = get_tile_by_id(tile_id)
+	tile.spawn_orb()
+	orb_tiles_by_id[orb_id] = tile
+
 
 # # # # # # # # # # # # #
 # BOARD GROUP HANDLERS  #
@@ -100,11 +124,3 @@ func _torus_putdown(torus: Node):
 		return
 	
 	self.active_torus.current_tile.set_slot(self.active_torus)
-
-
-# # # #
-# ??? #
-# # # #
-
-func spawn_orb_on_tile(tile: Tile):
-	tile.spawn_orb()

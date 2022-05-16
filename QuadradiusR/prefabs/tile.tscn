@@ -92,9 +92,6 @@ anims/HighlightOff = SubResource( 2 )
 anims/HighlightOn = SubResource( 3 )
 anims/RESET = SubResource( 4 )
 
-[node name="Orb" parent="." instance=ExtResource( 16 )]
-position = Vector2( 253, 252 )
-
 [node name="TileContent" type="Control" parent="."]
 margin_right = 502.0
 margin_bottom = 502.0
@@ -125,3 +122,6 @@ mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Orb" parent="." instance=ExtResource( 16 )]
+position = Vector2( 253, 252 )

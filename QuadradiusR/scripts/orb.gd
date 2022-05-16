@@ -7,6 +7,10 @@ func spawn():
 	anim.play("OrbAppear")
 
 
+func collect():
+	anim.play("OrbCollect")
+
+
 func rehash():
 	pass
 

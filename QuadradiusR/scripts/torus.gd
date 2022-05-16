@@ -23,11 +23,12 @@ const color_textures = {COLORS.RED: "DefineSprite_412_Decoration0",
 var movement_powerup_manager = preload("res://scripts/movement_powerup_manager.gd").new()
 var board: Control
 var piece_id: String
-var current_tile: Tile
-var color = COLORS.RED
 var player_id: String
+var color = COLORS.RED
+var current_tile: Tile
 var is_held = false
 var can_interact = true
+var powerup_id_to_definition_id = {}
 
 
 
@@ -61,27 +62,26 @@ func _on_mouse_event(viewport: Node, event: InputEvent, shape_idx: int):
 
 
 func _begin_drag():
+	anim.play("Pickup")	
 	is_held = true
-	pickup_sfx.play()
-	shadow.visible = false
+	
 	get_tree().call_group("torus", "set_interaction", false)
 	get_tree().call_group("board", "_torus_pickup", self)
 	get_tree().call_group("tile", "_torus_pickup", current_tile)
-	yield(get_tree(), "idle_frame")  # needed for the scaling to work properly
-	self.rect_scale = Vector2(1.5, 1.5)
+
 	set_process(true)
 
 
 func _end_drag():
 	set_process(false)
-	shadow.visible = true
+	anim.play("Putdown")
+
 	get_tree().call_group("torus", "set_interaction", true)
 	get_tree().call_group("board", "_torus_putdown", self)
 	get_tree().call_group("tile", "_torus_putdown", current_tile)
 	
 	is_held = false
-	putdown_sfx.play()
-	self.rect_scale = Vector2(1, 1)
+
 	rect_position = self.starting_pos
 
 
@@ -125,7 +125,6 @@ func should_move_torus(source_tile: Tile, target_tile: Tile) -> bool:
 			# 	if there is other piece, check if can collide with it
 	# 		if can collide, dont check the conditions again later, but
 	#		do check in board or somewhere if collision occurs and if so delete piece,
-	#		run animation, sound etc
 	
 	# 	if no other piece, return true
 	return true
@@ -137,9 +136,13 @@ func make_move(source_tile: Tile, target_tile: Tile, is_colliding: bool = false)
 	if is_colliding:
 		target_tile.del_piece()
 		anim.play("DestroyOpponent")
-	# TODO move the sound playing to here maybe to handle dropping the piece
-	pass
-	
+
 # TODO maybe add method destroy() which would handle aftermath
 # OR destroy_piece(torus) which would make one piece destroy the other, so it could handle
 # all the consequences
+
+
+func add_power(power_id: String, power_definition_id):
+	if power_definition_id.empty():
+		anim.queue("CollectPowerup")
+	powerup_id_to_definition_id[power_id] = power_definition_id

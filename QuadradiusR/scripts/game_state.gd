@@ -4,6 +4,7 @@ var game_data: Dictionary
 var etag: String
 
 
+
 func init(game_data: Dictionary, etag: String):
 	self.game_data = game_data
 	self.etag = etag
@@ -44,6 +45,10 @@ func get_tile_pos_by_tile_id(tile_id: String) -> Vector2:
 func get_tile_pos_by_piece_id(piece_id: String) -> Vector2:
 	var tile_id = game_data['board']['pieces'][piece_id]['tile_id']
 	return get_tile_pos_by_tile_id(tile_id)
+
+
+func get_powerup_by_id(powerup_id: String) -> Dictionary:
+	return game_data['board']['powers'][powerup_id]
 
 
 func apply_gamestate_diff(diff: Dictionary):

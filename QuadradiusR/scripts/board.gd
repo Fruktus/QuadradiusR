@@ -100,3 +100,11 @@ func _torus_putdown(torus: Node):
 		return
 	
 	self.active_torus.current_tile.set_slot(self.active_torus)
+
+
+# # # #
+# ??? #
+# # # #
+
+func spawn_orb_on_tile(tile: Tile):
+	tile.spawn_orb()

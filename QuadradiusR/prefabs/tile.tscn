@@ -92,6 +92,9 @@ anims/HighlightOff = SubResource( 2 )
 anims/HighlightOn = SubResource( 3 )
 anims/RESET = SubResource( 4 )
 
+[node name="Orb" parent="." instance=ExtResource( 16 )]
+position = Vector2( 253, 252 )
+
 [node name="TileContent" type="Control" parent="."]
 margin_right = 502.0
 margin_bottom = 502.0
@@ -104,6 +107,7 @@ position = Vector2( 251, 251 )
 position = Vector2( 251, 251 )
 
 [node name="Highlight" type="AnimatedSprite" parent="TileContent"]
+visible = false
 self_modulate = Color( 1, 1, 1, 0.8 )
 position = Vector2( 251, 251 )
 frames = SubResource( 5 )
@@ -121,6 +125,3 @@ mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Orb" parent="." instance=ExtResource( 16 )]
-position = Vector2( 253, 252 )

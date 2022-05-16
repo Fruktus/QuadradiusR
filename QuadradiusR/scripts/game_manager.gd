@@ -23,6 +23,11 @@ func _game_state_diff(data: Dictionary):
 				var source_tile_pos = Context.game_state.get_tile_pos_by_piece_id(piece_id)
 				var dest_tile_pos = Context.game_state.get_tile_pos_by_tile_id(dest_tile_id)
 				board.move_torus_by_tiles(source_tile_pos, dest_tile_pos)
+		if 'powers' in diff['board']:
+			for orb_id in diff['board']['powers']:
+				if diff['board']['powers'][orb_id]:
+					var orb = diff['board']['powers'][orb_id]
+					board.spawn_orb_on_tile(Context.game_state.get_tile_by_id(orb['tile_id'], board))
 	Context.game_state.apply_gamestate_diff(diff)
 	# BUMP ETAGS
 	get_tree().call_group("torus", "set_interaction", diff['current_player_id'] == Context.user_id) # WILL BE FIXED AFTER GAMESTATE UPDATE

@@ -1,0 +1,15 @@
+extends Node2D
+
+
+onready var anim = $AnimationPlayer
+
+func spawn():
+	anim.play("OrbAppear")
+
+
+func rehash():
+	pass
+
+
+func destroy():
+	anim.play("OrbDestroy")

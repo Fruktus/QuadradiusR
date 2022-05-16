@@ -23,7 +23,8 @@ const ELEVATION_OFFSET = -50
 var tile_id: String
 var is_steppable = true
 var tile_pos: Vector3  # Z - elevation, from -2 to +2, total 5 levels
-
+var orb_id: String
+var has_orb = false
 
 
 func _ready():
@@ -104,3 +105,8 @@ func _torus_pickup(current_tile: Tile):
 func _torus_putdown(current_tile: Tile):
 	if current_tile == self:
 		anim.play("HighlightOff")
+
+
+func spawn_orb():
+	has_orb = true
+	orb.spawn()

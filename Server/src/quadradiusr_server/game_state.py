@@ -141,6 +141,7 @@ class GameState:
     next_power_spawn: NextPowerSpawnInfo
     finished: bool = False
     winner_id: Optional[str] = None
+    moves_played: int = 0
 
     def serialize_for(self, user_id: str) -> dict:
         return {
@@ -150,6 +151,7 @@ class GameState:
             'next_power_spawn': self.next_power_spawn.serialize_for(user_id),
             'finished': self.finished,
             'winner_id': self.winner_id,
+            'moves_played': self.moves_played,
         }
 
     def serialize_with_etag_for(self, user_id: str) -> Tuple[dict, str]:

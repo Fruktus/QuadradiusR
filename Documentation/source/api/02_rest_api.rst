@@ -122,6 +122,7 @@ This endpoint support the standard ``ETag``/``If-None-Match`` flow.
             "count": 0,
         },
         "finished": false,
+        "moves_played": 0,
         "winner_id": "{winner_id}"
     }
 

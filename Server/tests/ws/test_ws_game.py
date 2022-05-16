@@ -241,6 +241,7 @@ class TestWsGame(
                         },
                     },
                     'current_player_id': user1['id'],
+                    'moves_played': 1,
                 }, gs_diff_msg['d']['game_state_diff'])
 
     async def test_power_capture(self):
@@ -301,6 +302,7 @@ class TestWsGame(
                         },
                     },
                     'current_player_id': user1['id'],
+                    'moves_played': 1,
                 }, gs_diff_msg['d']['game_state_diff'])
 
     async def test_power_apply(self):

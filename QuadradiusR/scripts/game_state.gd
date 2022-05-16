@@ -27,6 +27,10 @@ func get_current_player() -> String:
 	return self.game_data['current_player_id']
 
 
+func get_moves_played() -> int:
+	return self.game_data['moves_played']
+
+
 func get_tile_by_id(tile_id: String, board: Node) -> Tile:
 	var pos = game_data['board']['tiles'][tile_id]['position']
 	return board._get_child_at_pos(pos['x'], pos['y'])

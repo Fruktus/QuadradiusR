@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://prefabs/power_list_row.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/powerup_list.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=9]
+content_margin_left = 15.0
+content_margin_right = 15.0
+content_margin_top = 15.0
+content_margin_bottom = 15.0
+bg_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="PowerupPopup" type="Popup"]
+margin_right = 401.0
+margin_bottom = 401.0
+mouse_filter = 2
+script = ExtResource( 2 )
+
+[node name="PowerupListContainer" type="PanelContainer" parent="."]
+self_modulate = Color( 0.360784, 0.0745098, 0.0745098, 0.705882 )
+margin_left = 449.0
+margin_top = 70.0
+margin_right = 1217.0
+margin_bottom = 152.0
+rect_scale = Vector2( 1.2, 1.2 )
+mouse_filter = 2
+custom_styles/panel = SubResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PowerupList" type="VBoxContainer" parent="PowerupListContainer"]
+mouse_filter = 2
+
+[node name="PowerListRow" parent="PowerupListContainer/PowerupList" instance=ExtResource( 1 )]
+visible = false

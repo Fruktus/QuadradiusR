@@ -3,26 +3,30 @@ extends Node
 
 const MODULE = 'ws'
 
-const IDENTIFY = 2
-const SERVER_READY = 3
-const NOTIFICATION = 4
-const SUBSCRIBE = 5
-const SUBSCRIBED = 6
-const KICK = 7
-const SEND_MESSAGE = 8
-const GAME_STATE = 9
-const GAME_STATE_DIFF = 10
-const MOVE = 11
-const MOVE_RESULT = 12
+enum Op {
+	NC0 = 0, # Unused, needed for printing key names (not natively supported)
+	NC1 = 1, # Unused
+	IDENTIFY = 2,
+	SERVER_READY = 3,
+	NOTIFICATION = 4,
+	SUBSCRIBE = 5,
+	SUBSCRIBED = 6,
+	KICK = 7,
+	SEND_MESSAGE = 8,
+	GAME_STATE = 9,
+	GAME_STATE_DIFF = 10,
+	MOVE = 11,
+	MOVE_RESULT = 12
+}
 
 var op_handlers = {
-	SERVER_READY: funcref(self, "_handle_server_ready"),
-	NOTIFICATION: funcref(self, "_handle_notification"),
-	SUBSCRIBED: funcref(self, "_handle_subscribed"),
-	KICK: funcref(self, "_handle_kick"),
-	GAME_STATE: funcref(self, "_handle_game_state"),
-	GAME_STATE_DIFF: funcref(self, "_handle_game_state_diff"),
-	MOVE_RESULT: funcref(self, "_handle_move_result")
+	Op.SERVER_READY: funcref(self, "_handle_server_ready"),
+	Op.NOTIFICATION: funcref(self, "_handle_notification"),
+	Op.SUBSCRIBED: funcref(self, "_handle_subscribed"),
+	Op.KICK: funcref(self, "_handle_kick"),
+	Op.GAME_STATE: funcref(self, "_handle_game_state"),
+	Op.GAME_STATE_DIFF: funcref(self, "_handle_game_state_diff"),
+	Op.MOVE_RESULT: funcref(self, "_handle_move_result")
 }
 var topic_handlers = {
 	"game.invite.accepted": funcref(self, "_handle_game_invite_accepted"),
@@ -62,7 +66,7 @@ func _on_connection_error():
 
 func _on_connection_established(protocol: String):
 	Logger.info('Connection established', MODULE)
-	_send_data({'op': IDENTIFY, 'd': {"token": token}})  # authorize with the server before doing anything else
+	_send_data({'op': Op.IDENTIFY, 'd': {"token": token}})  # authorize with the server before doing anything else
 
 func _on_data_received():
 	var data = _get_data()
@@ -153,12 +157,12 @@ func close(reason: String = ""):
 
 
 func subscribe_to(topic: String):
-	var query = {"op": SUBSCRIBE, "d": {"topic": topic}}
+	var query = {"op": Op.SUBSCRIBE, "d": {"topic": topic}}
 	_send_data(query)
 
 
 func make_move(piece_id: String, tile_id: String):
-	var query = {"op": MOVE, "d": {"piece_id": piece_id, "tile_id": tile_id}}
+	var query = {"op": Op.MOVE, "d": {"piece_id": piece_id, "tile_id": tile_id}}
 	_send_data(query)
 
 # # # # # # #

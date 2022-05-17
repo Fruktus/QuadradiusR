@@ -25,8 +25,8 @@ func _cb_login_done(is_authorized, user_data, message: Message):
 	if is_authorized:
 		_join_lobby()
 	else:
-		print('Failed to authorize: ', message['result'])
-		print('Auto-registering user')
+		print('Failed to authorize: ', message['result']) # DEBUG
+		print('Auto-registering user') # DEBUG
 		NetworkHandler.create_user(user_data['username'], user_data['password'], null, {})  # DEBUG
 		NetworkHandler.authorize_user(user_data['username'], user_data['password'], funcref(self, "_cb_second_login_done"), user_data)  # DEBUG
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_245_PlayerPieceSymbol/1_optimized.png" type="Texture" id=1]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/1.png" type="Texture" id=2]
@@ -23,29 +23,15 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/8.png" type="Texture" id=21]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/11.png" type="Texture" id=22]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_235/1_optimized.png" type="Texture" id=23]
+[ext_resource path="res://prefabs/powerup_list.tscn" type="PackedScene" id=24]
 
 [sub_resource type="StyleBoxEmpty" id=2]
-
-[sub_resource type="Animation" id=8]
-resource_name = "CollectPowerup"
-tracks/0/type = "value"
-tracks/0/path = NodePath("TorusBase:self_modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 0.847059, 0.847059, 1 ) ]
-}
 
 [sub_resource type="Animation" id=3]
 resource_name = "DestroyOpponent"
 length = 0.5
 tracks/0/type = "value"
-tracks/0/path = NodePath("VFXGroup/AnimatedSprite:visible")
+tracks/0/path = NodePath("VFXGroup/DestroyOpponent:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -57,7 +43,7 @@ tracks/0/keys = {
 "values": [ true ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("VFXGroup/AnimatedSprite:frame")
+tracks/1/path = NodePath("VFXGroup/DestroyOpponent:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -182,7 +168,7 @@ tracks/2/keys = {
 [sub_resource type="Animation" id=4]
 resource_name = "RESET"
 tracks/0/type = "value"
-tracks/0/path = NodePath("VFXGroup/AnimatedSprite:visible")
+tracks/0/path = NodePath("VFXGroup/DestroyOpponent:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -194,7 +180,7 @@ tracks/0/keys = {
 "values": [ false ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("VFXGroup/AnimatedSprite:frame")
+tracks/1/path = NodePath("VFXGroup/DestroyOpponent:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -228,6 +214,54 @@ tracks/3/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "Selected"
+length = 0.1
+loop = true
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath("LightGroup/LightOn:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.06 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+
+[sub_resource type="Animation" id=12]
+resource_name = "TintOpponent"
+tracks/0/type = "value"
+tracks/0/path = NodePath("TorusBase:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "TintSelf"
+tracks/0/type = "value"
+tracks/0/path = NodePath("TorusBase:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
 [sub_resource type="SpriteFrames" id=5]
@@ -264,11 +298,13 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/CollectPowerup = SubResource( 8 )
 anims/DestroyOpponent = SubResource( 3 )
 anims/Pickup = SubResource( 6 )
 anims/Putdown = SubResource( 7 )
 anims/RESET = SubResource( 4 )
+anims/Selected = SubResource( 10 )
+anims/TintOpponent = SubResource( 12 )
+anims/TintSelf = SubResource( 11 )
 
 [node name="SFXGroup" type="Node2D" parent="."]
 
@@ -285,7 +321,7 @@ position = Vector2( 200, 200 )
 stream = ExtResource( 7 )
 
 [node name="TorusShadow" type="Sprite" parent="."]
-self_modulate = Color( 1, 1, 1, 0.25 )
+self_modulate = Color( 1, 1, 1, 0.305882 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 23 )
 offset = Vector2( 100, 100 )
@@ -303,7 +339,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="VFXGroup"]
+[node name="DestroyOpponent" type="AnimatedSprite" parent="VFXGroup"]
 visible = false
 position = Vector2( -523, -526 )
 z_index = 1
@@ -329,6 +365,8 @@ position = Vector2( 47, 43 )
 z_index = 1
 texture = ExtResource( 3 )
 centered = false
+
+[node name="PowerupPopup" parent="." instance=ExtResource( 24 )]
 
 [node name="MouseDetector" type="Area2D" parent="."]
 position = Vector2( 200, 200 )

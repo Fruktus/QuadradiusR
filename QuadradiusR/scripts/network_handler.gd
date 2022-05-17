@@ -144,4 +144,17 @@ func _join_game_2(message: Message, args: Dictionary):
 		if "etag" in header:
 			etag = header.substr(7, 18)  # FIXME what?!
 	Context.game_state = GameState.new().init(message.body, etag)
-	args['cb'].call_func()
+	rest_api.get_power_definitions(self.token, funcref(self, "_join_game_3"), args)
+
+func _join_game_3(message: Message, args: Dictionary):
+	# After get_power_definitions
+	if message.result == 200:
+		var powerups_dict = {}  # Transform powerup definitions array into dict
+		for powerup in message.body:
+			powerups_dict[powerup['id']] = powerup
+		
+		Context.powerups_data = powerups_dict
+		args['cb'].call_func()
+	else:
+		print('join_game_3: ERROR GETTING POWER DEFINITIONS')
+

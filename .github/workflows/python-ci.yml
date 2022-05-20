@@ -38,6 +38,10 @@ jobs:
         working-directory: Server
         run: python -m build
 
+      - name: PyInstaller
+        working-directory: Server
+        run: poe pyinstaller
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

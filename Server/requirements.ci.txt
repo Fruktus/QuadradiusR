@@ -1,2 +1,4 @@
 tox
 build
+poethepoet>=0.13
+pyinstaller>=5.0

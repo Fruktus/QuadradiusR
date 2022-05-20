@@ -18,9 +18,15 @@ func _ready():
 		if not url.ends_with('/'):
 			url = url.rsplit('/', true, 1)[0]
 	rest_api.url = url
+	if EmbeddedServer.is_available():
+		EmbeddedServer.on_server_ready(funcref(self, '_embedded_server_ready'))
 	# use_threads=true does not work for HTML5
 	rest_api.use_threads = false
 	rest_api.max_redirects = 0
+
+
+func _embedded_server_ready():
+	rest_api.url = 'http://127.0.0.1:{port}'.format({'port': EmbeddedServer.get_port()})
 
 
 func set_url(url: String):

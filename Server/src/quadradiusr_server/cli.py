@@ -39,6 +39,11 @@ class ServerCli:
             action='append',
             help='set config values, e.g. --set server.database.create_metadata=true')
 
+        parser.add_argument(
+            '--embedded-mode',
+            action='store_true',
+            help=argparse.SUPPRESS)
+
         return parser.parse_args(args)
 
     def run(self) -> int:
@@ -72,6 +77,10 @@ class ServerCli:
                 set_option: str
                 option, value = set_option.split('=', 2)
                 server_config.set(option, value)
+
+        server_config.embedded_mode = args.embedded_mode
+        if args.embedded_mode:
+            server_config.set('server.database.create_metadata', 'true')
 
         server = QuadradiusRServer(server_config)
         return server.run()

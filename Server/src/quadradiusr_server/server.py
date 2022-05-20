@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from collections import defaultdict
 from typing import Optional, List, Dict
 
@@ -120,7 +121,12 @@ class QuadradiusRServer:
         await self.setup_service.run_setup_jobs()
         await self.cron.register()
         await self.site.start()
-        logging.info(f'Server started at {cfg.host}:{cfg.port}')
+
+        addr = self.address
+        logging.info(f'Server started at {addr[0]}:{addr[1]}')
+        if self.config.embedded_mode:
+            with open('.server_port', 'w') as f:
+                f.write(f'{addr[1]}')
 
     async def shutdown(self):
         logging.info('Server shutdown initiated')
@@ -128,6 +134,8 @@ class QuadradiusRServer:
             await self.runner.cleanup()
         if self.database:
             await self.database.dispose()
+        if self.config.embedded_mode and os.path.isfile('.server_port'):
+            os.remove('.server_port')
         logging.info('Server shutdown finished')
 
     async def _run_async(self):

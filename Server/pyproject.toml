@@ -13,3 +13,6 @@ testpaths = [
     'tests',
 ]
 log_cli = true
+
+[tool.poe.tasks]
+pyinstaller = { script = "build_scripts:pyinstaller" }

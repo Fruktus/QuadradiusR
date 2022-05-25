@@ -1,5 +1,8 @@
 .pytest_cache/
 .tox/
+.eggs/
 dist/
+build/
+venv/
 tests/
 Dockerfile

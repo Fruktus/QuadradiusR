@@ -15,8 +15,7 @@ FROM python:3.10 AS server-builder
 WORKDIR /workspace
 COPY ./Server .
 
-RUN rm -rf dist build .eggs .tox venv && \
-    pip install build && \
+RUN pip install build && \
     python -m build
 
 RUN mkdir -p /build && \

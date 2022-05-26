@@ -2,3 +2,6 @@
 	path = QuadradiusR/original_assets
 	url = git@github.com:Fruktus/QuadradiusRAssets.git
 	branch = master
+[submodule "QuadradiusR/logger"]
+	path = QuadradiusR/logger
+	url = git@github.com:KOBUGE-Games/godot-logger.git

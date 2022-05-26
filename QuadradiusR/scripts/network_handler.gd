@@ -32,30 +32,16 @@ func _embedded_server_ready():
 func set_url(url: String):
 	rest_api.url = url
 
+
 # # # # # # # #
 # CREATE USER #
 # # # # # # # #
-func create_user_and_connect_ws(cb: FuncRef):  # for testing the control flow, not meant to be left like that
-	print('cr user 0') # DEBUG
-	rest_api.create_user('test', 'asdf', funcref(self, "_create_user_and_connect_ws_1"), {'cb': cb})
-
-func _create_user_and_connect_ws_1(message: Message, args: Dictionary):
-	# After create_user
-	print('cr user 1 ', message) # DEBUG
-	rest_api.authorize('test', 'asdf', funcref(self, "_create_user_and_connect_ws_2"), args)
-
-func _create_user_and_connect_ws_2(message: Message, args: Dictionary):
-	# After authorize
-	print('cr user 2 ', message) # DEBUG
-	var token = message.body['token']
-	args['cb'].call_func(message)
-
-
 func create_user(username: String, password: String, cb: FuncRef, args: Dictionary):
+	Logger.info('Creating user {username}'.format({'username': username}))
 	rest_api.create_user(username, password, funcref(self, "_create_user_1"), {'cb': cb})
 
 func _create_user_1(message: Message, args: Dictionary):
-	pass
+	Logger.info('User created')
 
 
 # # # # # # # # # #
@@ -85,16 +71,17 @@ func _authorize_user_2(message: Message, args: Dictionary):
 # JOIN LOBBY  #
 # # # # # # # #
 func join_lobby(cb: FuncRef):
+	Logger.info('Obtaining lobby')
 	rest_api.get_lobby(token, funcref(self, "_join_lobby_1"), {'cb': cb})
 
 func _join_lobby_1(message: Message, args: Dictionary):
 	# After get_lobby
 	if message.result == 200:
+		Logger.info('Lobby obtained successfully, joining')
 		Context.lobby_data = message.body
-		print(message.body["ws_url"])
 		ws_api.connect_to(message.body["ws_url"], token)
 	else:
-		print('failed to obtain the lobby:', message.result)
+		Logger.info('Failed to obtain lobby')
 		var test = "ws://127.0.0.1:8888/lobby/@main/connect"
 		ws_api.connect_to(test, token)
 
@@ -102,7 +89,10 @@ func _join_lobby_1(message: Message, args: Dictionary):
 
 func _join_lobby_2(message: Message, args: Dictionary):
 	if message.result == 200:
+		Logger.info('Lobby joined successfully')
 		Context.lobby_data = message.body
+	else:
+		Logger.error('Failed to join lobby')
 
 	args['cb'].call_func()
 
@@ -130,23 +120,28 @@ func _accept_and_join_game_1(message: Message, args: Dictionary):
 # JOIN GAME #
 # # # # # # #
 func join_game(game_id: String, cb: FuncRef):
+	Logger.info('Obtaining game {id}'.format({'id': game_id}))
 	rest_api.get_game(self.token, game_id, funcref(self, "_join_game_1"), {'cb': cb})
 
 func _join_game_1(message: Message, args: Dictionary):
 	# After get_game
 	if message.result == 200:
+		Logger.info('Leaving lobby and joining the game')
+
 		Context.game_data = message.body
 		ws_api.close("Moving from lobby to game")
 		ws_api.connect_to(message.body["ws_url"], self.token)
+
+		Logger.info('Getting game state')
 		rest_api.get_game_state(self.token, message.body['id'], funcref(self, "_join_game_2"), args)
 	else:
-		print('ERROR WHEN GETTING GAME DATA')
+		Logger.error('Failed to obtain the game')
 	
 func _join_game_2(message: Message, args: Dictionary):
 	# After get_game_state
 	var etag = ""
 	for header in message.headers:
 		if "etag" in header:
-			etag = header.substr(7, 18)
+			etag = header.substr(7, 18)  # FIXME what?!
 	Context.game_state = GameState.new().init(message.body, etag)
 	args['cb'].call_func()

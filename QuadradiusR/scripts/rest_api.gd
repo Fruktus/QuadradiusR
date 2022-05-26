@@ -1,6 +1,8 @@
 class_name RestApi
 extends HTTPRequest
 
+const MODULE = 'rest'
+
 var url: String
 var use_ssl = false
 var request_running = false
@@ -32,7 +34,10 @@ func _on_request_completed(result: int, status_code: int, headers: PoolStringArr
 
 	var message = Message.new().init(status_code, str(result), data, headers)
 	
-	print('rq cpl:', status_code, ', headers:', headers, ', data:', data) # DEBUG
+	Logger.verbose('HTTP request completed', MODULE)
+	Logger.verbose('Response status code: {status_code}'.format({'status_code': status_code}), MODULE)
+	Logger.verbose('Response headers: {headers}'.format({'headers': headers}), MODULE)
+	Logger.verbose('Response body: {body}'.format({'body': data}), MODULE)
 	
 	if _redirect_if_needed(status_code, headers):
 		return

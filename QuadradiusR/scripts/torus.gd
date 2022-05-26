@@ -106,7 +106,6 @@ func _get_parent_tile():
 func update_shadow(pos: Vector3):
 	var distance_from_center = pos - Vector3(board.board_size.x, board.board_size.y, 0) / 2.0
 	distance_from_center /= Vector3(board.board_size.x, board.board_size.y, 5)
-	print(distance_from_center)
 	shadow.position = Vector2(distance_from_center.x, distance_from_center.y) * 100
 	# TODO handle scale relative to elevation, check shadow alpha and offset values - whether matches original
 #	shadow.scale = Vector2(distance_from_center.z * 2, distance_from_center.z * 2)

@@ -1,6 +1,8 @@
 class_name WSApi
 extends Node
 
+const MODULE = 'ws'
+
 const IDENTIFY = 2
 const SERVER_READY = 3
 const NOTIFICATION = 4
@@ -51,24 +53,26 @@ func _process(delta):
 # Signal Handlers #
 # # # # # # # # # #
 func _on_connection_closed(was_clean: bool):
-	print('connection closed, clean: ', was_clean)
+	Logger.info('Connection closed, clean={clean}'.format({'clean': was_clean}), MODULE)
 	set_process(false)
 
 func _on_connection_error():
-	print('connection error')
+	Logger.error('Connection error', MODULE)
 	set_process(false)
 
 func _on_connection_established(protocol: String):
-	print('im in')  # DEBUG
+	Logger.info('Connection established', MODULE)
 	_send_data({'op': IDENTIFY, 'd': {"token": token}})  # authorize with the server before doing anything else
 
 func _on_data_received():
 	var data = _get_data()
-	print('data received:', data)  # DEBUG
 	op_handlers[int(data['op'])].call_func(data['d'])
 
 func _on_server_close_request(code: int, reason: String):
-	print('server closed. reason: ', reason, ' code: ', code)
+	Logger.warn('Server closed connection ({code} {reason})'.format({
+		'code': code,
+		'reason': reason,
+	}), MODULE)
 	set_process(false)
 
 
@@ -136,6 +140,8 @@ func _handle_lobby_left(data: Dictionary):
 # API Methods #
 # # # # # # # #
 func connect_to(url: String, token):
+	Logger.info('Connecting to {url}'.format({'url': url}), MODULE)
+
 	self.token = token
 	ws.connect_to_url(url)
 	ws.get_peer(1).set_write_mode(WebSocketPeer.WRITE_MODE_TEXT)
@@ -161,8 +167,11 @@ func make_move(piece_id: String, tile_id: String):
 func _send_data(data: Dictionary):
 	# TODO check if connection was established
 	ws.get_peer(1).put_packet(JSON.print(data).to_utf8())
+	Logger.verbose('Data sent: {data}'.format({'data': data}), MODULE)
 
 
 func _get_data() -> Dictionary:
 	var packet = ws.get_peer(1).get_packet().get_string_from_utf8()
-	return JSON.parse(packet).result
+	var data = JSON.parse(packet).result
+	Logger.verbose('Data received: {data}'.format({'data': data}), MODULE)
+	return data

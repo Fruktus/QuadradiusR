@@ -1,5 +1,6 @@
 extends Node
 
+const MODULE = 'embedded-server'
 const SERVER_PORT_FILE = '.server_port'
 
 var executable_path: String
@@ -19,15 +20,15 @@ func _init():
 
 	self.available = File.new().file_exists(executable_path)
 
-	if self.available:
-		print('Server executable is available')
-	else:
-		print('Server executable is not available')
-
 
 func _ready():
+	if self.available:
+		Logger.info('Server executable is available', MODULE)
+	else:
+		Logger.info('Server executable is not available', MODULE)
+
 	self.run_server()
-#
+
 
 func _process(delta):
 	if self.wait_left > 0:
@@ -46,7 +47,7 @@ func run_server():
 		Directory.new().remove(SERVER_PORT_FILE)
 
 	var args = ['--embedded-mode', '--host', '0.0.0.0', '--port', '0']
-	print('Running server with arguments {args}'.format({'args': args}))
+	Logger.info('Running server with arguments {args}'.format({'args': args}), MODULE)
 	self.pid = OS.execute(executable_path, args, false, [])
 	self.wait_left = 0.05
 
@@ -63,7 +64,7 @@ func _check_server_for_startup():
 	file.close()
 
 	self.server_port = int(content)
-	print('Server started on port {port}'.format({'port': self.server_port}))
+	Logger.info('Server started on port {port}'.format({'port': self.server_port}), MODULE)
 
 	self.wait_left = 0
 	for cb in self.on_server_ready_callbacks:

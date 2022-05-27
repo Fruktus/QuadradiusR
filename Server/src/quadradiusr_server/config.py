@@ -81,6 +81,7 @@ class ServerConfig:
     cron: CronConfig = field(default_factory=CronConfig)
     static: StaticServerConfig = field(default_factory=StaticServerConfig)
     game: GameConfig = field(default_factory=GameConfig)
+    embedded_mode: bool = False
 
     def set(self, option: str, value: str):
         option_parts = option.split('.')

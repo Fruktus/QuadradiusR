@@ -71,6 +71,7 @@ config/icon="res://icon.png"
 
 NetworkHandler="*res://prefabs/network_handler.tscn"
 Context="*res://prefabs/context.tscn"
+EmbeddedServer="*res://scripts/embedded_server.gd"
 
 [debug]
 

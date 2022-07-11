@@ -1,0 +1,83 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://resources/fonts/72_DotMatrix_size55.tres" type="DynamicFont" id=1]
+[ext_resource path="res://scripts/piece_power_list_row.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+content_margin_left = 5.0
+content_margin_top = 10.0
+
+[node name="PiecePowerListRow" type="PanelContainer"]
+margin_right = 748.5
+margin_bottom = 62.0
+rect_min_size = Vector2( 748.5, 62 )
+rect_pivot_offset = Vector2( -292, -269 )
+mouse_filter = 2
+custom_styles/panel = SubResource( 1 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BG" type="ColorRect" parent="."]
+visible = false
+margin_left = 5.0
+margin_top = 10.0
+margin_right = 748.5
+margin_bottom = 72.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 5.0
+margin_top = 10.0
+margin_right = 748.5
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PowerCount" type="Label" parent="HBoxContainer"]
+self_modulate = Color( 1, 0, 0, 1 )
+margin_right = 100.0
+margin_bottom = 62.0
+rect_min_size = Vector2( 100, 62 )
+custom_fonts/font = ExtResource( 1 )
+text = "12"
+
+[node name="PowerName" type="Label" parent="HBoxContainer"]
+self_modulate = Color( 1, 0, 0, 1 )
+margin_left = 104.0
+margin_right = 501.0
+margin_bottom = 62.0
+custom_fonts/font = ExtResource( 1 )
+text = "Raise Tile"
+
+[node name="HelpSign" type="Label" parent="HBoxContainer"]
+visible = false
+self_modulate = Color( 1, 0, 0, 1 )
+margin_left = 505.0
+margin_right = 748.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "?"
+align = 2
+
+[node name="Button" type="Button" parent="."]
+self_modulate = Color( 1, 1, 1, 0 )
+margin_left = 5.0
+margin_top = 10.0
+margin_right = 748.5
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="mouse_entered" from="Button" to="." method="_on_hover_enter"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_hover_exit"]
+[connection signal="pressed" from="Button" to="." method="_on_click"]

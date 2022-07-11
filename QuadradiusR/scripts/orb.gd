@@ -1,7 +1,8 @@
 extends Node2D
 
-
 onready var anim = $AnimationPlayer
+
+
 
 func spawn():
 	anim.play("OrbAppear")

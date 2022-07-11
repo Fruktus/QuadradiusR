@@ -41,6 +41,7 @@ func _on_request_completed(result: int, status_code: int, headers: PoolStringArr
 	
 	if _redirect_if_needed(status_code, headers):
 		return
+
 	
 	if request_callback != null:
 		request_callback.call_func(message, request_callback_args)
@@ -144,3 +145,8 @@ func get_game(token: String, game_id: String, cb: FuncRef = null, cb_args: Dicti
 func get_game_state(token: String, game_id: String, cb: FuncRef = null, cb_args: Dictionary = {}):
 	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
 	return _build_request(["{url}/game/{id}/state".format({"url": url, "id": game_id}), headers, use_ssl, HTTPClient.METHOD_GET, ""], cb, cb_args)
+
+
+func get_power_definitions(token: String, cb: FuncRef = null, cb_args: Dictionary = {}):
+	var headers = ["Content-Type: application/json", "Authorization:{token}".format({"token": token})]
+	return _build_request(["{url}/power-definition".format({"url": url}), headers, use_ssl, HTTPClient.METHOD_GET, ""], cb, cb_args)

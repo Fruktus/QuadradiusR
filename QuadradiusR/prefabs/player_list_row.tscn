@@ -33,8 +33,8 @@ stream = ExtResource( 6 )
 
 [node name="BG" type="ColorRect" parent="."]
 visible = false
-margin_right = 826.0
-margin_bottom = 122.0
+margin_right = 842.0
+margin_bottom = 74.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 1, 0, 0, 1 )

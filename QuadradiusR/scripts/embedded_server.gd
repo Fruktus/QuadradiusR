@@ -40,6 +40,7 @@ func _process(delta):
 func run_server():
 	if not self.available:
 		push_error('Server executable is not available')
+		return
 
 	var file = File.new()
 

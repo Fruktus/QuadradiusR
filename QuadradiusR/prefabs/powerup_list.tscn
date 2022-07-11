@@ -34,6 +34,10 @@ __meta__ = {
 }
 
 [node name="PowerupList" type="VBoxContainer" parent="PowerupListContainer"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 753.0
+margin_bottom = 67.0
 mouse_filter = 2
 
 [node name="PowerListRow" parent="PowerupListContainer/PowerupList" instance=ExtResource( 1 )]

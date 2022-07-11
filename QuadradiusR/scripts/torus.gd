@@ -207,7 +207,7 @@ func add_power(power_id: String, power_def_id):
 		powers_list.add_powerup(power_def_id, Context.get_power_by_definition_id(power_def_id)['name'])
 	else:
 		powerup_definition_id_to_count[power_def_id] += 1
-		powers_list.add_powerup_charges(power_def_id, Context.get_power_by_definition_id(power_def_id)['name'], 1)
+		powers_list.add_powerup_charges(power_def_id, 1)
 
 
 func use_power(power_id: String):
@@ -216,8 +216,8 @@ func use_power(power_id: String):
 
 
 func _toggle_powers_list():
-#	if powerup_id_to_definition_id.empty():
-#		return
+	if powerup_id_to_definition_id.empty():
+		return
 
 	if not powers_list_open:
 		powers_list_open = true

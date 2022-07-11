@@ -1,7 +1,12 @@
-extends HBoxContainer
+extends PanelContainer
 
-onready var power_charges_label = $PowerCount
-onready var power_name_label = $PowerName
+onready var bg = $BG
+onready var power_charges_label = $HBoxContainer/PowerCount
+onready var power_name_label = $HBoxContainer/PowerName
+onready var help_sign = $HBoxContainer/HelpSign
+
+const INACTIVE_COLOR = Color(1.0, 0.0, 0.0, 1.0)
+const ACTIVE_COLOR = Color("#381b16")
 
 var power_charges: int
 var power_name: String
@@ -33,3 +38,21 @@ func use_power():
 		queue_free()
 
 	power_charges_label.text = str(power_charges)
+	# TODO emit signal or smth
+
+func _on_hover_enter():
+	bg.visible = true
+	power_charges_label.add_color_override("font_color", ACTIVE_COLOR)
+	power_name_label.add_color_override("font_color", ACTIVE_COLOR)
+	help_sign.add_color_override("font_color", ACTIVE_COLOR)
+
+
+func _on_hover_exit():
+	bg.visible = false
+	power_charges_label.add_color_override("font_color", INACTIVE_COLOR)
+	power_name_label.add_color_override("font_color", INACTIVE_COLOR)
+	help_sign.add_color_override("font_color", INACTIVE_COLOR)
+
+
+func _on_click():
+	use_power()

@@ -15,8 +15,8 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [node name="PowerupPopup" type="Popup"]
-margin_right = 401.0
-margin_bottom = 401.0
+margin_right = 1396.0
+margin_bottom = 209.0
 mouse_filter = 2
 script = ExtResource( 2 )
 
@@ -27,7 +27,7 @@ margin_top = 70.0
 margin_right = 1217.0
 margin_bottom = 152.0
 rect_scale = Vector2( 1.2, 1.2 )
-mouse_filter = 2
+mouse_filter = 1
 custom_styles/panel = SubResource( 9 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -38,7 +38,7 @@ margin_left = 15.0
 margin_top = 15.0
 margin_right = 753.0
 margin_bottom = 67.0
-mouse_filter = 2
 
 [node name="PiecePowerListRow" parent="PowerupListContainer/PowerupList" instance=ExtResource( 1 )]
 visible = false
+margin_bottom = 72.0

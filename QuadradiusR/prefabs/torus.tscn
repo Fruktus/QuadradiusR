@@ -23,7 +23,7 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/8.png" type="Texture" id=21]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/11.png" type="Texture" id=22]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_235/1_optimized.png" type="Texture" id=23]
-[ext_resource path="res://prefabs/powerup_list.tscn" type="PackedScene" id=24]
+[ext_resource path="res://prefabs/piece_power_list.tscn" type="PackedScene" id=24]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 
@@ -367,6 +367,7 @@ texture = ExtResource( 3 )
 centered = false
 
 [node name="PowerupPopup" parent="." instance=ExtResource( 24 )]
+visible = false
 
 [node name="MouseDetector" type="Area2D" parent="."]
 position = Vector2( 200, 200 )

@@ -5,6 +5,7 @@ var user_id: String
 var lobby_data: Dictionary
 var game_data: Dictionary
 var game_state: GameState
+var powerups_data: Dictionary
 
 
 
@@ -17,3 +18,7 @@ func get_other_player() -> Dictionary:
 		if player.id != user_id:
 			return player
 	return {}
+
+
+func get_power_by_definition_id(power_def_id: String) -> Dictionary:
+	return powerups_data[power_def_id]

@@ -10,6 +10,9 @@ func _ready():
 	get_tree().call_group("torus", "set_interaction", Context.is_my_turn())
 
 
+# # # # # # # # # # # # #
+# GameState Processing  #
+# # # # # # # # # # # # #
 func _process_pieces(pieces: Dictionary):
 	for piece_id in pieces.keys():
 		if piece_id[0] == "$":
@@ -33,7 +36,8 @@ func _process_powers(powers: Dictionary):
 			board.spawn_orb_on_tile_id(orb_id, orb['tile_id'])
 		if orb['piece_id']:
 			board.get_tile_by_orb_id(orb_id).collect_orb()
-			board.get_torus_by_id(orb['piece_id']).add_power(orb_id, Context.game_state.get_powerup_by_id(orb_id)['power_definition_id'])
+			board.get_torus_by_id(orb['piece_id']).add_power(
+				orb_id, Context.game_state.get_powerup_by_id(orb_id)['power_definition_id'])
 
 
 # # # # # # # # #
@@ -41,12 +45,14 @@ func _process_powers(powers: Dictionary):
 # # # # # # # # #
 func _game_state_diff(data: Dictionary):
 	var diff = data['game_state_diff']
+
 	if 'pieces' in diff['board']:
 		_process_pieces(diff['board']['pieces'])
+	
+	Context.game_state.apply_gamestate_diff(diff)
 	
 	if 'powers' in diff['board']:
 		_process_powers(diff['board']['powers'])
 	
-	Context.game_state.apply_gamestate_diff(diff)
 	# TODO BUMP ETAGS
 	get_tree().call_group("torus", "set_interaction", diff['current_player_id'] == Context.user_id) # WILL BE FIXED AFTER GAMESTATE UPDATE

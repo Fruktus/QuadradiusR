@@ -73,7 +73,7 @@ Logger="*res://logger/logger.gd"
 LoggerConfig="*res://scripts/logger_config.gd"
 NetworkHandler="*res://components/network_handler/network_handler.tscn"
 Context="*res://components/context/context.tscn"
-EmbeddedServer="*res://scripts/embedded_server.gd"
+EmbeddedServer="*res://components/embedded_server/embedded_server.gd"
 
 [debug]
 

@@ -23,7 +23,7 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/8.png" type="Texture" id=21]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/11.png" type="Texture" id=22]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_235/1_optimized.png" type="Texture" id=23]
-[ext_resource path="res://prefabs/piece_power_list.tscn" type="PackedScene" id=24]
+[ext_resource path="res://components/torus/powerups/piece_power_list.tscn" type="PackedScene" id=24]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 

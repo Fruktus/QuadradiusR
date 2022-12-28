@@ -32,22 +32,22 @@ _global_script_classes=[ {
 "base": "HTTPRequest",
 "class": "RestApi",
 "language": "GDScript",
-"path": "res://scripts/rest_api.gd"
+"path": "res://components/network_handler/rest_api.gd"
 }, {
 "base": "PanelContainer",
 "class": "Tile",
 "language": "GDScript",
-"path": "res://scripts/tile.gd"
+"path": "res://components/tile/tile.gd"
 }, {
 "base": "Control",
 "class": "Torus",
 "language": "GDScript",
-"path": "res://scripts/torus.gd"
+"path": "res://components/torus/torus.gd"
 }, {
 "base": "Node",
 "class": "WSApi",
 "language": "GDScript",
-"path": "res://scripts/ws_api.gd"
+"path": "res://components/network_handler/ws_api.gd"
 } ]
 _global_script_class_icons={
 "GameState": "",
@@ -71,8 +71,8 @@ config/icon="res://icon.png"
 
 Logger="*res://logger/logger.gd"
 LoggerConfig="*res://scripts/logger_config.gd"
-NetworkHandler="*res://prefabs/network_handler.tscn"
-Context="*res://prefabs/context.tscn"
+NetworkHandler="*res://components/network_handler/network_handler.tscn"
+Context="*res://components/context/context.tscn"
 EmbeddedServer="*res://scripts/embedded_server.gd"
 
 [debug]

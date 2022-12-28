@@ -228,7 +228,7 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/130.png" type="Texture" id=226]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_230_SquarePowerSymbol/1.png" type="Texture" id=227]
 [ext_resource path="res://original_assets/game/sounds/1061_powerorb002.wav" type="AudioStream" id=228]
-[ext_resource path="res://scripts/orb.gd" type="Script" id=229]
+[ext_resource path="res://components/orb/orb.gd" type="Script" id=229]
 [ext_resource path="res://original_assets/game/sounds/1063_get_power001.wav" type="AudioStream" id=230]
 
 [sub_resource type="Animation" id=1]

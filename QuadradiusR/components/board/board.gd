@@ -1,8 +1,8 @@
 extends Control
 
 onready var board = $BoardContainer
-const tile_template = preload("res://prefabs/tile.tscn")
-const torus_template = preload("res://prefabs/torus.tscn")
+const tile_template = preload("res://components/tile/tile.tscn")
+const torus_template = preload("res://components/torus/torus.tscn")
 
 var toruses_by_id = {}
 var tiles_by_id = {}

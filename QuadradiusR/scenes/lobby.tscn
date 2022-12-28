@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://prefabs/player_list.tscn" type="PackedScene" id=1]
+[ext_resource path="res://components/lobby_player_list/player_list.tscn" type="PackedScene" id=1]
 [ext_resource path="res://original_assets/lobby/sprites/DefineSprite_286_ContentBlock/1.png" type="Texture" id=2]
 [ext_resource path="res://original_assets/lobby/frames/121_optimized.png" type="Texture" id=3]
 [ext_resource path="res://scripts/lobby_manager.gd" type="Script" id=4]

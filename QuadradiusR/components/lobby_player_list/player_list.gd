@@ -9,7 +9,7 @@ onready var player_joined_sfx = $PlayerJoinedSFX
 onready var new_player_joined_sfx = $NewPlayerJoinedSFX
 onready var player_left_sfx = $PlayerLeftSFX
 
-const player_template = preload("res://prefabs/player_list_row.tscn")
+const player_template = preload("res://components/lobby_player_list/player_list_row.tscn")
 var uuid_to_active_invites = {}  # uuid -> game invite
 
 

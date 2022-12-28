@@ -3,7 +3,7 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_245_PlayerPieceSymbol/1_optimized.png" type="Texture" id=1]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/1.png" type="Texture" id=2]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_412_Decoration0/2.png" type="Texture" id=3]
-[ext_resource path="res://scripts/torus.gd" type="Script" id=4]
+[ext_resource path="res://components/torus/torus.gd" type="Script" id=4]
 [ext_resource path="res://original_assets/game/sounds/1062_cancel_piece_drop.wav" type="AudioStream" id=5]
 [ext_resource path="res://original_assets/game/sounds/1065_pick_up_piece.wav" type="AudioStream" id=6]
 [ext_resource path="res://original_assets/game/sounds/1064_jump_on01.wav" type="AudioStream" id=7]
@@ -23,7 +23,7 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/8.png" type="Texture" id=21]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_20_JumpOnPieceAnimation/11.png" type="Texture" id=22]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_235/1_optimized.png" type="Texture" id=23]
-[ext_resource path="res://prefabs/piece_power_list.tscn" type="PackedScene" id=24]
+[ext_resource path="res://components/torus/powerups/piece_power_list.tscn" type="PackedScene" id=24]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 

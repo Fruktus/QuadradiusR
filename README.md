@@ -8,6 +8,8 @@
 [![Documentation latest](https://img.shields.io/badge/documentation-download_latest-blue.svg)](https://nightly.link/Fruktus/QuadradiusR/workflows/docs-ci/master/build.zip)
 [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/quadradius?style=social)](https://www.reddit.com/r/quadradius/)
 
+**Project discontinued due to updates to Ruffle which allowed the original to run in web browser. For details visit [QuadradiusPreservationProject](https://github.com/Fruktus/QuadradiusPreservationProject)**
+
 A reimplementation of Classic Quadradius flash game from 2007 made by Jimmi Heiserman and Brad Kayal.
 
 DISCLAIMER: This is a fan work, not related or approved in any way by original authors, Jimmi Heiserman and Brad Kayal. The project is completely non-profit and should be considered as educational only. The provided software does not represent the quality of the original.

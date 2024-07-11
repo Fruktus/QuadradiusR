@@ -7,3 +7,13 @@ deploy
 .vscode
 personal/
 .idea/
+
+# local build objects
+QuadradiusR/build/
+
+# log files
+**.log
+logs/
+
+# bash run scripts
+*.sh

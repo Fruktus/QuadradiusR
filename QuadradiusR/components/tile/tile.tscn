@@ -1,7 +1,7 @@
 [gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://original_assets/game/shapes/246_optimized.png" type="Texture" id=1]
-[ext_resource path="res://scripts/tile.gd" type="Script" id=2]
+[ext_resource path="res://components/tile/tile.gd" type="Script" id=2]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/2.png" type="Texture" id=3]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/4.png" type="Texture" id=4]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/3.png" type="Texture" id=5]
@@ -15,7 +15,7 @@
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/12.png" type="Texture" id=13]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/13.png" type="Texture" id=14]
 [ext_resource path="res://original_assets/game/sprites/DefineSprite_232_SquareHighlightSymbol/10.png" type="Texture" id=15]
-[ext_resource path="res://prefabs/orb.tscn" type="PackedScene" id=16]
+[ext_resource path="res://components/orb/orb.tscn" type="PackedScene" id=16]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 

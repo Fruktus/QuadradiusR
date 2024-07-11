@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://prefabs/piece_power_list_row.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scripts/piece_power_list.gd" type="Script" id=2]
+[ext_resource path="res://components/torus/powerups/piece_power_list_row.tscn" type="PackedScene" id=1]
+[ext_resource path="res://components/torus/powerups/piece_power_list.gd" type="Script" id=2]
 
 [sub_resource type="StyleBoxFlat" id=9]
 content_margin_left = 15.0

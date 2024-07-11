@@ -2,7 +2,7 @@ extends Popup
 
 onready var powerup_list = $PowerupListContainer/PowerupList
 
-const power_list_row_template = preload("res://prefabs/piece_power_list_row.tscn")
+const power_list_row_template = preload("res://components/torus/powerups/piece_power_list_row.tscn")
 
 
 
